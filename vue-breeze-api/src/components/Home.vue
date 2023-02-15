@@ -1,4 +1,8 @@
-<script setup></script>
+<script setup>
+import FilterForm from "./FilterForm.vue";
+</script>
 <template>
-    <div><h1>Home</h1></div>
+    <div class="mx-auto py-12">
+        <filter-form></filter-form>
+    </div>
 </template>
