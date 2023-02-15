@@ -1,2 +1,4 @@
 <script setup></script>
-<template><h1>Home</h1></template>
+<template>
+    <div><h1>Home</h1></div>
+</template>
