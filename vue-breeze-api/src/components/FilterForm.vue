@@ -48,6 +48,16 @@ const congressionalDistricts = [
     // ...and so on
 ];
 
+const positions = [
+    "GOVERNOR",
+    "VICE-GOVERNOR",
+    "CONGRESSMAN",
+    "BOARD MEMBER",
+    "MAYOR",
+    "VICE-MAYOR",
+    "COUNCILOR",
+];
+
 const cities = computed(() => {
     const district = congressionalDistricts.find(
         (d) => d.id == model.value.district
