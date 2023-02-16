@@ -78,7 +78,7 @@
             </ul>
         </div> -->
         <div class="navbar-end">
-            <a class="btn btn-ghost">Get started</a>
+            <a class="btn btn-ghost">Login</a>
         </div>
     </div>
 </template>
