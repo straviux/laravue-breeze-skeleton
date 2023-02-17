@@ -1,4 +1,26 @@
-<script setup></script>
+<script setup>
+import { ref } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
+
+const router = useRouter();
+const form = ref({
+    username: "",
+    password: "",
+});
+
+const getToken = async () => {
+    await axios.get("/sanctum/csrf-cookie");
+};
+const handleLogin = async () => {
+    await getToken();
+    await axios.post("/login", {
+        username: form.value.username,
+        password: form.value.password,
+    });
+    router.push("/");
+};
+</script>
 <template>
     <div
         class="max-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12"
@@ -15,7 +37,8 @@
                         <h1 class="text-2xl font-semibold">Login</h1>
                     </div>
                     <div class="divide-y divide-gray-200">
-                        <div
+                        <form
+                            @submit.prevent="handleLogin"
                             class="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7"
                         >
                             <div class="relative">
@@ -24,6 +47,7 @@
                                     id="username"
                                     name="username"
                                     type="text"
+                                    v-model="form.username"
                                     class="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
                                     placeholder="username"
                                 />
@@ -39,6 +63,7 @@
                                     id="password"
                                     name="password"
                                     type="password"
+                                    v-model="form.password"
                                     class="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
                                     placeholder="Password"
                                 />
@@ -55,7 +80,7 @@
                                     Submit
                                 </button>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>

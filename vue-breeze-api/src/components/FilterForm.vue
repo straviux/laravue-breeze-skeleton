@@ -1,7 +1,8 @@
 <script setup>
 import { ref, computed } from "vue";
-const model = ref({});
+const model = ref({ district: "all" });
 const allCitySelected = ref(false);
+const allPositionSelected = ref(false);
 const congressionalDistricts = [
     {
         id: 1,
@@ -74,6 +75,17 @@ function toggleAllCity() {
     }
 }
 
+function toggleAllPosition() {
+    if (allPositionSelected.value) {
+        model.value.positions = positions.flatMap((p) => p);
+    } else {
+        model.value.positions = [];
+    }
+}
+function resetDistrict() {
+    allCitySelected.value = false;
+    model.value.cities = [];
+}
 const handleSubmit = () => {
     console.log(model.value);
 };
@@ -102,6 +114,7 @@ const handleSubmit = () => {
                         name="district"
                         :value="d.id"
                         v-model="model.district"
+                        @change="resetDistrict"
                     />
                     <div class="title px-2">{{ d.name }}</div>
                 </label>
@@ -119,9 +132,7 @@ const handleSubmit = () => {
                 </label>
             </div>
         </div>
-        <div class="px-12 flex w-full">
-            <pre>district: {{ model.district }}</pre>
-        </div>
+
         <!-- End Disctrict -->
 
         <!-- Municipality -->
@@ -172,6 +183,17 @@ const handleSubmit = () => {
                 </ul>
             </div>
         </div>
+
+        <div class="px-4 flex items-center justify-center">
+            <div class="grid gap-2 lg:grid-cols-3 md:grid-cols-3 grid-cols-2">
+                <div
+                    class="bg-gray-100 p-4 text-center"
+                    v-for="city in model.cities"
+                >
+                    {{ city }}
+                </div>
+            </div>
+        </div>
         <!-- End Municipality -->
 
         <!-- Position -->
@@ -191,7 +213,7 @@ const handleSubmit = () => {
                 >
                 <ul
                     tabindex="0"
-                    class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full"
+                    class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full max-h-[300px]"
                 >
                     <li>
                         <label class="cursor-pointer">
@@ -199,29 +221,38 @@ const handleSubmit = () => {
                                 type="checkbox"
                                 checked="checked"
                                 class="checkbox checkbox-sm"
+                                id="all"
+                                v-model="allPositionSelected"
+                                @change="toggleAllPosition"
                             />
                             <span class="label-text">All</span>
                         </label>
                     </li>
-                    <li>
+                    <li v-for="position in positions" :key="position">
                         <label class="cursor-pointer">
                             <input
                                 type="checkbox"
                                 class="checkbox checkbox-sm"
+                                :id="position"
+                                :value="position"
+                                @change="allPositionSelected = false"
+                                v-model="model.positions"
                             />
-                            <span class="label-text">Governor</span>
-                        </label>
-                    </li>
-                    <li>
-                        <label class="cursor-pointer">
-                            <input
-                                type="checkbox"
-                                class="checkbox checkbox-sm"
-                            />
-                            <span class="label-text">Vice Governor</span>
+                            <span class="label-text">{{ position }}</span>
                         </label>
                     </li>
                 </ul>
+            </div>
+        </div>
+        <div class="px-4 flex items-center justify-center">
+            <div class="grid gap-2 lg:grid-cols-3 md:grid-cols-3 grid-cols-2">
+                <div
+                    class="bg-gray-100 p-4 text-center"
+                    v-for="(position, index) in model.positions"
+                    :key="position + index"
+                >
+                    {{ position }}
+                </div>
             </div>
         </div>
         <!-- End Position -->

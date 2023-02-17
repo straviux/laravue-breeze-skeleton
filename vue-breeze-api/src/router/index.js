@@ -2,6 +2,7 @@ import {createRouter, createWebHistory} from 'vue-router';
 import DefaultLayout from '../components/DefaultLayout.vue'
 
 const routes = [
+    {path:'/test',component:()=>import('../components/Test.vue')},
     {
         path:'/',
         component: DefaultLayout,
