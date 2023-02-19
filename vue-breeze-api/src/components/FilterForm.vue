@@ -91,11 +91,7 @@ const handleSubmit = () => {
 };
 </script>
 <template>
-    <div
-        class="relative z-20 bg-white rounded-2xl p-2 mx-auto w-full md:w-2/5 lg:1/3"
-    >
-        <h1 class="mt-2 ml-4">Get started!</h1>
-
+    <div>
         <!-- District -->
         <div class="flex border rounded m-4 px-1">
             <div
@@ -190,7 +186,7 @@ const handleSubmit = () => {
                     class="bg-gray-100 p-4 text-center"
                     v-for="city in model.cities"
                 >
-                    {{ city }}
+                    <span class="uppercase">{{ city }}</span>
                 </div>
             </div>
         </div>

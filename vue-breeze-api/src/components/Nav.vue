@@ -1,6 +1,9 @@
-<script setup></script>
+<script setup>
+import { useAuthStore } from "../store/auth";
+const authStore = useAuthStore();
+</script>
 <template>
-    <div class="navbar bg-base-100">
+    <div class="navbar bg-base-100 relative z-20">
         <div class="navbar-start">
             <!-- <div class="dropdown">
                 <label tabindex="0" class="btn btn-ghost lg:hidden">
@@ -78,7 +81,15 @@
             </ul>
         </div> -->
         <div class="navbar-end">
-            <a class="btn btn-ghost">Login</a>
+            <template v-if="!authStore.user">
+                <button class="btn btn-ghost">Login</button>
+            </template>
+            <template v-else>
+                <button class="btn btn-ghost">Home</button>
+                <button class="btn btn-ghost" @click="authStore.handleLogout">
+                    Logout
+                </button>
+            </template>
         </div>
     </div>
 </template>

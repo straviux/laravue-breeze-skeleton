@@ -1,5 +1,5 @@
 <template>
-    <Nav class="fixed top-0" />
+    <Nav class="relative" />
     <div class="p-8">
         <RouterView />
     </div>

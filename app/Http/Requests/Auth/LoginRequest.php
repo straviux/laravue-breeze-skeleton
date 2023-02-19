@@ -11,12 +11,11 @@ use Illuminate\Validation\ValidationException;
 
 class LoginRequest extends FormRequest
 {
+    protected $inputType;
     /**
      * Determine if the user is authorized to make this request.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
@@ -24,12 +23,13 @@ class LoginRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array
+     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required_without:username', 'string', 'email', 'exists:users,email'],
+            'username' => ['required_without:email', 'string', 'exists:users,username'],
             'password' => ['required', 'string'],
         ];
     }
@@ -37,19 +37,17 @@ class LoginRequest extends FormRequest
     /**
      * Attempt to authenticate the request's credentials.
      *
-     * @return void
-     *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate()
+    public function authenticate(): void
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        if (!Auth::attempt($this->only($this->inputType, 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => __('auth.failed'),
+                $this->inputType => trans('auth.failed'),
             ]);
         }
 
@@ -59,13 +57,11 @@ class LoginRequest extends FormRequest
     /**
      * Ensure the login request is not rate limited.
      *
-     * @return void
-     *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function ensureIsNotRateLimited()
+    public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        if (!RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
             return;
         }
 
@@ -83,11 +79,15 @@ class LoginRequest extends FormRequest
 
     /**
      * Get the rate limiting throttle key for the request.
-     *
-     * @return string
      */
-    public function throttleKey()
+    public function throttleKey(): string
     {
-        return Str::lower($this->input('email')).'|'.$this->ip();
+        return Str::transliterate(Str::lower($this->input('email')) . '|' . $this->ip());
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->inputType = filter_var($this->input('input_type'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $this->merge([$this->inputType => $this->input('input_type')]);
     }
 }
