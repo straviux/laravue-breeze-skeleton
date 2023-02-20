@@ -82,7 +82,9 @@ const authStore = useAuthStore();
         </div> -->
         <div class="navbar-end">
             <template v-if="!authStore.user">
-                <button class="btn btn-ghost">Login</button>
+                <button class="btn btn-ghost" @click="authStore.handleLogout">
+                    Login
+                </button>
             </template>
             <template v-else>
                 <button class="btn btn-ghost">Home</button>

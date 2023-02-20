@@ -11,16 +11,20 @@ export const useAuthStore = defineStore("auth", {
     } ,
     actions: {
         async getToken() {
-            await axios.get("/sanctum/csrf-cookie").catch(function (error) {
-                this.handleLogout();
-            });;
+            try {
+                await axios.get("/sanctum/csrf-cookie");
+            } catch (error) {
+                console.log(error);
+            }
         },
         async getUser() {
-            this.getToken();
-            const data = await axios.get("/api/user").catch(function (error) {
-                this.handleLogout();
-            });;
-            this.authUser =data.data
+            try {
+                this.getToken();
+                const data = await axios.get("/api/user");
+                this.authUser =data.data
+            } catch (error) {
+                console.log(error);
+            }
         },
         async handleLogin (data) {
             this.authErrors = [];
