@@ -1,6 +1,8 @@
 <script setup>
 import { ref, computed } from "vue";
-const model = ref({ district: "all" });
+import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
+const clusteredPrecinct = clusteredPrecinctStore();
+const model = ref({ district: "all", cities: [], positions: [] });
 const allCitySelected = ref(false);
 const allPositionSelected = ref(false);
 const congressionalDistricts = [
@@ -8,43 +10,40 @@ const congressionalDistricts = [
         id: 1,
         name: "1st",
         cities: [
-            { id: 1, name: "Agutaya", district: "1" },
-            { id: 2, name: "Araceli", district: "1" },
-            { id: 3, name: "Busuanga", district: "1" },
-            { id: 4, name: "Cagayancillo", district: "1" },
-            { id: 5, name: "Coron", district: "1" },
-            { id: 6, name: "Culion", district: "1" },
-            { id: 7, name: "Cuyo", district: "1" },
-            { id: 8, name: "Dumaran", district: "1" },
-            { id: 9, name: "El Nido", district: "1" },
-            { id: 10, name: "Kalayaan", district: "1" },
-            { id: 11, name: "Linapacan", district: "1" },
-            { id: 12, name: "Magsaysay", district: "1" },
-            { id: 13, name: "Roxas", district: "1" },
-            { id: 14, name: "San Vicente", district: "1" },
-            { id: 15, name: "Taytay", district: "1" },
+            "AGUTAYA",
+            "ARACELI",
+            "BUSUANGA",
+            "CAGAYANCILLO",
+            "CORON",
+            "CULION",
+            "CUYO",
+            "DUMARAN",
+            "EL NIDO (BACUIT)",
+            "KALAYAAN",
+            "LINAPACAN",
+            "MAGSAYSAY",
+            "ROXAS",
+            "SAN VICENTE",
+            "TAYTAY",
         ],
     },
     {
         id: 2,
         name: "2nd",
         cities: [
-            { id: 16, name: "Balabac", district: "2" },
-            { id: 17, name: "Bataraza", district: "2" },
-            { id: 18, name: "Brooke's Point", district: "2" },
-            { id: 19, name: "Narra", district: "2" },
-            { id: 20, name: "Quezon", district: "2" },
-            { id: 21, name: "Rizal ", district: "2" },
-            { id: 22, name: "Sofronio Española", district: "2" },
+            "BALABAC",
+            "BATARAZA",
+            "BROOKE'S POINT",
+            "NARRA",
+            "QUEZON",
+            "RIZAL (MARCOS)",
+            "SOFRONIO ESPAÑOLA",
         ],
     },
     {
         id: 3,
         name: "3rd",
-        cities: [
-            { id: 23, name: "Aborlan", district: "3" },
-            { id: 24, name: "Puerto Princesa", district: "3" },
-        ],
+        cities: ["ABORLAN", "PUERTO PRINCESA CITY"],
     },
     // ...and so on
 ];
@@ -63,13 +62,12 @@ const cities = computed(() => {
     const district = congressionalDistricts.find(
         (d) => d.id == model.value.district
     );
-    console.log(model.value.district);
     return district ? district.cities : [];
 });
 
 function toggleAllCity() {
     if (allCitySelected.value) {
-        model.value.cities = cities.value.flatMap((city) => city.name);
+        model.value.cities = cities.value.flatMap((city) => city);
     } else {
         model.value.cities = [];
     }
@@ -86,12 +84,13 @@ function resetDistrict() {
     allCitySelected.value = false;
     model.value.cities = [];
 }
+
 const handleSubmit = () => {
     console.log(model.value);
 };
 </script>
 <template>
-    <div>
+    <form @submit.prevent="clusteredPrecinct.getResult(model)">
         <!-- District -->
         <div class="flex border rounded m-4 px-1">
             <div
@@ -168,12 +167,12 @@ const handleSubmit = () => {
                             <input
                                 type="checkbox"
                                 class="checkbox checkbox-sm"
-                                :id="city.id"
-                                :value="city.name"
+                                :id="city"
+                                :value="city"
                                 @change="allCitySelected = false"
                                 v-model="model.cities"
                             />
-                            <span class="label-text">{{ city.name }}</span>
+                            <span class="label-text">{{ city }}</span>
                         </label>
                     </li>
                 </ul>
@@ -224,14 +223,14 @@ const handleSubmit = () => {
                             <span class="label-text">All</span>
                         </label>
                     </li>
-                    <li v-for="position in positions" :key="position">
+                    <li v-for="(position, index) in positions" :key="index">
                         <label class="cursor-pointer">
                             <input
                                 type="checkbox"
                                 class="checkbox checkbox-sm"
                                 :id="position"
                                 :value="position"
-                                @change="allPositionSelected = false"
+                                @change="resetPosition"
                                 v-model="model.positions"
                             />
                             <span class="label-text">{{ position }}</span>
@@ -254,9 +253,7 @@ const handleSubmit = () => {
         <!-- End Position -->
 
         <div class="flex py-6">
-            <button class="btn mx-auto rounded" @click="handleSubmit">
-                Next
-            </button>
+            <button class="btn mx-auto rounded">Generate</button>
         </div>
-    </div>
+    </form>
 </template>

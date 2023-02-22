@@ -2,12 +2,14 @@
 import { onMounted } from "vue";
 
 import { useAuthStore } from "../store/auth";
+
 import FilterForm from "./FilterForm.vue";
 
 const authStore = useAuthStore();
 
 onMounted(async () => {
     await authStore.getUser();
+    localStorage.clear();
 });
 </script>
 <template>

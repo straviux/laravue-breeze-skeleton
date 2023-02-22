@@ -20,6 +20,11 @@ const routes = [
         component: ()=>import('../components/Register.vue')
     },
 
+    {
+        path:'/results',
+        component: ()=>import('../components/Results.vue')
+    }
+
 ];
 
 const router = createRouter({
