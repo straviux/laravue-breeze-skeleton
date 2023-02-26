@@ -28,11 +28,13 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
             {
                 try {
                     // this.getToken();
+                    console.log(formData);
 
                     const data = await api.get("/api/v1/clustered-precinct-results", {params: {
                         municipality: formData.cities,
                         position: formData.positions
                     }});
+                    // console.log(data)
                     this.precinctResult = data.data;
                     localStorage.setItem('municipality', JSON.stringify(formData.cities));
                     localStorage.setItem('position', JSON.stringify(formData.positions));

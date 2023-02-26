@@ -2,7 +2,7 @@
     <div>
         <Nav />
 
-        <div class="grid grid-cols-12 min-h-screen">
+        <!-- <div class="grid grid-cols-12 min-h-screen">
             <div
                 class="col-span-12 bg-stone-50 flex flex-col lg:flex-row md:divide-x-2"
             >
@@ -12,7 +12,8 @@
 
                 <main-content class="flex-1" />
             </div>
-        </div>
+        </div> -->
+        <RouterView />
     </div>
 </template>
 <script setup>
