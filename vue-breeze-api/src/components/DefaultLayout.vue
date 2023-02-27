@@ -1,9 +1,22 @@
 <template>
-    <Nav class="relative" />
-    <div class="p-8">
-        <RouterView />
+    <div>
+        <Nav />
+
+        <div class="grid grid-cols-12 min-h-screen">
+            <div
+                class="col-span-12 bg-stone-50 flex flex-col lg:flex-row md:divide-x-2"
+            >
+                <div class="lg:w-[250px] w-full h-full">
+                    <FilterForm />
+                </div>
+
+                <main-content class="flex-1" />
+            </div>
+        </div>
     </div>
 </template>
 <script setup>
 import Nav from "./Nav.vue";
+import FilterForm from "./FilterForm.vue";
+import MainContent from "./MainContent.vue";
 </script>

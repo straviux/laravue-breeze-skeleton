@@ -3,7 +3,7 @@ import { onMounted } from "vue";
 
 import { useAuthStore } from "../store/auth";
 
-import FilterForm from "./FilterForm.vue";
+// import FilterForm from "./FilterForm.vue";
 
 const authStore = useAuthStore();
 
@@ -15,14 +15,14 @@ onMounted(async () => {
 <template>
     <div class="relative">
         <div
-            class="mx-auto py-12 bg-white rounded-lg w-full md:w-2/5 lg:1/3"
+            class="py-12 bg-white border-b border-r border-t w-full md:w-1/4"
             v-if="authStore.user"
         >
-            <pre>
+            <!-- <pre>
             {{ authStore.user.name }}
             {{ authStore.user.email }}
-            </pre>
-            <filter-form class="p-2"></filter-form>
+            </pre> -->
+            <!-- <filter-form class="p-2"></filter-form> -->
         </div>
         <div class="mx-auto py-12" v-else>
             You are not authorized to view this page. Please
