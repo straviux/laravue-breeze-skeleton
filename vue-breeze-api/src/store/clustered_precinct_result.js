@@ -24,13 +24,13 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
             }
         },
         async getResult(formData) {
+
             if(formData)
             {
                 try {
                     // this.getToken();
-                    console.log(formData);
 
-                    const data = await api.get("/api/v1/clustered-precinct-results", {params: {
+                    const data = await axios.get("/api/v1/clustered-precinct-results", {params: {
                         municipality: formData.cities,
                         position: formData.positions
                     }});

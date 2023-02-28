@@ -69,6 +69,11 @@ const cities = computed(() => {
     return district ? district.cities : [];
 });
 
+function resetForm() {
+    model.value.cities = [];
+    model.value.positions = [];
+}
+
 function toggleAllCity() {
     if (allCitySelected.value) {
         model.value.cities = cities.value.flatMap((city) => city);
@@ -95,7 +100,7 @@ const handleSubmit = () => {
 </script>
 <template>
     <div class="relative">
-        <form @submit.prevent="clusteredPrecinct.getResult(model)">
+        <form @submit.prevent="">
             <p class="m-4 px-1 mb-10 text-sm font-semibold">
                 Select geographical level and voting jurisdiction:
             </p>
@@ -211,10 +216,12 @@ const handleSubmit = () => {
                     >
                     <ul
                         tabindex="0"
-                        class="dropdown-content menu p-1 shadow bg-base-100 rounded-box w-full"
+                        class="dropdown-content p-1 shadow bg-base-100 rounded-box w-full absolute z-[1000] min-w-max list-none overflow-y-auto h-[350px]"
                     >
                         <li>
-                            <label class="cursor-pointer">
+                            <label
+                                class="cursor-pointer block w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
+                            >
                                 <input
                                     type="checkbox"
                                     checked="checked"
@@ -227,7 +234,9 @@ const handleSubmit = () => {
                             </label>
                         </li>
                         <li v-for="city in cities" :key="city">
-                            <label class="cursor-pointer">
+                            <label
+                                class="cursor-pointer block w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
+                            >
                                 <input
                                     type="checkbox"
                                     class="checkbox checkbox-sm"
@@ -276,10 +285,12 @@ const handleSubmit = () => {
                     >
                     <ul
                         tabindex="0"
-                        class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full"
+                        class="dropdown-content p-1 shadow bg-base-100 rounded-box w-full absolute z-[1000] min-w-max list-none overflow-y-auto h-[250px]"
                     >
                         <li>
-                            <label class="cursor-pointer">
+                            <label
+                                class="cursor-pointer block w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
+                            >
                                 <input
                                     type="checkbox"
                                     checked="checked"
@@ -292,7 +303,9 @@ const handleSubmit = () => {
                             </label>
                         </li>
                         <li v-for="(position, index) in positions" :key="index">
-                            <label class="cursor-pointer">
+                            <label
+                                class="cursor-pointer block w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
+                            >
                                 <input
                                     type="checkbox"
                                     class="checkbox checkbox-sm"
@@ -325,7 +338,18 @@ const handleSubmit = () => {
             <!-- End Position -->
 
             <div class="flex py-6">
-                <button class="btn mx-auto rounded">Generate</button>
+                <button
+                    class="btn mx-auto rounded w-[100px]"
+                    @click.stop="resetForm"
+                >
+                    Reset
+                </button>
+                <button
+                    class="btn mx-auto btn-success text-white w-[100px] rounded"
+                    @click.stop="clusteredPrecinct.getResult(model)"
+                >
+                    Generate
+                </button>
             </div>
         </form>
     </div>
