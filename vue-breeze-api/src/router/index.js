@@ -1,14 +1,18 @@
 import {createRouter, createWebHistory} from 'vue-router';
-import DefaultLayout from '../components/DefaultLayout.vue'
+import Container from '../components/Container.vue'
 
 const routes = [
     {path:'/test',component:()=>import('../components/Test.vue')},
     {
         path:'/',
-        component: DefaultLayout,
+        component: Container,
         redirect: 'home',
         children:[
-            {path:'home',name:'Home',component:()=>import('../components/Home.vue')}
+            {path:'home',name:'Home',component:()=>import('../components/Home.vue'),
+                children:[
+                    {path:'er',name:'ElectionResults',component:()=>import('../components/Results.vue')}
+                ]
+            }
         ]
     },
     {

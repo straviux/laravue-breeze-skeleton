@@ -38,7 +38,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     this.precinctResult = data.data;
                     localStorage.setItem('municipality', JSON.stringify(formData.cities));
                     localStorage.setItem('position', JSON.stringify(formData.positions));
-                    this.router.push("/results");
+                    this.router.push({name:'ElectionResults'});
 
                 } catch (error) {
                     console.log(error);

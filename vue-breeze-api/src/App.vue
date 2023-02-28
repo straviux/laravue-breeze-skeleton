@@ -20,9 +20,6 @@ console.log(`localstorage size: ${localStorageSize()}kb`);
         <RouterView />
     </main> -->
     <div>
-        <div
-            class="absolute inset-0 bg-[url(assets/img/grid.svg)] bg-center"
-        ></div>
         <RouterView />
     </div>
 </template>

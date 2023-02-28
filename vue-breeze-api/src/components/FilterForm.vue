@@ -340,13 +340,13 @@ const handleSubmit = () => {
             <div class="flex py-6">
                 <button
                     class="btn mx-auto rounded w-[100px]"
-                    @click.stop="resetForm"
+                    @click="resetForm"
                 >
                     Reset
                 </button>
                 <button
                     class="btn mx-auto btn-success text-white w-[100px] rounded"
-                    @click.stop="clusteredPrecinct.getResult(model)"
+                    @click="clusteredPrecinct.getResult(model)"
                 >
                     Generate
                 </button>
