@@ -13,7 +13,11 @@
                 <main-content class="flex-1" />
             </div>
         </div> -->
+<<<<<<< HEAD
         <router-view></router-view>
+=======
+        <RouterView />
+>>>>>>> fd47b97fe18aa3d59d17f73e9b6771689bfa1ca8
     </div>
 </template>
 <script setup>
