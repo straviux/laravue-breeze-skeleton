@@ -2,7 +2,12 @@
 import { ref, computed, onMounted } from "vue";
 import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
 const clusteredPrecinct = clusteredPrecinctStore();
-const model = ref({ district: "all", cities: [], positions: [] });
+const model = ref({
+    district: "all",
+    cities: [],
+    positions: [],
+    report_level: "district",
+});
 const allCitySelected = ref(false);
 const allPositionSelected = ref(false);
 const congressionalDistricts = [
@@ -108,6 +113,53 @@ onMounted(() => {
             <p class="m-4 px-1 mb-10 text-sm font-semibold">
                 Select geographical level and voting jurisdiction:
             </p>
+
+            <!-- Report Options -->
+            <div class="flex border rounded m-4 px-1">
+                <div class="py-2">
+                    <label class="flex p-2 cursor-pointer gap-1">
+                        <input
+                            class="my-auto radio radio-xs"
+                            type="radio"
+                            name="report_level"
+                            value="district"
+                            v-model="model.report_level"
+                        />
+                        <span class="label-text uppercase text-xs"
+                            >District</span
+                        >
+                    </label>
+                </div>
+                <div class="py-2">
+                    <label class="flex p-2 cursor-pointer gap-1">
+                        <input
+                            class="my-auto radio radio-xs"
+                            type="radio"
+                            name="report_level"
+                            value="municipality"
+                            v-model="model.report_level"
+                        />
+                        <span class="label-text uppercase text-xs"
+                            >Municipality</span
+                        >
+                    </label>
+                </div>
+                <div class="py-2">
+                    <label class="flex p-2 cursor-pointer gap-1">
+                        <input
+                            class="my-auto radio radio-xs"
+                            type="radio"
+                            name="report_level"
+                            value="barangay"
+                            v-model="model.report_level"
+                        />
+                        <span class="label-text uppercase text-xs"
+                            >Barangay</span
+                        >
+                    </label>
+                </div>
+            </div>
+
             <!-- District -->
             <div class="flex border rounded m-4 px-1">
                 <div
@@ -171,7 +223,10 @@ onMounted(() => {
             <!-- End Disctrict -->
 
             <!-- Municipality -->
-            <div class="flex border rounded m-4 px-1">
+            <div
+                class="flex border rounded m-4 px-1"
+                v-if="model.report_level != 'district'"
+            >
                 <div
                     class="py-3 my-auto px-2 border-r-2 w-[120px] border-gray-300 text-gray-600 text-xs font-semibold"
                 >
@@ -189,13 +244,12 @@ onMounted(() => {
                         tabindex="0"
                         class="dropdown-content p-1 shadow bg-base-100 rounded-box w-full absolute z-[1000] min-w-max list-none overflow-y-auto h-[350px]"
                     >
-                        <li>
+                        <li v-if="model.report_level == 'municipality'">
                             <label
                                 class="cursor-pointer block w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
                             >
                                 <input
                                     type="checkbox"
-                                    checked="checked"
                                     class="checkbox checkbox-sm"
                                     id="all"
                                     v-model="allCitySelected"
@@ -209,16 +263,24 @@ onMounted(() => {
                                 class="cursor-pointer block w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
                             >
                                 <input
-                                    type="checkbox"
-                                    class="checkbox checkbox-sm"
+                                    :type="
+                                        model.report_level == 'municipality'
+                                            ? 'checkbox'
+                                            : 'radio'
+                                    "
+                                    :class="
+                                        model.report_level == 'municipality'
+                                            ? 'checkbox checkbox-sm'
+                                            : 'radio radio-xs'
+                                    "
                                     :id="city"
                                     :value="city"
                                     @change="allCitySelected = false"
                                     v-model="model.cities"
                                 />
-                                <span class="label-text text-xs">{{
-                                    city
-                                }}</span>
+                                <span class="label-text text-xs"
+                                    >{{ city }}
+                                </span>
                             </label>
                         </li>
                     </ul>
