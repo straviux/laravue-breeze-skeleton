@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
 const clusteredPrecinct = clusteredPrecinctStore();
 const model = ref({ district: "all", cities: [], positions: [] });
@@ -94,9 +94,13 @@ function resetDistrict() {
     model.value.cities = [];
 }
 
-const handleSubmit = () => {
+function handleSubmit() {
     console.log(model.value);
-};
+}
+
+onMounted(() => {
+    model.value.positions = positions.flatMap((p) => p);
+});
 </script>
 <template>
     <div class="relative">
@@ -116,7 +120,7 @@ const handleSubmit = () => {
                     <label
                         ref="dropDown"
                         tabindex="0"
-                        class="btn bg-white btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-xs"
+                        class="btn bg-white btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
                         >Click to select</label
                     >
                     <ul
@@ -155,39 +159,6 @@ const handleSubmit = () => {
                         </li>
                     </ul>
                 </div>
-                <!-- <div
-                class="py-3 my-auto px-2 border-r-2 w-[100px] border-gray-300 text-gray-600 text-sm font-semibold"
-            >
-                District
-            </div>
-            <div class="flex items-center justify-center">
-                <label
-                    class="flex p-2 cursor-pointer ml-3"
-                    v-for="d in congressionalDistricts"
-                >
-                    <input
-                        class="my-auto radio"
-                        type="radio"
-                        name="district"
-                        :value="d.id"
-                        v-model="model.district"
-                        @change="resetDistrict"
-                    />
-                    <div class="title px-2">{{ d.name }}</div>
-                </label>
-
-                <label class="flex p-2 cursor-pointer">
-                    <input
-                        class="my-auto radio"
-                        type="radio"
-                        name="district"
-                        value="all"
-                        v-model="model.district"
-                        checked
-                    />
-                    <div class="title px-2">All</div>
-                </label>
-            </div> -->
             </div>
             <div class="px-4 flex items-center justify-center">
                 <div class="text-xs">
@@ -211,7 +182,7 @@ const handleSubmit = () => {
                     <label
                         ref="dropDown"
                         tabindex="0"
-                        class="btn bg-white btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-xs"
+                        class="btn bg-white btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
                         >Click to select</label
                     >
                     <ul
@@ -255,14 +226,12 @@ const handleSubmit = () => {
             </div>
 
             <div class="px-4 flex items-center justify-center">
-                <div
-                    class="grid gap-2 lg:grid-cols-3 md:grid-cols-3 grid-cols-2"
-                >
+                <div class="grid gap-2 grid-cols-3">
                     <div
-                        class="bg-gray-100 shadow py-2 text-gray-500 px-1 text-center text-xs"
+                        class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 text-center whitespace-nowrap align-middle py-1"
                         v-for="city in model.cities"
                     >
-                        <span class="uppercase">{{ city }}</span>
+                        <p class="uppercase text-[10px]">{{ city }}</p>
                     </div>
                 </div>
             </div>
@@ -280,7 +249,7 @@ const handleSubmit = () => {
                     <label
                         ref="dropDown"
                         tabindex="0"
-                        class="btn bg-white btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-xs"
+                        class="btn bg-white btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
                         >Click to select</label
                     >
                     <ul
@@ -293,7 +262,6 @@ const handleSubmit = () => {
                             >
                                 <input
                                     type="checkbox"
-                                    checked="checked"
                                     class="checkbox checkbox-sm"
                                     id="all"
                                     v-model="allPositionSelected"
@@ -323,15 +291,13 @@ const handleSubmit = () => {
                 </div>
             </div>
             <div class="px-4 flex items-center justify-center">
-                <div
-                    class="grid gap-2 lg:grid-cols-3 md:grid-cols-3 grid-cols-2"
-                >
+                <div class="grid gap-2 grid-cols-3">
                     <div
-                        class="bg-gray-100 shadow py-2 text-gray-500 px-1 text-center text-xs"
+                        class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 py-1 text-center align-middle"
                         v-for="(position, index) in model.positions"
                         :key="position + index"
                     >
-                        {{ position }}
+                        <p class="text-[10px]">{{ position }}</p>
                     </div>
                 </div>
             </div>
@@ -339,13 +305,13 @@ const handleSubmit = () => {
 
             <div class="flex py-6">
                 <button
-                    class="btn mx-auto rounded w-[100px]"
+                    class="btn mx-auto rounded w-[130px] shadow-lg"
                     @click="resetForm"
                 >
                     Reset
                 </button>
                 <button
-                    class="btn mx-auto btn-success text-white w-[100px] rounded"
+                    class="btn mx-auto btn-success text-white w-[130px] rounded shadow-lg"
                     @click="clusteredPrecinct.getResult(model)"
                 >
                     Generate

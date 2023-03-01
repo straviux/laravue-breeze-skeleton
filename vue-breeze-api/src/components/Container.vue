@@ -12,7 +12,7 @@ import Content from "./Content.vue";
         <div
             class="col-span-12 bg-stone-50 flex flex-col lg:flex-row md:divide-x-2"
         >
-            <div class="lg:w-[250px] w-full lg:h-full">
+            <div class="lg:w-[350px] w-full lg:h-full">
                 <nav-bar />
             </div>
 

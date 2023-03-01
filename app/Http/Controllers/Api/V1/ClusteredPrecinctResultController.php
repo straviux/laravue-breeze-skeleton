@@ -46,11 +46,12 @@ class ClusteredPrecinctResultController extends Controller
             $x = 0;
             foreach ($request['position'] as $position) {
                 $final_arr['turnouts'][$x]['position'] = $position;
-
+                $final_arr['turnouts'][$x]['position_total_votes'] = 0;
                 foreach ($temp_arr as $arr) {
 
                     if ($arr['candidate_position'] == $position) {
                         $final_arr['turnouts'][$x]['candidates'][] = ['candidate_name' => $arr['candidate_name'], 'total_votes' => $arr['total_votes']];
+                        $final_arr['turnouts'][$x]['position_total_votes'] += $arr['total_votes'];
                     }
                 }
                 $x++;
