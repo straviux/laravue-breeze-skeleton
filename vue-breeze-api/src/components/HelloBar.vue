@@ -4,7 +4,7 @@
             <h1
                 class="font-extrabold text-4xl text-blueGray-700 drop-shadow-lg"
             >
-                JPM Election Results
+                2022 National and Local Elections Results
             </h1>
             <p>{{ getDateTime() }}</p>
         </div>

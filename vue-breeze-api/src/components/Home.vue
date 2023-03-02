@@ -22,9 +22,8 @@ onMounted(async () => {
             <!-- <filter-form class="p-2"></filter-form> -->
             <div v-if="authStore.user">
                 <p class="text-center">
-                    To view the results of a clustered precinct, please select
-                    the geographical level and voting jurisdiction information
-                    until the desired Clustered Precinct ID
+                    To view results, please select the geographical level and
+                    voting jurisdiction information
                 </p>
                 <router-view></router-view>
             </div>

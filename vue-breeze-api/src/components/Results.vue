@@ -37,6 +37,10 @@ function sortTotalVotesDescending(arr) {
     });
     return arr;
 }
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",");
+}
 // const municipalities = JSON.parse(localStorage.getItem("municipality"));
 // const positions = JSON.parse(localStorage.getItem("position"));
 
@@ -48,7 +52,7 @@ function sortTotalVotesDescending(arr) {
 console.log(clusteredPrecinct.result);
 </script>
 <template>
-    <div class="bg-white px-20 py-10 mx-auto relative">
+    <div class="bg-white px-6 lg:px-20 py-10 mx-auto relative" id="printDiv">
         <div v-for="(cp, index) in clusteredPrecinct.result" :key="index">
             <h3 class="font-semibold text-2xl">{{ cp.municipality }}</h3>
             <div
@@ -70,23 +74,34 @@ console.log(clusteredPrecinct.result);
             <div class="text-sm">
                 Registered Voters:
                 <span class="font-semibold" v-if="cp.result">{{
-                    cp.result.stats[0].reg_voters
+                    numberWithCommas(cp.result.stats[0].reg_voters)
                 }}</span>
             </div>
             <div class="text-sm">
                 Total Turnout:
                 <span class="font-semibold" v-if="cp.result">{{
-                    cp.result.stats[0].total_turnout
+                    numberWithCommas(cp.result.stats[0].total_turnout)
                 }}</span>
             </div>
-            <div v-for="(b, index) in cp.result.turnouts" class="mt-6 ml-8">
+            <div class="text-sm">
+                Turnout Percentage:
+                <span class="font-semibold" v-if="cp.result"
+                    >{{
+                        percentage(
+                            cp.result.stats[0].total_turnout,
+                            cp.result.stats[0].reg_voters
+                        )
+                    }}%</span
+                >
+            </div>
+            <div v-for="(b, index) in cp.result.turnouts" class="mt-6 lg:ml-8">
                 <p class="text-xl font-semibold">{{ b.position }}</p>
 
-                <table class="table table-compact w-2/3 mb-6">
+                <table class="table table-compact mb-6">
                     <tr>
-                        <th class="w-2/3">Candidate</th>
-                        <th>Votes</th>
-                        <th>Percentage</th>
+                        <th class="w-1/3">Candidate</th>
+                        <th class="text-right">Votes</th>
+                        <th class="text-right">Percentage</th>
                     </tr>
                     <tr
                         v-for="(c, i) in sortTotalVotesDescending(b.candidates)"
@@ -94,8 +109,10 @@ console.log(clusteredPrecinct.result);
                         class="border-b"
                     >
                         <td>{{ c.candidate_name }}</td>
-                        <td>{{ c.total_votes }}</td>
-                        <td>
+                        <td class="text-right">
+                            {{ numberWithCommas(c.total_votes) }}
+                        </td>
+                        <td class="text-right">
                             {{
                                 percentage(
                                     c.total_votes,
@@ -108,10 +125,10 @@ console.log(clusteredPrecinct.result);
                         <td class="font-semibold text-right pr-20 text-lg">
                             Total
                         </td>
-                        <td class="font-semibold text-lg">
-                            {{ b.position_total_votes }}
+                        <td class="font-semibold text-lg text-right">
+                            {{ numberWithCommas(b.position_total_votes) }}
                         </td>
-                        <td class="font-semibold text-lg">100%</td>
+                        <td class="font-semibold text-lg text-right">100%</td>
                     </tr>
                 </table>
                 <div class="divider"></div>

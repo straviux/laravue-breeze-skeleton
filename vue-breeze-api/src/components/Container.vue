@@ -12,11 +12,13 @@ import Content from "./Content.vue";
         <div
             class="col-span-12 bg-stone-50 flex flex-col lg:flex-row md:divide-x-2"
         >
-            <div class="lg:w-[350px] w-full lg:h-full">
+            <div
+                class="lg:max-w-[350px] w-full lg:h-full h-screen relative lg:fixed lg:z-40 no-print"
+            >
                 <nav-bar />
             </div>
 
-            <Content class="flex-1" />
+            <Content class="flex-1 lg:ml-[350px] print-div" />
             <!-- <side-bar-right class="p-10" /> -->
         </div>
     </div>

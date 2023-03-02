@@ -57,15 +57,15 @@ const congressionalDistricts = [
 const positions = [
     "PRESIDENT",
     "V-PRESIDENT",
-    "SENATOR",
-    "PARTY LIST",
+    "CONGRESSMAN",
     "GOVERNOR",
     "VICE-GOVERNOR",
-    "CONGRESSMAN",
     "BOARD MEMBER",
     "MAYOR",
     "VICE-MAYOR",
     "COUNCILOR",
+    "SENATOR",
+    "PARTY LIST",
 ];
 
 const municipalities = computed(() => {

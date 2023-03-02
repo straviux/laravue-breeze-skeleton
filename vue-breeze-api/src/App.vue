@@ -22,4 +22,16 @@ console.log(`localstorage size: ${localStorageSize()}kb`);
     <div>
         <RouterView />
     </div>
+    <div>hello</div>
 </template>
+<style>
+@media print {
+    @page {
+        size: auto;
+        margin: 0mm;
+    }
+    .no-print {
+        display: none;
+    }
+}
+</style>
