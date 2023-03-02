@@ -8,10 +8,25 @@ const api = axios.create({
 });
 export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
     state: () => (
-     {   precinctResult: null, resultErrors:[]}
+        {
+            // formDistrict:null,
+            // formPosition:null,
+            // formMunicipality:null,
+            formReportLevel:null,
+            formBarangay:null,
+            precinctResult: null,
+            formDistrict: null,
+            resultErrors:[]
+        }
     ),
     persist: true,
     getters: {
+        // district: (state)=> state.district,
+        barangay: (state) => state.formBarangay,
+        report_level: (state)=>state.formReportLevel,
+        district: (state)=>state.formDistrict,
+        // municipality: (state) => state.municipality,
+        // position: (state)=>state.position,
         result: (state) => state.precinctResult,
         errors: (state) => state.resultErrors
     } ,
@@ -31,14 +46,40 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     // this.getToken();
 
                     const data = await axios.get("/api/v1/clustered-precinct-results", {params: {
-                        municipality: formData.cities,
-                        position: formData.positions
+                        municipality: formData.municipalities,
+                        position: formData.positions,
+                        barangay: formData.barangays,
+                        report_level: formData.report_level,
+                        district: formData.district
                     }});
                     // console.log(data)
                     this.precinctResult = data.data;
-                    localStorage.setItem('municipality', JSON.stringify(formData.cities));
-                    localStorage.setItem('position', JSON.stringify(formData.positions));
+                    this.formReportLevel = formData.report_level;
+                    this.formDistrict = formData.district
+                    // this.formMunicipality = formData.cities;
+                    // this.formPosition = formData.positions;
+                    // this.formDistrict = formData.district;
+                    // this.formBarangay = formData.barangay;
                     this.router.push({name:'ElectionResults'});
+
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        },
+
+        async getBarangay(municipality) {
+
+            if(municipality)
+            {
+                try {
+                    // this.getToken();
+
+                    const data = await axios.get("/api/v1/barangay-by-municipality", {params: {
+                        municipality: municipality
+                    }});
+                    // console.log(data)
+                    this.formBarangay = data.data;
 
                 } catch (error) {
                     console.log(error);

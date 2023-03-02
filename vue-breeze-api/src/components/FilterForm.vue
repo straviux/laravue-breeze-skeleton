@@ -4,7 +4,8 @@ import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
 const clusteredPrecinct = clusteredPrecinctStore();
 const model = ref({
     district: "all",
-    cities: [],
+    municipalities: [],
+    barangays: [],
     positions: [],
     report_level: "district",
 });
@@ -14,7 +15,7 @@ const congressionalDistricts = [
     {
         id: 1,
         name: "1st",
-        cities: [
+        municipalities: [
             "AGUTAYA",
             "ARACELI",
             "BUSUANGA",
@@ -35,7 +36,7 @@ const congressionalDistricts = [
     {
         id: 2,
         name: "2nd",
-        cities: [
+        municipalities: [
             "BALABAC",
             "BATARAZA",
             "BROOKE'S POINT",
@@ -48,7 +49,7 @@ const congressionalDistricts = [
     {
         id: 3,
         name: "3rd",
-        cities: ["ABORLAN", "PUERTO PRINCESA CITY"],
+        municipalities: ["ABORLAN", "PUERTO PRINCESA CITY"],
     },
     // ...and so on
 ];
@@ -67,23 +68,27 @@ const positions = [
     "COUNCILOR",
 ];
 
-const cities = computed(() => {
+const municipalities = computed(() => {
     const district = congressionalDistricts.find(
         (d) => d.id == model.value.district
     );
-    return district ? district.cities : [];
+    return district ? district.municipalities : [];
 });
 
 function resetForm() {
-    model.value.cities = [];
-    model.value.positions = [];
+    model.value.municipalities = [];
+    model.value.barangays = [];
+    allCitySelected.value = false;
+    // model.value.positions = [];
 }
 
 function toggleAllCity() {
     if (allCitySelected.value) {
-        model.value.cities = cities.value.flatMap((city) => city);
+        model.value.municipalities = municipalities.value.flatMap(
+            (city) => city
+        );
     } else {
-        model.value.cities = [];
+        model.value.municipalities = [];
     }
 }
 
@@ -94,13 +99,16 @@ function toggleAllPosition() {
         model.value.positions = [];
     }
 }
-function resetDistrict() {
+
+function toggleMunicipality() {
     allCitySelected.value = false;
-    model.value.cities = [];
+    model.value.barangays = [];
+    clusteredPrecinct.getBarangay(model.value.municipalities);
 }
 
-function handleSubmit() {
-    console.log(model.value);
+function resetDistrict() {
+    allCitySelected.value = false;
+    model.value.municipalities = [];
 }
 
 onMounted(() => {
@@ -124,6 +132,7 @@ onMounted(() => {
                             name="report_level"
                             value="district"
                             v-model="model.report_level"
+                            @change="resetForm"
                         />
                         <span class="label-text uppercase text-xs"
                             >District</span
@@ -138,6 +147,7 @@ onMounted(() => {
                             name="report_level"
                             value="municipality"
                             v-model="model.report_level"
+                            @change="resetForm"
                         />
                         <span class="label-text uppercase text-xs"
                             >Municipality</span
@@ -152,6 +162,7 @@ onMounted(() => {
                             name="report_level"
                             value="barangay"
                             v-model="model.report_level"
+                            @change="resetForm"
                         />
                         <span class="label-text uppercase text-xs"
                             >Barangay</span
@@ -159,7 +170,8 @@ onMounted(() => {
                     </label>
                 </div>
             </div>
-
+            <!-- End Report Level -->
+            <div class="divider"></div>
             <!-- District -->
             <div class="flex border rounded m-4 px-1">
                 <div
@@ -187,6 +199,7 @@ onMounted(() => {
                                     name="district"
                                     value="all"
                                     v-model="model.district"
+                                    @change="resetForm"
                                     checked
                                 />
                                 <span class="label-text uppercase text-xs"
@@ -202,7 +215,7 @@ onMounted(() => {
                                     name="district"
                                     :value="d.id"
                                     v-model="model.district"
-                                    @change="resetDistrict"
+                                    @change="resetForm"
                                 />
                                 <span class="label-text uppercase text-xs">{{
                                     d.name
@@ -258,7 +271,7 @@ onMounted(() => {
                                 <span class="label-text text-xs">All</span>
                             </label>
                         </li>
-                        <li v-for="city in cities" :key="city">
+                        <li v-for="city in municipalities" :key="city">
                             <label
                                 class="cursor-pointer block w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
                             >
@@ -275,8 +288,8 @@ onMounted(() => {
                                     "
                                     :id="city"
                                     :value="city"
-                                    @change="allCitySelected = false"
-                                    v-model="model.cities"
+                                    @change="toggleMunicipality"
+                                    v-model="model.municipalities"
                                 />
                                 <span class="label-text text-xs"
                                     >{{ city }}
@@ -286,18 +299,85 @@ onMounted(() => {
                     </ul>
                 </div>
             </div>
-
             <div class="px-4 flex items-center justify-center">
-                <div class="grid gap-2 grid-cols-3">
+                <div
+                    class="grid gap-2 grid-cols-3"
+                    v-if="model.report_level == 'municipality'"
+                >
                     <div
                         class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 text-center whitespace-nowrap align-middle py-1"
-                        v-for="city in model.cities"
+                        v-for="city in model.municipalities"
                     >
                         <p class="uppercase text-[10px]">{{ city }}</p>
                     </div>
                 </div>
+                <div
+                    v-if="
+                        model.report_level == 'barangay' &&
+                        model.municipalities.length
+                    "
+                    class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 text-center whitespace-nowrap align-middle py-1 text-[10px]"
+                >
+                    <span>{{ model.municipalities }}</span>
+                </div>
             </div>
             <!-- End Municipality -->
+
+            <!-- Barangay -->
+            <div
+                class="flex border rounded m-4 px-1"
+                v-if="model.report_level == 'barangay'"
+            >
+                <div
+                    class="py-3 my-auto px-2 border-r-2 w-[120px] border-gray-300 text-gray-600 text-xs font-semibold"
+                >
+                    Barangay
+                </div>
+
+                <div class="w-full dropdown dropdown-bottom">
+                    <label
+                        ref="dropDown"
+                        tabindex="0"
+                        class="btn bg-white btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
+                        >Click to select</label
+                    >
+                    <ul
+                        tabindex="0"
+                        class="dropdown-content p-1 shadow bg-base-100 rounded-box w-full absolute z-[1000] min-w-max list-none overflow-y-auto h-[350px]"
+                    >
+                        <li
+                            v-for="(b, i) in clusteredPrecinct.barangay"
+                            :key="i"
+                        >
+                            <label
+                                class="cursor-pointer block w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
+                            >
+                                <input
+                                    type="checkbox"
+                                    class="checkbox checkbox-sm"
+                                    :id="i"
+                                    :value="b.barangay_name"
+                                    v-model="model.barangays"
+                                />
+                                <span class="label-text text-xs"
+                                    >{{ b.barangay_name }}
+                                </span>
+                            </label>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="px-4 flex items-center justify-center">
+                <div class="grid gap-2 grid-cols-3">
+                    <div
+                        class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 text-center whitespace-nowrap align-middle py-1"
+                        v-for="barangay in model.barangays"
+                    >
+                        <p class="uppercase text-[10px]">{{ barangay }}</p>
+                    </div>
+                </div>
+            </div>
+            <!-- End Barangay -->
 
             <!-- Position -->
             <div class="flex border rounded m-4 px-1">

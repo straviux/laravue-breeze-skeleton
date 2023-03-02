@@ -22,4 +22,6 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'v1'], function () {
     Route::apiResource('clustered-precinct-results', ClusteredPrecinctResultController::class);
+    // Route::get('barangay_by_municipality', ClusteredPrecinctResultController::class, 'getBarangayByMunicipality');
+    Route::get('/barangay-by-municipality', [ClusteredPrecinctResultController::class, 'getBarangayByMunicipality']);
 });

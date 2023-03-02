@@ -9,7 +9,7 @@ const authStore = useAuthStore();
 
 onMounted(async () => {
     await authStore.getUser();
-    // localStorage.clear();
+    localStorage.clear();
 });
 </script>
 <template>

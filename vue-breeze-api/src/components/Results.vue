@@ -25,7 +25,7 @@ function sortTotalVotesDescending(arr) {
     arr.sort((a, b) => {
         let fa = parseInt(a.total_votes),
             fb = parseInt(b.total_votes);
-        console.log(a);
+        // console.log(a);
 
         if (fa < fb) {
             return 1;
@@ -37,13 +37,13 @@ function sortTotalVotesDescending(arr) {
     });
     return arr;
 }
-const municipalities = JSON.parse(localStorage.getItem("municipality"));
-const positions = JSON.parse(localStorage.getItem("position"));
+// const municipalities = JSON.parse(localStorage.getItem("municipality"));
+// const positions = JSON.parse(localStorage.getItem("position"));
 
-const grouped = groupBy(
-    clusteredPrecinct.result,
-    (result) => result.municipality_name
-);
+// const grouped = groupBy(
+//     clusteredPrecinct.result,
+//     (result) => result.municipality_name
+// );
 // console.log(grouped.get("BALABAC"));
 console.log(clusteredPrecinct.result);
 </script>
@@ -51,14 +51,35 @@ console.log(clusteredPrecinct.result);
     <div class="bg-white px-20 py-10 mx-auto relative">
         <div v-for="(cp, index) in clusteredPrecinct.result" :key="index">
             <h3 class="font-semibold text-2xl">{{ cp.municipality }}</h3>
-
-            <div class="">
-                Registered Voters: {{ cp.result.stats[0].reg_voters }}
+            <div
+                class="text-sm"
+                v-if="clusteredPrecinct.report_level == 'barangay'"
+            >
+                Barangay:
+                <span class="font-semibold">{{ cp.barangay }}</span>
             </div>
-            <div class="">
-                Total Turnout: {{ cp.result.stats[0].total_turnout }}
+            <div
+                class="text-lg"
+                v-if="clusteredPrecinct.report_level == 'district'"
+            >
+                District:
+                <span class="font-semibold">{{
+                    clusteredPrecinct.district
+                }}</span>
             </div>
-            <div v-for="(b, index) in cp.result.turnouts" class="mt-6">
+            <div class="text-sm">
+                Registered Voters:
+                <span class="font-semibold" v-if="cp.result">{{
+                    cp.result.stats[0].reg_voters
+                }}</span>
+            </div>
+            <div class="text-sm">
+                Total Turnout:
+                <span class="font-semibold" v-if="cp.result">{{
+                    cp.result.stats[0].total_turnout
+                }}</span>
+            </div>
+            <div v-for="(b, index) in cp.result.turnouts" class="mt-6 ml-8">
                 <p class="text-xl font-semibold">{{ b.position }}</p>
 
                 <table class="table table-compact w-2/3 mb-6">
