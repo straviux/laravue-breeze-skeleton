@@ -20,6 +20,7 @@ import Content from "./Content.vue";
 
             <Content class="flex-1 lg:ml-[350px] print-div" />
             <!-- <side-bar-right class="p-10" /> -->
+            <div class="lg:w-[350px] no-print"></div>
         </div>
     </div>
     <!-- <Notification /> -->

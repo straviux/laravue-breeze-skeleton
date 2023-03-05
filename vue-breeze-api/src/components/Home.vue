@@ -9,7 +9,6 @@ const authStore = useAuthStore();
 
 onMounted(async () => {
     await authStore.getUser();
-    localStorage.clear();
 });
 </script>
 <template>
@@ -27,13 +26,13 @@ onMounted(async () => {
                 </p> -->
                 <router-view></router-view>
             </div>
-            <div class="mx-auto py-12" v-else>
+            <!-- <div class="mx-auto py-12" v-else>
                 You are not authorized to view this page. Please
                 <router-link to="/login" class="text-underline text-blue-500"
                     >login</router-link
                 >
                 to continue
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

@@ -30,23 +30,37 @@ export const useAuthStore = defineStore("auth", {
             this.authErrors = [];
             this.getToken();
             try {
-                await axios.post("/login", {
+                const response = await axios.post("/login", {
                     input_type: data.input_type,
                     password: data.password,
                 });
-                console.log('logged in')
+
                 this.router.push("/");
+
             } catch (error) {
                 if(error.response.status===422) {
                     this.authErrors = error.response.data.errors;
+                } else {
+                    console.log(error)
                 }
             }
 
         },
         async handleLogout () {
-            await axios.post("/logout");
-            this.authUser = null;
-            console.log('logout');
+            try {
+                this.getToken();
+                const response = await axios.post("/logout");
+                console.log(response);
+                if(response.status===204) {
+                    this.authUser = null;
+                    localStorage.clear();
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error(error);
+            }
+            // console.log('logout');
+
         },
         async handleForgotPassword(email) {
             this.authErrors = [];

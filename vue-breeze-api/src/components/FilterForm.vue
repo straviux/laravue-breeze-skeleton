@@ -10,7 +10,7 @@ const model = ref({
     report_level: "district",
 });
 const allCitySelected = ref(false);
-const allPositionSelected = ref(false);
+const allPositionSelected = ref(true);
 const congressionalDistricts = [
     {
         id: 1,
@@ -68,6 +68,17 @@ const positions = [
     "PARTY LIST",
 ];
 
+const filteredPositions = computed(() => {
+    // let newPositions = positions;
+    let valuesToRemove = [];
+    if (model.value.report_level === "district") {
+        valuesToRemove = ["MAYOR", "VICE-MAYOR", "COUNCILOR"];
+        return positions.filter((pos) => !valuesToRemove.includes(pos));
+    } else {
+        return positions;
+    }
+});
+
 const municipalities = computed(() => {
     const district = congressionalDistricts.find(
         (d) => d.id == model.value.district
@@ -78,8 +89,8 @@ const municipalities = computed(() => {
 function resetForm() {
     model.value.municipalities = [];
     model.value.barangays = [];
+    model.value.positions = filteredPositions.value;
     allCitySelected.value = false;
-    // model.value.positions = [];
 }
 
 function toggleAllCity() {
@@ -94,7 +105,7 @@ function toggleAllCity() {
 
 function toggleAllPosition() {
     if (allPositionSelected.value) {
-        model.value.positions = positions.flatMap((p) => p);
+        model.value.positions = filteredPositions.value.flatMap((p) => p);
     } else {
         model.value.positions = [];
     }
@@ -111,8 +122,13 @@ function resetDistrict() {
     model.value.municipalities = [];
 }
 
+function resetPosition() {
+    allPositionSelected.value = false;
+    // model.value.municipalities = [];
+}
+
 onMounted(() => {
-    model.value.positions = positions.flatMap((p) => p);
+    model.value.positions = filteredPositions.value.flatMap((p) => p);
 });
 </script>
 <template>
@@ -409,10 +425,13 @@ onMounted(() => {
                                     v-model="allPositionSelected"
                                     @change="toggleAllPosition"
                                 />
-                                <span class="label-text text-xs">All</span>
+                                <span class="label-text text-xs">ALL</span>
                             </label>
                         </li>
-                        <li v-for="(position, index) in positions" :key="index">
+                        <li
+                            v-for="(position, index) in filteredPositions"
+                            :key="index"
+                        >
                             <label
                                 class="cursor-pointer block w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
                             >

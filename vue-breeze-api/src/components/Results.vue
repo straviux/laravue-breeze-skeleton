@@ -102,13 +102,16 @@ console.log(clusteredPrecinct.result);
                 </div>
                 <div
                     v-for="(b, index) in cp.result.turnouts"
-                    class="mt-6 lg:ml-8"
+                    class="mt-4 lg:ml-8"
                 >
                     <p class="text-xl font-semibold">{{ b.position }}</p>
 
-                    <table class="table table-compact mb-6">
+                    <table
+                        class="table w-full table-compact mb-4 page-break-after-always"
+                    >
                         <tr>
-                            <th class="w-1/3">Candidate</th>
+                            <th class="w-1">#</th>
+                            <th class="w-1/4">Candidate</th>
                             <th class="text-right">Votes</th>
                             <th class="text-right">Percentage</th>
                         </tr>
@@ -119,6 +122,7 @@ console.log(clusteredPrecinct.result);
                             :key="i"
                             class="border-b"
                         >
+                            <td>{{ i + 1 }}.</td>
                             <td>{{ c.candidate_name }}</td>
                             <td class="text-right">
                                 {{ numberWithCommas(c.total_votes) }}
@@ -132,8 +136,18 @@ console.log(clusteredPrecinct.result);
                                 }}%
                             </td>
                         </tr>
-                        <tr>
-                            <td class="font-semibold text-right pr-20 text-lg">
+                        <tr
+                            v-if="
+                                b.position != 'SENATOR' &&
+                                b.position != 'BOARD MEMBER' &&
+                                b.position != 'COUNCILOR' &&
+                                b.position != 'PARTY LIST'
+                            "
+                        >
+                            <td
+                                class="font-semibold text-right pr-20 text-lg"
+                                colspan="2"
+                            >
                                 Total
                             </td>
                             <td class="font-semibold text-lg text-right">
@@ -162,6 +176,12 @@ console.log(clusteredPrecinct.result);
 @media print {
     .print-content {
         padding: 0;
+        font-size: 12px;
+    }
+
+    .print-content table td {
+        font-size: 12px;
+        padding: 1px 0;
     }
 }
 </style>
