@@ -14,17 +14,17 @@ onMounted(async () => {
 </script>
 <template>
     <div class="relative">
-        <div class="py-12 bg-white rounded w-full">
+        <div class="bg-white rounded w-full">
             <!-- <pre>
             {{ authStore.user.name }}
             {{ authStore.user.email }}
             </pre> -->
             <!-- <filter-form class="p-2"></filter-form> -->
             <div v-if="authStore.user">
-                <p class="text-center">
+                <!-- <p class="text-center no-print pt-10">
                     To view results, please select the geographical level and
                     voting jurisdiction information
-                </p>
+                </p> -->
                 <router-view></router-view>
             </div>
             <div class="mx-auto py-12" v-else>
