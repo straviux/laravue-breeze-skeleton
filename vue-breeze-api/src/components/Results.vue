@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
 const clusteredPrecinct = clusteredPrecinctStore();
 
@@ -48,7 +48,10 @@ function printReport() {
     }, 500);
     return false;
 }
-console.log(clusteredPrecinct.result);
+const tableContainer = ref([]);
+onMounted(() => {
+    console.log(tableContainer.value);
+});
 </script>
 <template>
     <div id="printContent">
@@ -57,9 +60,13 @@ console.log(clusteredPrecinct.result);
         </div>
 
         <div
-            class="bg-white px-6 lg:px-20 py-10 mx-auto relative print-content"
+            class="bg-white px-6 lg:px-20 py-10 mx-auto relative print-content uppercase"
         >
-            <div v-for="(cp, index) in clusteredPrecinct.result" :key="index">
+            <div
+                v-for="(cp, index) in clusteredPrecinct.result"
+                :key="index"
+                ref="tableContainer"
+            >
                 <h3 class="font-semibold text-2xl">{{ cp.municipality }}</h3>
                 <div
                     class="text-sm"
@@ -69,7 +76,7 @@ console.log(clusteredPrecinct.result);
                     <span class="font-semibold">{{ cp.barangay }}</span>
                 </div>
                 <div
-                    class="text-lg"
+                    class="text-sm"
                     v-if="clusteredPrecinct.report_level == 'district'"
                 >
                     District:
@@ -104,14 +111,14 @@ console.log(clusteredPrecinct.result);
                     v-for="(b, index) in cp.result.turnouts"
                     class="mt-4 lg:ml-8"
                 >
-                    <p class="text-xl font-semibold">{{ b.position }}</p>
+                    <p class="text-lg font-semibold">{{ b.position }}</p>
 
                     <table
                         class="table w-full table-compact mb-4 page-break-after-always"
                     >
                         <tr>
-                            <th class="w-1">#</th>
-                            <th class="w-1/4">Candidate</th>
+                            <th class="w-1 text-left">#</th>
+                            <th class="w-1/4 text-left">Candidate</th>
                             <th class="text-right">Votes</th>
                             <th class="text-right">Percentage</th>
                         </tr>
@@ -174,11 +181,23 @@ console.log(clusteredPrecinct.result);
 </template>
 <style>
 @media print {
+    @page {
+        size: A4;
+    }
     .print-content {
         padding: 0;
         font-size: 12px;
     }
-
+    .print-content table {
+        page-break-after: always;
+    }
+    .print-content table tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+    .print-content table th {
+        padding: 0;
+    }
     .print-content table td {
         font-size: 12px;
         padding: 1px 0;
