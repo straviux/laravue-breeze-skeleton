@@ -10,8 +10,8 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
     state: () => (
         {
             // formDistrict:null,
-            // formPosition:null,
-            // formMunicipality:null,
+            formPosition:null,
+            formMunicipality:null,
             formReportLevel:null,
             formBarangay:null,
             precinctResult: null,
@@ -25,8 +25,8 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
         barangay: (state) => state.formBarangay,
         report_level: (state)=>state.formReportLevel,
         district: (state)=>state.formDistrict,
-        // municipality: (state) => state.municipality,
-        // position: (state)=>state.position,
+        municipality: (state) => state.formMunicipality,
+        position: (state)=>state.formPosition,
         result: (state) => state.precinctResult,
         errors: (state) => state.resultErrors
     } ,
@@ -56,8 +56,8 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     this.precinctResult = data.data;
                     this.formReportLevel = formData.report_level;
                     this.formDistrict = formData.district
-                    // this.formMunicipality = formData.cities;
-                    // this.formPosition = formData.positions;
+                    this.formMunicipality = formData.municipalities;
+                    this.formPosition = formData.positions;
                     // this.formDistrict = formData.district;
                     // this.formBarangay = formData.barangay;
                     this.router.push({name:'ElectionResults'});

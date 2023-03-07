@@ -15,6 +15,7 @@ export const useAuthStore = defineStore("auth", {
                 await axios.get("/sanctum/csrf-cookie");
             } catch (error) {
                 console.log(error);
+
             }
         },
         async getUser() {
@@ -24,13 +25,14 @@ export const useAuthStore = defineStore("auth", {
                 this.authUser =data.data
             } catch (error) {
                 console.log(error);
+                // this.router.push('/login')
             }
         },
         async handleLogin (data) {
             this.authErrors = [];
             this.getToken();
             try {
-                const response = await axios.post("/login", {
+                await axios.post("/login", {
                     input_type: data.input_type,
                     password: data.password,
                 });
@@ -38,7 +40,9 @@ export const useAuthStore = defineStore("auth", {
                 this.router.push("/");
 
             } catch (error) {
+
                 if(error.response.status===422) {
+                    console.log(error.response.data)
                     this.authErrors = error.response.data.errors;
                 } else {
                     console.log(error)

@@ -45,9 +45,11 @@ const form = ref({
                                 >
 
                                 <div v-if="authStore.errors.username">
-                                    <span class="text-red-400 text-sm m-2 p-2"
-                                        >Please enter your username or
-                                        email</span
+                                    <span
+                                        class="text-red-400 text-sm m-2 p-2"
+                                        >{{
+                                            authStore.errors.username[0]
+                                        }}</span
                                     >
                                 </div>
                             </div>

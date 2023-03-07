@@ -43,6 +43,7 @@ const router = createRouter({
 //     const authRequired = !publicPages.includes(to.path);
 //     const auth = useAuthStore();
 
+
 //     if (authRequired && !auth.user) {
 //         auth.returnUrl = to.fullPath;
 //         return '/login';

@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
 const clusteredPrecinct = clusteredPrecinctStore();
-
+const today = new Date().toLocaleDateString("en-PH");
 function groupBy(list, keyGetter) {
     const map = new Map();
     list.forEach((item) => {
@@ -43,31 +43,82 @@ function numberWithCommas(x) {
 }
 
 function printReport() {
+    const maxPageHeight = 1024;
+    let totalHeight = 0;
+    const elements = document.querySelectorAll(".print-content");
+
+    // console.log(printHeader);
+    for (let i = 0; i < elements.length; i++) {
+        let elementHeight = elements[i].offsetHeight;
+        if (i == 0) {
+            elementHeight -= 400;
+        }
+        // elements[i].classList.remove("break-page");
+        // console.log(totalHeight);
+        if (totalHeight > maxPageHeight) {
+            elements[i].classList.add("break-page");
+            // console.log(totalHeight);
+            totalHeight = 0;
+        }
+        totalHeight += elementHeight;
+    }
     setTimeout(function () {
         window.print();
     }, 500);
     return false;
 }
 const tableContainer = ref([]);
-onMounted(() => {
-    console.log(tableContainer.value);
-});
 </script>
 <template>
     <div id="printContent">
-        <div class="printHeader hidden text-center">
-            <span class="font-semibold">2022 National Election Results</span>
+        <div class="printHeader hidden -mt-6">
+            <div class="text-center">
+                <span class="font-semibold text-xl"
+                    >2022 National Election Results</span
+                >
+                <!-- <span class="float-right text-xs"
+                    >Date Printed: {{ today }}</span
+                > -->
+            </div>
+            <div class="mb-2">
+                <table class="headerTable">
+                    <tr>
+                        <td class="w-[100px] font-semibold">DATE PRINTED:</td>
+                        <td class="uppercase indent-0.5">
+                            {{ today }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-[100px] font-semibold">REPORT LEVEL:</td>
+                        <td class="uppercase indent-0.5">
+                            {{ clusteredPrecinct.report_level }}
+                        </td>
+                    </tr>
+                    <tr v-if="clusteredPrecinct.report_level != 'district'">
+                        <td class="w-[100px] font-semibold">MUNICIPALITY:</td>
+                        <td class="indent-0.5">
+                            {{ clusteredPrecinct.municipality.join(", ") }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="w-[100px] font-semibold">POSITION:</td>
+                        <td class="indent-0.5">
+                            {{ clusteredPrecinct.position.join(", ") }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <hr />
         </div>
 
-        <div
-            class="bg-white px-6 lg:px-20 py-10 mx-auto relative print-content uppercase"
-        >
+        <div class="bg-white px-6 lg:px-20 py-10 mx-auto relative uppercase">
             <div
                 v-for="(cp, index) in clusteredPrecinct.result"
                 :key="index"
                 ref="tableContainer"
+                class="print-content"
             >
-                <h3 class="font-semibold text-2xl">{{ cp.municipality }}</h3>
+                <h3 class="font-semibold text-xl">{{ cp.municipality }}</h3>
                 <div
                     class="text-sm"
                     v-if="clusteredPrecinct.report_level == 'barangay'"
@@ -114,7 +165,7 @@ onMounted(() => {
                     <p class="text-lg font-semibold">{{ b.position }}</p>
 
                     <table
-                        class="table w-full table-compact mb-4 page-break-after-always"
+                        class="table w-full table-compact mb-4 page-break-after-always contentTable"
                     >
                         <tr>
                             <th class="w-1 text-left">#</th>
@@ -183,24 +234,38 @@ onMounted(() => {
 @media print {
     @page {
         size: A4;
+        margin: 16px 0;
+    }
+    .break-page {
+        page-break-after: always;
     }
     .print-content {
         padding: 0;
         font-size: 12px;
     }
-    .print-content table {
-        page-break-after: always;
+    .headerTable {
+        border-collapse: collapse;
     }
-    .print-content table tr {
-        page-break-inside: avoid;
+    .headerTable td {
+        vertical-align: top;
+        padding: 0;
+        margin: 0;
+        font-size: 14px;
+    }
+    .contentTable tr {
+        page-break-inside: always;
         page-break-after: auto;
     }
-    .print-content table th {
+    .contentTable th {
         padding: 0;
     }
-    .print-content table td {
+    .contentTable td {
+        vertical-align: top;
         font-size: 12px;
-        padding: 1px 0;
+        padding: 1px 2px;
+    }
+    .printHeader {
+        display: block;
     }
 }
 </style>

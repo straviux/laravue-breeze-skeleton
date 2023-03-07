@@ -25,15 +25,8 @@ console.log(`localstorage size: ${localStorageSize()}kb`);
 </template>
 <style>
 @media print {
-    @page {
-        size: auto;
-        margin: 0mm;
-    }
     .no-print {
         display: none;
-    }
-    .printHeader {
-        display: block;
     }
 }
 </style>
