@@ -23,3 +23,6 @@ app.use(mdiVue, {
   icons: mdijs
 });
 app.mount('#app');
+// window.onbeforeunload = function() {
+//    localStorage.clear();
+// };

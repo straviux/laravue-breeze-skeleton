@@ -1,7 +1,7 @@
 import {defineStore} from "pinia";
 import axios from "axios";
 import { stringify } from "qs";
-const api = axios.create({
+axios.create({
   paramsSerializer: {
     serialize: stringify // or (params) => Qs.stringify(params, {arrayFormat: 'brackets'})
   }
@@ -9,6 +9,8 @@ const api = axios.create({
 export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
     state: () => (
         {
+            formVerifyAccess:false,
+            formAccessCode:null,
             // formDistrict:null,
             formPosition:null,
             formMunicipality:null,
@@ -20,8 +22,11 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
         }
     ),
     persist: true,
+
     getters: {
         // district: (state)=> state.district,
+        access_code: (state)=>state.formAccessCode,
+        verify_access: (state)=>state.formVerifyAccess,
         barangay: (state) => state.formBarangay,
         report_level: (state)=>state.formReportLevel,
         district: (state)=>state.formDistrict,
@@ -33,7 +38,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
     actions: {
         async getToken() {
             try {
-                await api.get("/sanctum/csrf-cookie");
+                await axios.get("/sanctum/csrf-cookie");
             } catch (error) {
                 console.log(error);
             }
@@ -85,6 +90,36 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     console.log(error);
                 }
             }
+        },
+
+        async verifyAccess (data) {
+            this.resultErrors = [];
+            try {
+                // this.getToken();
+                const res = await axios.post("/api/v1/verify-access-code", {
+                    access_code: data.access_code
+                });
+                // console.log(res.data);
+
+                // this.router.push("/");
+                if(res.data.success) {
+                    this.formVerifyAccess=res.data.success;
+                    this.formAccessCode=data.access_code;
+                    this.router.push("/");
+                } else {
+                    this.router.push("/verify-access");
+                }
+
+            } catch (error) {
+
+                // if(error.response.status===422) {
+                //     console.log(error.response.data)
+                //     this.resultErrors = error.response.data.errors;
+                // } else {
+                //     console.log(error)
+                // }
+            }
+
         },
     }
 })

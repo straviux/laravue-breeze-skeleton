@@ -1,9 +1,10 @@
 import {createRouter, createWebHistory} from 'vue-router';
-import { useAuthStore } from '../store/auth';
+
 import Container from '../components/Container.vue'
+import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
 
 const routes = [
-    {path:'/test',component:()=>import('../components/Test.vue')},
+    // {path:'/test',component:()=>import('../components/Test.vue')},
     {
         path:'/',
         component: Container,
@@ -17,18 +18,18 @@ const routes = [
         ]
     },
     {
-        path:'/login',
-        component: ()=>import('../components/Login.vue')
+        path:'/verify-access',
+        component: ()=>import('../components/VerifyAccess.vue')
     },
-    {
-        path:'/register',
-        component: ()=>import('../components/Register.vue')
-    },
+    // {
+    //     path:'/register',
+    //     component: ()=>import('../components/Register.vue')
+    // },
 
-    {
-        path:'/results',
-        component: ()=>import('../components/Results.vue')
-    }
+    // {
+    //     path:'/results',
+    //     component: ()=>import('../components/Results.vue')
+    // }
 
 ];
 
@@ -37,17 +38,18 @@ const router = createRouter({
     routes
 });
 
-// router.beforeEach(async (to) => {
-//     // redirect to login page if not logged in and trying to access a restricted page
-//     const publicPages = ['/login'];
-//     const authRequired = !publicPages.includes(to.path);
-//     const auth = useAuthStore();
+router.beforeEach(async (to) => {
+    // redirect to login page if not logged in and trying to access a restricted page
+    const publicPages = ['/verify-access'];
+    const authRequired = !publicPages.includes(to.path);
+    const clusteredPrecinct = clusteredPrecinctStore();
+//verify_access
 
-
-//     if (authRequired && !auth.user) {
-//         auth.returnUrl = to.fullPath;
-//         return '/login';
-//     }
-// });
+    // console.log(clusteredPrecinct.verify_access);
+    if (authRequired && !clusteredPrecinct.verify_access) {
+        // auth.returnUrl = to.fullPath;
+        return '/verify-access';
+    }
+});
 
 export default router;

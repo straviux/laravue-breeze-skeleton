@@ -129,6 +129,13 @@ function resetPosition() {
 
 onMounted(() => {
     model.value.positions = filteredPositions.value.flatMap((p) => p);
+
+    const dropdownContent = document.querySelectorAll(".oneclick-dropdown>li");
+    dropdownContent.forEach((element) => {
+        element.addEventListener("click", () => {
+            document.activeElement.blur();
+        });
+    });
 });
 </script>
 <template>
@@ -205,9 +212,9 @@ onMounted(() => {
                     >
                     <ul
                         tabindex="0"
-                        class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full max-h-[300px]"
+                        class="oneclick-dropdown dropdown-content menu p-2 shadow bg-base-100 rounded-box w-full max-h-[300px]"
                     >
-                        <li>
+                        <!-- <li>
                             <label class="flex p-2 cursor-pointer ml-3">
                                 <input
                                     class="my-auto radio radio-xs"
@@ -222,7 +229,7 @@ onMounted(() => {
                                     >ALL</span
                                 >
                             </label>
-                        </li>
+                        </li> -->
                         <li v-for="d in congressionalDistricts">
                             <label class="flex p-2 cursor-pointer ml-3">
                                 <input

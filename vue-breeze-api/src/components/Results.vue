@@ -94,7 +94,7 @@ const tableContainer = ref([]);
                             {{ clusteredPrecinct.report_level }}
                         </td>
                     </tr>
-                    <tr v-if="clusteredPrecinct.report_level != 'district'">
+                    <tr v-if="clusteredPrecinct.report_level == 'municipality'">
                         <td class="w-[100px] font-semibold">MUNICIPALITY:</td>
                         <td class="indent-0.5">
                             {{ clusteredPrecinct.municipality.join(", ") }}

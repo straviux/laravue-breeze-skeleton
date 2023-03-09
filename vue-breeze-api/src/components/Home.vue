@@ -1,14 +1,18 @@
 <script setup>
 import { onMounted } from "vue";
 
-import { useAuthStore } from "../store/auth";
+// import { useAuthStore } from "../store/auth";
 
 import FilterForm from "./FilterForm.vue";
-
-const authStore = useAuthStore();
+import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
+const clusteredPrecinct = clusteredPrecinctStore();
+// const authStore = useAuthStore();
 
 onMounted(async () => {
-    await authStore.getUser();
+    await clusteredPrecinct.verifyAccess({
+        access_code: clusteredPrecinct.access_code,
+    });
+    // console.log(clusteredPrecinct.verify_access);
 });
 </script>
 <template>
@@ -19,7 +23,8 @@ onMounted(async () => {
             {{ authStore.user.email }}
             </pre> -->
             <!-- <filter-form class="p-2"></filter-form> -->
-            <div v-if="authStore.user">
+            <!-- <div v-if="authStore.user"> -->
+            <div>
                 <!-- <p class="text-center no-print pt-10">
                     To view results, please select the geographical level and
                     voting jurisdiction information
