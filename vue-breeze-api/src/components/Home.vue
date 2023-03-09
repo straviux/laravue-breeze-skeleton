@@ -1,20 +1,4 @@
-<script setup>
-import { onMounted } from "vue";
-
-// import { useAuthStore } from "../store/auth";
-
-import FilterForm from "./FilterForm.vue";
-import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
-const clusteredPrecinct = clusteredPrecinctStore();
-// const authStore = useAuthStore();
-
-onMounted(async () => {
-    await clusteredPrecinct.verifyAccess({
-        access_code: clusteredPrecinct.access_code,
-    });
-    // console.log(clusteredPrecinct.verify_access);
-});
-</script>
+<script setup></script>
 <template>
     <div class="relative">
         <div class="bg-white rounded w-full">

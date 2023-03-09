@@ -10,9 +10,9 @@ const routes = [
         component: Container,
         redirect: 'home',
         children:[
-            {path:'home',name:'Home',component:()=>import('../components/Home.vue'),
+            {path:'',name:'Home',component:()=>import('../components/Home.vue'),
                 children:[
-                    {path:'er',name:'ElectionResults',component:()=>import('../components/Results.vue')}
+                    {path:'results',name:'ElectionResults',component:()=>import('../components/Results.vue')}
                 ]
             }
         ]

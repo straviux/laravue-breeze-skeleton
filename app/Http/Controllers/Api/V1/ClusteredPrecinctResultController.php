@@ -54,7 +54,66 @@ class ClusteredPrecinctResultController extends Controller
         $geographical_level = [];
         $election_result = [];
         $result = [];
-        if ($request['report_level'] == 'district') {
+        if ($request['report_level'] == 'province') {
+            $district = array_merge($district1, $district2, $district3);
+            $result = ClusteredPrecinctResult::select('candidate_position', 'candidate_name',  'total_invalid', 'reg_voters')
+                ->selectRaw("SUM(total_votes) as total_votes")
+                ->selectRaw("SUM(total_turnout) as total_turnout")
+                ->selectRaw("SUM(total_invalid) as total_invalid")
+                ->selectRaw("SUM(reg_voters) as reg_voters")
+                ->whereIn('municipality_name', $district)
+                ->whereIn('candidate_position', $positions)
+                ->groupBy('candidate_position', 'candidate_name')
+                ->get();
+
+            $final_arr = [];
+            $final_arr['stats'][] =
+                [
+                    'total_turnout' => $result[0]['total_turnout'],
+                    'total_invalid' => $result[0]['total_invalid'],
+                    'reg_voters' => $result[0]['reg_voters'],
+                    // 'barangay_name' => $temp_arr[0]['barangay_name']
+                ];
+            $x = 0;
+            foreach ($positions as $position) {
+                $final_arr['turnouts'][$x]['position'] = $position;
+                $final_arr['turnouts'][$x]['position_total_votes'] = 0;
+                foreach ($result as $arr) {
+
+                    if ($arr['candidate_position'] == $position) {
+                        // $final_arr['turnouts'][$x]['barangay_name'] = $temp_arr['barangay_name'];
+                        $final_arr['turnouts'][$x]['candidates'][] = ['candidate_name' => $arr['candidate_name'], 'total_votes' => $arr['total_votes']];
+                        $final_arr['turnouts'][$x]['position_total_votes'] += $arr['total_votes'];
+                    }
+                }
+                $x++;
+            }
+
+            $cong1 = $this->getAllResultByPosition('CONGRESSMAN', $district1);
+            $cong2 = $this->getAllResultByPosition('CONGRESSMAN', $district2);
+            $cong3 = $this->getAllResultByPosition('CONGRESSMAN', $district3);
+            $bm1 = $this->getAllResultByPosition('BOARD MEMBER', $district1);
+            $bm2 = $this->getAllResultByPosition('BOARD MEMBER', $district2);
+            $bm3 = $this->getAllResultByPosition('BOARD MEMBER', $district3);
+            $election_result[0]['result'] = $final_arr;
+            $election_result[0]['result']['turnouts'][] = [
+                'position' => 'CONGRESSMAN',
+                'district' => [
+                    ['id' => 1, 'candidates' => $cong1],
+                    ['id' => 2, 'candidates' => $cong2],
+                    ['id' => 3, 'candidates' => $cong3]
+                ]
+            ];
+            $election_result[0]['result']['turnouts'][] = [
+                'position' => 'BOARD MEMBER',
+                'district' => [
+                    ['id' => 1, 'candidates' => $bm1],
+                    ['id' => 2, 'candidates' => $bm2],
+                    ['id' => 3, 'candidates' => $bm3]
+                ]
+            ];
+            return $election_result;
+        } else if ($request['report_level'] == 'district') {
             $district = [];
             if ($request['district'] == 1) {
                 $district = $district1;
@@ -97,12 +156,7 @@ class ClusteredPrecinctResultController extends Controller
             }
             $election_result[]['result'] = $final_arr;
             return $election_result;
-            // $election_result[$i]['municipality'] = $temp_arr[0]['municipality_name'];
-            // $election_result[$i]['barangay'] = $temp_arr[0]['barangay_name'];
-            // $election_result[$i]['result'] = $final_arr;
-            // $i++;
-        }
-        if ($request['report_level'] == 'municipality') {
+        } else if ($request['report_level'] == 'municipality') {
             $result = ClusteredPrecinctResult::select('municipality_name', 'candidate_position', 'candidate_name', 'barangay_name', 'total_invalid', 'reg_voters')
                 ->selectRaw("SUM(total_votes) as total_votes")
                 ->selectRaw("SUM(total_turnout) as total_turnout")
@@ -113,8 +167,7 @@ class ClusteredPrecinctResultController extends Controller
                 ->groupBy('municipality_name', 'candidate_position', 'candidate_name')
                 ->get();
             $geographical_level = $municipalities;
-        }
-        if ($request['report_level'] == 'barangay') {
+        } else if ($request['report_level'] == 'barangay') {
             $result = ClusteredPrecinctResult::select('municipality_name', 'candidate_position', 'candidate_name', 'barangay_name', 'total_invalid', 'reg_voters')
                 ->selectRaw("SUM(total_votes) as total_votes")
                 ->selectRaw("SUM(total_turnout) as total_turnout")
@@ -127,6 +180,62 @@ class ClusteredPrecinctResultController extends Controller
                 ->get();
             $geographical_level = $barangays;
         }
+
+        // if ($request['report_level'] == 'province') {
+        //     $president = $this->getAllResultByPosition('PRESIDENT');
+        //     $v_president = $this->getAllResultByPosition('V-PRESIDENT');
+        //     $cong1 = $this->getAllResultByPosition('CONGRESSMAN', $district1);
+        //     $cong2 = $this->getAllResultByPosition('CONGRESSMAN', $district2);
+        //     $cong3 = $this->getAllResultByPosition('CONGRESSMAN', $district3);
+        //     $governor = $this->getAllResultByPosition('GOVERNOR');
+        //     $v_gov = $this->getAllResultByPosition('VICE GOVERNOR');
+        //     $bm1 = $this->getAllResultByPosition('BOARD MEMBER', $district1);
+        //     $bm2 = $this->getAllResultByPosition('BOARD MEMBER', $district2);
+        //     $bm3 = $this->getAllResultByPosition('BOARD MEMBER', $district3);
+        //     $senator = $this->getAllResultByPosition('SENATOR');
+        //     $pl = $this->getAllResultByPosition('PARTY LIST');
+        //     return [
+        //         'total_turnout' => $president[0]['total_turnout'],
+        //         'reg_voters' => $president[0]['reg_voters'],
+        //         'turnout_percentage' => ($president[0]['total_turnout'] / $president[0]['reg_voters']) * 100,
+        //         'result' => [
+        //             [
+        //                 'position' => 'PRESIDENT',
+        //                 'candidate' => $president
+        //             ],
+        //             [
+        //                 'position' => 'VICE PRESIDENT',
+        //                 'candidate' => $v_president
+        //             ],
+        //             [
+        //                 'position' => 'CONGRESSMAN',
+        //                 'district' => [['id' => 1, 'candidate' => $cong1], ['id' => 2, 'candidate' => $cong2], ['id' => 3, 'candidate' => $cong3]]
+        //             ],
+        //             [
+        //                 'position' => 'GOVERNOR',
+        //                 'candidate' => $governor
+        //             ],
+        //             [
+        //                 'position' => 'VICE GOVERNOR',
+        //                 'candidate' => $v_gov
+        //             ],
+        //             [
+        //                 'position' => 'BOARD MEMBER',
+        //                 'district' => [['id' => 1, 'candidate' => $bm1], ['id' => 2, 'candidate' => $bm2], ['id' => 3, 'candidate' => $bm3]]
+        //             ],
+        //             [
+        //                 'position' => 'SENATOR',
+        //                 'candidate' => $senator
+        //             ],
+        //             [
+        //                 'position' => 'PARTY LIST',
+        //                 'candidate' => $pl
+        //             ],
+
+        //         ]
+        //     ];
+        //     // return $v_president;
+        // }
 
         // return $result;
         // return $result;
@@ -183,5 +292,20 @@ class ClusteredPrecinctResultController extends Controller
     {
         $result = ClusteredPrecinctResult::select('barangay_name')->distinct()->where('municipality_name', $request['municipality'])->get();
         return $result;
+    }
+
+    private function getAllResultByPosition($position = null, $municipalities = [])
+    {
+        return ClusteredPrecinctResult::select('candidate_name', 'total_invalid')
+            ->selectRaw("SUM(total_votes) as total_votes")
+            ->selectRaw("SUM(total_turnout) as total_turnout")
+            ->selectRaw("SUM(total_invalid) as total_invalid")
+            ->selectRaw("SUM(reg_voters) as reg_voters")
+            ->where('candidate_position', $position)
+            ->when($municipalities, function ($query) use ($municipalities) {
+                $query->whereIn('municipality_name', $municipalities);
+            })
+            ->groupBy('candidate_name', 'candidate_position')
+            ->get();
     }
 }

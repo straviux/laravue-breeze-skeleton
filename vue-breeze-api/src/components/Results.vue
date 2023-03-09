@@ -137,7 +137,7 @@ const tableContainer = ref([]);
                 </div>
                 <div class="text-sm">
                     Registered Voters:
-                    <span class="font-semibold" v-if="cp.result">{{
+                    <span class="font-semibold" v-if="cp.result.stats">{{
                         numberWithCommas(cp.result.stats[0].reg_voters)
                     }}</span>
                 </div>

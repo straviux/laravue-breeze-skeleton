@@ -18,6 +18,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
             formBarangay:null,
             precinctResult: null,
             formDistrict: null,
+            loading:false,
             resultErrors:[]
         }
     ),
@@ -25,6 +26,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
 
     getters: {
         // district: (state)=> state.district,
+        is_loading:(state)=>state.loading,
         access_code: (state)=>state.formAccessCode,
         verify_access: (state)=>state.formVerifyAccess,
         barangay: (state) => state.formBarangay,
@@ -65,6 +67,9 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     this.formPosition = formData.positions;
                     // this.formDistrict = formData.district;
                     // this.formBarangay = formData.barangay;
+
+                    console.log(data);
+                    // return false;
                     this.router.push({name:'ElectionResults'});
 
                 } catch (error) {
@@ -94,6 +99,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
 
         async verifyAccess (data) {
             this.resultErrors = [];
+            this.loading = true;
             try {
                 // this.getToken();
                 const res = await axios.post("/api/v1/verify-access-code", {
@@ -103,9 +109,13 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
 
                 // this.router.push("/");
                 if(res.data.success) {
+                    this.loading = false;
                     this.formVerifyAccess=res.data.success;
                     this.formAccessCode=data.access_code;
-                    this.router.push("/");
+                    if(this.router.currentRoute.value.name!=='Home'&&this.router.currentRoute.value.name!=='Results') {
+                        this.router.push("/");
+                    }
+
                 } else {
                     this.router.push("/verify-access");
                 }
