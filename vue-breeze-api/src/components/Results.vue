@@ -158,6 +158,18 @@ const tableContainer = ref([]);
                         }}%</span
                     >
                 </div>
+                <div class="text-sm">
+                    JPM Members:
+                    <span
+                        class="font-semibold"
+                        v-if="clusteredPrecinct.jpm_summary"
+                        >{{
+                            numberWithCommas(
+                                clusteredPrecinct.jpm_summary.total_members
+                            )
+                        }}</span
+                    >
+                </div>
                 <div
                     v-for="(b, index) in cp.result.turnouts"
                     class="mt-4 lg:ml-8"

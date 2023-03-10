@@ -9,6 +9,7 @@ axios.create({
 export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
     state: () => (
         {
+            formJpmSummary:null,
             formVerifyAccess:false,
             formAccessCode:null,
             // formDistrict:null,
@@ -25,7 +26,8 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
     persist: true,
 
     getters: {
-        // district: (state)=> state.district,
+        // district: (state)=> state.district,\
+        jpm_summary:(state)=>state.formJpmSummary,
         is_loading:(state)=>state.loading,
         access_code: (state)=>state.formAccessCode,
         verify_access: (state)=>state.formVerifyAccess,
@@ -61,6 +63,28 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                         report_level: formData.report_level,
                         district: formData.district
                     }});
+                    if(formData.report_level=='province') {
+                        fetch("http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_province").then((response) => {
+                            return response.json();
+                        })
+                        .then((data) => {
+                            this.formJpmSummary = data;
+                        })
+                    } if (formData.report_level=='municipality') {
+                        let queryParam;
+                        for(let i=0;i<formData.municipalities.length;i++) {
+                            queryParam +=`municipalities[]=${formData.municipalities[i]}&`;
+                        }
+                        fetch("http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_municipality?"+ queryParam).then((response) => {
+                            return response.json();
+                        })
+                        .then((data) => {
+                            console.log(data);
+                            this.formJpmSummary = data;
+                        })
+                    }
+
+                    // console.log(jpm_members);
                     // console.log(data)
                     if(data.status===200) {
                         this.loading = false;

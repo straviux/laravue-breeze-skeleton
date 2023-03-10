@@ -75,13 +75,7 @@ const filteredPositions = computed(() => {
         model.value.report_level === "district" ||
         model.value.report_level === "province"
     ) {
-        valuesToRemove = [
-            "MAYOR",
-            "VICE-MAYOR",
-            "COUNCILOR",
-            "CONGRESSMAN",
-            "BOARD MEMBER",
-        ];
+        valuesToRemove = ["MAYOR", "VICE-MAYOR", "COUNCILOR"];
         return positions.filter((pos) => !valuesToRemove.includes(pos));
     } else {
         return positions;
