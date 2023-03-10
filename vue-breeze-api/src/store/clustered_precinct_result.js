@@ -78,14 +78,14 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                         fetch("http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_municipality?"+ queryParam).then((response) => {
                             return response.json();
                         })
-                        .then((data) => {
-                            console.log(data);
-                            this.formJpmSummary = data;
+                        .then((res) => {
+                            console.log(res);
+                            this.formJpmSummary = res;
                         })
                     }
 
                     // console.log(jpm_members);
-                    // console.log(data)
+                    console.log(data)
                     if(data.status===200) {
                         this.loading = false;
                     }

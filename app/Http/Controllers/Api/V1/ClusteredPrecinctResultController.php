@@ -18,6 +18,7 @@ class ClusteredPrecinctResultController extends Controller
         $municipalities = is_array($request['municipality']) ? $request['municipality'] : [$request['municipality']];
         $barangays = is_array($request['barangay']) ? $request['barangay'] : [$request['barangay']];
         $positions = is_array($request['position']) ? $request['position'] : [$request['position']];
+
         $district1 = [
             "AGUTAYA",
             "ARACELI",
@@ -55,6 +56,7 @@ class ClusteredPrecinctResultController extends Controller
         $election_result = [];
         $result = [];
         if ($request['report_level'] == 'province') {
+            $positions = array_diff($positions, array('CONGRESSMAN', 'BOARD MEMBER'));
             $district = array_merge($district1, $district2, $district3);
             $result = ClusteredPrecinctResult::select('candidate_position', 'candidate_name',  'total_invalid', 'reg_voters')
                 ->selectRaw("SUM(total_votes) as total_votes")

@@ -196,11 +196,19 @@ const tableContainer = ref([]);
                                         <th colspan="4" class="py-0">
                                             <p class="text-xs font-normal">
                                                 Registered Voters:
-                                                {{ d.reg_voters }}
+                                                {{
+                                                    numberWithCommas(
+                                                        d.reg_voters
+                                                    )
+                                                }}
                                             </p>
                                             <p class="text-xs font-normal">
                                                 Total Turnout:
-                                                {{ d.total_turnout }}
+                                                {{
+                                                    numberWithCommas(
+                                                        d.total_turnout
+                                                    )
+                                                }}
                                             </p>
                                         </th>
                                     </tr>
