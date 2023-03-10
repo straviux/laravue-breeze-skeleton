@@ -167,54 +167,132 @@ const tableContainer = ref([]);
                     <table
                         class="table w-full table-compact mb-4 page-break-after-always contentTable"
                     >
-                        <tr>
-                            <th class="w-1 text-left">#</th>
-                            <th class="w-1/4 text-left">Candidate</th>
-                            <th class="text-right">Votes</th>
-                            <th class="text-right">Percentage</th>
-                        </tr>
-                        <tr
-                            v-for="(c, i) in sortTotalVotesDescending(
-                                b.candidates
-                            )"
-                            :key="i"
-                            class="border-b"
-                        >
-                            <td>{{ i + 1 }}.</td>
-                            <td>{{ c.candidate_name }}</td>
-                            <td class="text-right">
-                                {{ numberWithCommas(c.total_votes) }}
-                            </td>
-                            <td class="text-right">
-                                {{
-                                    percentage(
-                                        c.total_votes,
-                                        b.position_total_votes
-                                    )
-                                }}%
-                            </td>
-                        </tr>
-                        <tr
+                        <template
                             v-if="
-                                b.position != 'SENATOR' &&
-                                b.position != 'BOARD MEMBER' &&
-                                b.position != 'COUNCILOR' &&
-                                b.position != 'PARTY LIST'
+                                clusteredPrecinct.report_level == 'province' &&
+                                (b.position == 'CONGRESSMAN' ||
+                                    b.position == 'BOARD MEMBER')
                             "
                         >
-                            <td
-                                class="font-semibold text-right pr-20 text-lg"
-                                colspan="2"
-                            >
-                                Total
-                            </td>
-                            <td class="font-semibold text-lg text-right">
-                                {{ numberWithCommas(b.position_total_votes) }}
-                            </td>
-                            <td class="font-semibold text-lg text-right">
-                                100%
-                            </td>
-                        </tr>
+                            <template v-for="(d, i) in b.district">
+                                <thead>
+                                    <tr>
+                                        <th colspan="4">District {{ d.id }}</th>
+                                    </tr>
+
+                                    <tr>
+                                        <th colspan="4" class="py-0">
+                                            <p class="text-xs font-normal">
+                                                Registered Voters:
+                                                {{ d.reg_voters }}
+                                            </p>
+                                            <p class="text-xs font-normal">
+                                                Total Turnout:
+                                                {{ d.total_turnout }}
+                                            </p>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th class="w-2 text-left">#</th>
+                                        <th class="w-1/4 text-left">
+                                            Candidate
+                                        </th>
+                                        <th class="text-right">Votes</th>
+                                        <th class="text-right">Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="(
+                                            c, i
+                                        ) in sortTotalVotesDescending(
+                                            d.candidates
+                                        )"
+                                    >
+                                        <td>{{ i + 1 }}.</td>
+                                        <td>{{ c.candidate_name }}</td>
+                                        <td class="text-right">
+                                            {{
+                                                numberWithCommas(c.total_votes)
+                                            }}
+                                        </td>
+                                        <td class="text-right">
+                                            {{
+                                                percentage(
+                                                    c.total_votes,
+                                                    d.position_total_votes
+                                                )
+                                            }}%
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </template>
+                        </template>
+                        <template v-else>
+                            <thead>
+                                <tr>
+                                    <th class="w-2 text-left">#</th>
+                                    <th class="w-1/4 text-left">Candidate</th>
+                                    <th class="text-right">Votes</th>
+                                    <th class="text-right">Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(c, i) in sortTotalVotesDescending(
+                                        b.candidates
+                                    )"
+                                    :key="i"
+                                    class="border-b"
+                                >
+                                    <td>{{ i + 1 }}.</td>
+                                    <td>{{ c.candidate_name }}</td>
+                                    <td class="text-right">
+                                        {{ numberWithCommas(c.total_votes) }}
+                                    </td>
+                                    <td class="text-right">
+                                        {{
+                                            percentage(
+                                                c.total_votes,
+                                                b.position_total_votes
+                                            )
+                                        }}%
+                                    </td>
+                                </tr>
+                            </tbody>
+
+                            <tfoot>
+                                <tr
+                                    v-if="
+                                        b.position != 'SENATOR' &&
+                                        b.position != 'BOARD MEMBER' &&
+                                        b.position != 'COUNCILOR' &&
+                                        b.position != 'PARTY LIST'
+                                    "
+                                >
+                                    <td
+                                        class="font-semibold text-right pr-20 text-lg"
+                                        colspan="2"
+                                    >
+                                        Total
+                                    </td>
+                                    <td
+                                        class="font-semibold text-lg text-right"
+                                    >
+                                        {{
+                                            numberWithCommas(
+                                                b.position_total_votes
+                                            )
+                                        }}
+                                    </td>
+                                    <td
+                                        class="font-semibold text-lg text-right"
+                                    >
+                                        100%
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </template>
                     </table>
                     <div class="divider"></div>
                 </div>

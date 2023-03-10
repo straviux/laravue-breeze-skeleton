@@ -99,19 +99,57 @@ class ClusteredPrecinctResultController extends Controller
             $election_result[0]['result']['turnouts'][] = [
                 'position' => 'CONGRESSMAN',
                 'district' => [
-                    ['id' => 1, 'candidates' => $cong1],
-                    ['id' => 2, 'candidates' => $cong2],
-                    ['id' => 3, 'candidates' => $cong3]
+                    [
+                        'id' => 1, 'candidates' => $cong1['candidates'],
+                        'position_total_votes' => $cong1['position_total_votes'],
+                        'total_turnout' => $cong1['total_turnout'],
+                        'reg_voters' => $cong1['reg_voters']
+                    ],
+                    [
+                        'id' => 2, 'candidates' => $cong2['candidates'],
+                        'position_total_votes' => $cong2['position_total_votes'],
+                        'total_turnout' => $cong2['total_turnout'],
+                        'reg_voters' => $cong2['reg_voters']
+                    ],
+                    [
+                        'id' => 3, 'candidates' => $cong3['candidates'],
+                        'position_total_votes' => $cong3['position_total_votes'],
+                        'total_turnout' => $cong3['total_turnout'],
+                        'reg_voters' => $cong3['reg_voters']
+                    ]
                 ]
             ];
             $election_result[0]['result']['turnouts'][] = [
                 'position' => 'BOARD MEMBER',
                 'district' => [
-                    ['id' => 1, 'candidates' => $bm1],
-                    ['id' => 2, 'candidates' => $bm2],
-                    ['id' => 3, 'candidates' => $bm3]
+                    [
+                        'id' => 1, 'candidates' => $bm1['candidates'],
+                        'position_total_votes' => $bm1['position_total_votes'],
+                        'total_turnout' => $bm1['total_turnout'],
+                        'reg_voters' => $bm1['reg_voters']
+                    ],
+                    [
+                        'id' => 2, 'candidates' => $bm2['candidates'],
+                        'position_total_votes' => $bm2['position_total_votes'],
+                        'total_turnout' => $bm2['total_turnout'],
+                        'reg_voters' => $bm2['reg_voters']
+                    ],
+                    [
+                        'id' => 3, 'candidates' => $bm3['candidates'],
+                        'position_total_votes' => $bm3['position_total_votes'],
+                        'total_turnout' => $bm3['total_turnout'],
+                        'reg_voters' => $bm3['reg_voters']
+                    ]
                 ]
             ];
+
+            $order = ['PRESIDENT', 'V-PRESIDENT', 'CONGRESSMAN', 'GOVERNOR', 'VICE-GOVERNOR', 'BOARD MEMBER', 'SENATOR', 'PARTY LIST'];
+            usort($election_result[0]['result']['turnouts'], function ($a, $b) use ($order) {
+                $pos_a = array_search($a['position'], $order);
+                $pos_b = array_search($b['position'], $order);
+                return $pos_a - $pos_b;
+            });
+
             return $election_result;
         } else if ($request['report_level'] == 'district') {
             $district = [];
@@ -296,7 +334,8 @@ class ClusteredPrecinctResultController extends Controller
 
     private function getAllResultByPosition($position = null, $municipalities = [])
     {
-        return ClusteredPrecinctResult::select('candidate_name', 'total_invalid')
+
+        $result =  ClusteredPrecinctResult::select('candidate_name', 'total_invalid')
             ->selectRaw("SUM(total_votes) as total_votes")
             ->selectRaw("SUM(total_turnout) as total_turnout")
             ->selectRaw("SUM(total_invalid) as total_invalid")
@@ -307,5 +346,18 @@ class ClusteredPrecinctResultController extends Controller
             })
             ->groupBy('candidate_name', 'candidate_position')
             ->get();
+        $final_arr = [];
+        $temp_arr = [];
+        $x = 0;
+        $final_arr['position_total_votes'] = 0;
+        foreach ($result as $res) {
+            $temp_arr[$x] = $res;
+            $final_arr['position_total_votes'] += $res['total_votes'];
+            $final_arr['total_turnout'] = $res['total_turnout'];
+            $final_arr['reg_voters'] = $res['reg_voters'];
+            $x++;
+        }
+        $final_arr['candidates'] = $temp_arr;
+        return $final_arr;
     }
 }
