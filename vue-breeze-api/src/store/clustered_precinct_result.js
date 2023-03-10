@@ -50,6 +50,8 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
             if(formData)
             {
                 try {
+                    this.resultErrors = [];
+                    this.loading = true;
                     // this.getToken();
 
                     const data = await axios.get("/api/v1/clustered-precinct-results", {params: {
@@ -60,6 +62,9 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                         district: formData.district
                     }});
                     // console.log(data)
+                    if(data.status===200) {
+                        this.loading = false;
+                    }
                     this.precinctResult = data.data;
                     this.formReportLevel = formData.report_level;
                     this.formDistrict = formData.district
@@ -68,11 +73,12 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     // this.formDistrict = formData.district;
                     // this.formBarangay = formData.barangay;
 
-                    console.log(data);
+                    // console.log(data);
                     // return false;
                     this.router.push({name:'ElectionResults'});
 
                 } catch (error) {
+                    this.loading = false;
                     console.log(error);
                 }
             }

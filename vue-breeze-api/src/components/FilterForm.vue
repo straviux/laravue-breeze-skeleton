@@ -3,7 +3,7 @@ import { ref, computed, onMounted } from "vue";
 import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
 const clusteredPrecinct = clusteredPrecinctStore();
 const model = ref({
-    district: "1",
+    district: 1,
     municipalities: [],
     barangays: [],
     positions: [],
@@ -98,6 +98,7 @@ const municipalities = computed(() => {
 function resetForm() {
     model.value.municipalities = [];
     model.value.barangays = [];
+    // model.value.district = null;
     model.value.positions = filteredPositions.value;
     allCitySelected.value = false;
 }
@@ -123,13 +124,15 @@ function toggleAllPosition() {
 function toggleMunicipality() {
     allCitySelected.value = false;
     model.value.barangays = [];
-    clusteredPrecinct.getBarangay(model.value.municipalities);
+    if (model.value.report_level == "barangay") {
+        clusteredPrecinct.getBarangay(model.value.municipalities);
+    }
 }
 
-function resetDistrict() {
-    allCitySelected.value = false;
-    model.value.municipalities = [];
-}
+// function resetDistrict() {
+//     allCitySelected.value = false;
+//     model.value.municipalities = [];
+// }
 
 function resetPosition() {
     allPositionSelected.value = false;
