@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Api\V1;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ClusteredPrecinctResult;
-use App\Http\Resources\V1\ClusteredPrecinctResultResource;
+// use App\Http\Resources\V1\ClusteredPrecinctResultResource;
+use Illuminate\Support\Facades\Http;
 
 class ClusteredPrecinctResultController extends Controller
 {
@@ -152,6 +153,10 @@ class ClusteredPrecinctResultController extends Controller
                 return $pos_a - $pos_b;
             });
 
+            // GET JPM MEMBERS SUMMARY
+            $jpm_members = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_province');
+            $election_result[0]['jpm_members'] = $jpm_members->json();
+
             return $election_result;
         } else if ($request['report_level'] == 'district') {
             $district = [];
@@ -194,7 +199,16 @@ class ClusteredPrecinctResultController extends Controller
                 }
                 $x++;
             }
-            $election_result[]['result'] = $final_arr;
+
+            $query_params = '';
+            foreach ($district as $d) {
+                $query_params .= 'municipalities[]=' . $d . '&';
+            }
+            $query_params = str_replace("'", "", $query_params);
+            $jpm_members = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_municipality?' . $query_params);
+            // $election_result[0]['district'] = str_replace("'", "", $query_params);
+            $election_result[0]['jpm_members'] = $jpm_members->json();
+            $election_result[0]['result'] = $final_arr;
             return $election_result;
         } else if ($request['report_level'] == 'municipality') {
             $result = ClusteredPrecinctResult::select('municipality_name', 'candidate_position', 'candidate_name', 'barangay_name', 'total_invalid', 'reg_voters')
@@ -220,66 +234,6 @@ class ClusteredPrecinctResultController extends Controller
                 ->get();
             $geographical_level = $barangays;
         }
-
-        // if ($request['report_level'] == 'province') {
-        //     $president = $this->getAllResultByPosition('PRESIDENT');
-        //     $v_president = $this->getAllResultByPosition('V-PRESIDENT');
-        //     $cong1 = $this->getAllResultByPosition('CONGRESSMAN', $district1);
-        //     $cong2 = $this->getAllResultByPosition('CONGRESSMAN', $district2);
-        //     $cong3 = $this->getAllResultByPosition('CONGRESSMAN', $district3);
-        //     $governor = $this->getAllResultByPosition('GOVERNOR');
-        //     $v_gov = $this->getAllResultByPosition('VICE GOVERNOR');
-        //     $bm1 = $this->getAllResultByPosition('BOARD MEMBER', $district1);
-        //     $bm2 = $this->getAllResultByPosition('BOARD MEMBER', $district2);
-        //     $bm3 = $this->getAllResultByPosition('BOARD MEMBER', $district3);
-        //     $senator = $this->getAllResultByPosition('SENATOR');
-        //     $pl = $this->getAllResultByPosition('PARTY LIST');
-        //     return [
-        //         'total_turnout' => $president[0]['total_turnout'],
-        //         'reg_voters' => $president[0]['reg_voters'],
-        //         'turnout_percentage' => ($president[0]['total_turnout'] / $president[0]['reg_voters']) * 100,
-        //         'result' => [
-        //             [
-        //                 'position' => 'PRESIDENT',
-        //                 'candidate' => $president
-        //             ],
-        //             [
-        //                 'position' => 'VICE PRESIDENT',
-        //                 'candidate' => $v_president
-        //             ],
-        //             [
-        //                 'position' => 'CONGRESSMAN',
-        //                 'district' => [['id' => 1, 'candidate' => $cong1], ['id' => 2, 'candidate' => $cong2], ['id' => 3, 'candidate' => $cong3]]
-        //             ],
-        //             [
-        //                 'position' => 'GOVERNOR',
-        //                 'candidate' => $governor
-        //             ],
-        //             [
-        //                 'position' => 'VICE GOVERNOR',
-        //                 'candidate' => $v_gov
-        //             ],
-        //             [
-        //                 'position' => 'BOARD MEMBER',
-        //                 'district' => [['id' => 1, 'candidate' => $bm1], ['id' => 2, 'candidate' => $bm2], ['id' => 3, 'candidate' => $bm3]]
-        //             ],
-        //             [
-        //                 'position' => 'SENATOR',
-        //                 'candidate' => $senator
-        //             ],
-        //             [
-        //                 'position' => 'PARTY LIST',
-        //                 'candidate' => $pl
-        //             ],
-
-        //         ]
-        //     ];
-        //     // return $v_president;
-        // }
-
-        // return $result;
-        // return $result;
-
 
         $i = 0;
 

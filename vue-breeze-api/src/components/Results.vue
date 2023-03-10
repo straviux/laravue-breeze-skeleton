@@ -160,15 +160,9 @@ const tableContainer = ref([]);
                 </div>
                 <div class="text-sm">
                     JPM Members:
-                    <span
-                        class="font-semibold"
-                        v-if="clusteredPrecinct.jpm_summary"
-                        >{{
-                            numberWithCommas(
-                                clusteredPrecinct.jpm_summary.total_members
-                            )
-                        }}</span
-                    >
+                    <span class="font-semibold" v-if="cp.jpm_members">{{
+                        numberWithCommas(cp.jpm_members.total_members)
+                    }}</span>
                 </div>
                 <div
                     v-for="(b, index) in cp.result.turnouts"

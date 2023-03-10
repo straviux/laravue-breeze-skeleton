@@ -63,14 +63,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                         report_level: formData.report_level,
                         district: formData.district
                     }});
-                    if(formData.report_level=='province') {
-                        fetch("http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_province").then((response) => {
-                            return response.json();
-                        })
-                        .then((data) => {
-                            this.formJpmSummary = data;
-                        })
-                    } if (formData.report_level=='municipality') {
+                    if (formData.report_level=='municipality') {
                         let queryParam;
                         for(let i=0;i<formData.municipalities.length;i++) {
                             queryParam +=`municipalities[]=${formData.municipalities[i]}&`;
