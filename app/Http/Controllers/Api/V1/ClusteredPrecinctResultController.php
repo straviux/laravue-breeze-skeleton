@@ -228,7 +228,7 @@ class ClusteredPrecinctResultController extends Controller
             }
             // $query_params = str_replace("'", "", $query_params);
             $jpm_members = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_municipality?' . $query_params);
-            // $election_result[0]['district'] = str_replace("'", "", $query_params);
+            $election_result[0]['qp'] = $query_params;
             $election_result[0]['jpm_members'] = $jpm_members->json();
         } else if ($request['report_level'] == 'barangay') {
             $result = ClusteredPrecinctResult::select('municipality_name', 'candidate_position', 'candidate_name', 'barangay_name', 'total_invalid', 'reg_voters')
