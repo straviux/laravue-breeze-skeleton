@@ -221,15 +221,7 @@ class ClusteredPrecinctResultController extends Controller
                 ->groupBy('municipality_name', 'candidate_position', 'candidate_name')
                 ->get();
             $geographical_level = $municipalities;
-
-            $query_params = '';
-            foreach ($municipalities as $m) {
-                $query_params .= 'municipalities[]=' . $m . '&';
-            }
-            // $query_params = str_replace("'", "", $query_params);
-            $jpm_members = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_municipality?' . $query_params);
-            $election_result[0]['qp'] = $query_params;
-            $election_result[0]['jpm_members'] = $jpm_members->json();
+            $jpm_members_url = 'http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_municipality?';
         } else if ($request['report_level'] == 'barangay') {
             $result = ClusteredPrecinctResult::select('municipality_name', 'candidate_position', 'candidate_name', 'barangay_name', 'total_invalid', 'reg_voters')
                 ->selectRaw("SUM(total_votes) as total_votes")
@@ -283,6 +275,12 @@ class ClusteredPrecinctResultController extends Controller
                 }
                 $x++;
             }
+
+
+            // $query_params = str_replace("'", "", $query_params);
+            $jpm_members = Http::get($jpm_members_url . 'municipalities[]=' . $gl);
+
+            $election_result[$i]['jpm_members'] = $jpm_members->json();
             $election_result[$i]['municipality'] = $temp_arr[0]['municipality_name'];
             $election_result[$i]['barangay'] = $temp_arr[0]['barangay_name'];
             $election_result[$i]['result'] = $final_arr;
