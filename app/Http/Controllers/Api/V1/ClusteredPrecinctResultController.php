@@ -204,7 +204,7 @@ class ClusteredPrecinctResultController extends Controller
             foreach ($district as $d) {
                 $query_params .= 'municipalities[]=' . $d . '&';
             }
-            $query_params = str_replace("'", "", $query_params);
+            // $query_params = str_replace("'", "", $query_params);
             $jpm_members = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_municipality?' . $query_params);
             // $election_result[0]['district'] = str_replace("'", "", $query_params);
             $election_result[0]['jpm_members'] = $jpm_members->json();
