@@ -234,7 +234,7 @@ class ClusteredPrecinctResultController extends Controller
                 ->groupBy('municipality_name', 'candidate_position', 'candidate_name', 'barangay_name')
                 ->get();
             $geographical_level = $barangays;
-            $jpm_members_url = 'http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_barangay?municipality=' . $municipalities . '&barangays[]=';
+            $jpm_members_url = 'http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_barangay?municipality=' . $municipalities[0] . '&barangays[]=';
         }
 
         $i = 0;
