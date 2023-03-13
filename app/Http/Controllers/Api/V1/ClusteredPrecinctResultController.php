@@ -93,11 +93,18 @@ class ClusteredPrecinctResultController extends Controller
             }
 
             $cong1 = $this->getAllResultByPosition('CONGRESSMAN', $district1);
+
             $cong2 = $this->getAllResultByPosition('CONGRESSMAN', $district2);
             $cong3 = $this->getAllResultByPosition('CONGRESSMAN', $district3);
             $bm1 = $this->getAllResultByPosition('BOARD MEMBER', $district1);
             $bm2 = $this->getAllResultByPosition('BOARD MEMBER', $district2);
             $bm3 = $this->getAllResultByPosition('BOARD MEMBER', $district3);
+            $jpm_members1 = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_district?district=1ST');
+            $jpm_members1 = $jpm_members1->json();
+            $jpm_members2 = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_district?district=2ND');
+            $jpm_members2 = $jpm_members2->json();
+            $jpm_members3 = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_district?district=3RD');
+            $jpm_members3 = $jpm_members3->json();
             $election_result[0]['result'] = $final_arr;
             $election_result[0]['result']['turnouts'][] = [
                 'position' => 'CONGRESSMAN',
@@ -106,19 +113,22 @@ class ClusteredPrecinctResultController extends Controller
                         'id' => 1, 'candidates' => $cong1['candidates'],
                         'position_total_votes' => $cong1['position_total_votes'],
                         'total_turnout' => $cong1['total_turnout'],
-                        'reg_voters' => $cong1['reg_voters']
+                        'reg_voters' => $cong1['reg_voters'],
+                        'jpm_members' => $jpm_members1
                     ],
                     [
                         'id' => 2, 'candidates' => $cong2['candidates'],
                         'position_total_votes' => $cong2['position_total_votes'],
                         'total_turnout' => $cong2['total_turnout'],
-                        'reg_voters' => $cong2['reg_voters']
+                        'reg_voters' => $cong2['reg_voters'],
+                        'jpm_members' => $jpm_members2
                     ],
                     [
                         'id' => 3, 'candidates' => $cong3['candidates'],
                         'position_total_votes' => $cong3['position_total_votes'],
                         'total_turnout' => $cong3['total_turnout'],
-                        'reg_voters' => $cong3['reg_voters']
+                        'reg_voters' => $cong3['reg_voters'],
+                        'jpm_members' => $jpm_members3
                     ]
                 ]
             ];
@@ -129,19 +139,22 @@ class ClusteredPrecinctResultController extends Controller
                         'id' => 1, 'candidates' => $bm1['candidates'],
                         'position_total_votes' => $bm1['position_total_votes'],
                         'total_turnout' => $bm1['total_turnout'],
-                        'reg_voters' => $bm1['reg_voters']
+                        'reg_voters' => $bm1['reg_voters'],
+                        'jpm_members' => $jpm_members1
                     ],
                     [
                         'id' => 2, 'candidates' => $bm2['candidates'],
                         'position_total_votes' => $bm2['position_total_votes'],
                         'total_turnout' => $bm2['total_turnout'],
-                        'reg_voters' => $bm2['reg_voters']
+                        'reg_voters' => $bm2['reg_voters'],
+                        'jpm_members' => $jpm_members2
                     ],
                     [
                         'id' => 3, 'candidates' => $bm3['candidates'],
                         'position_total_votes' => $bm3['position_total_votes'],
                         'total_turnout' => $bm3['total_turnout'],
-                        'reg_voters' => $bm3['reg_voters']
+                        'reg_voters' => $bm3['reg_voters'],
+                        'jpm_members' => $jpm_members3
                     ]
                 ]
             ];

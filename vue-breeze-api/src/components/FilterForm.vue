@@ -287,7 +287,7 @@ onMounted(() => {
                     <label
                         ref="dropDown"
                         tabindex="0"
-                        class="btn bg-white btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
+                        class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
                         >Click to select</label
                     >
                     <ul
@@ -305,7 +305,7 @@ onMounted(() => {
                                     v-model="allCitySelected"
                                     @change="toggleAllCity"
                                 />
-                                <span class="label-text text-xs">All</span>
+                                <span class="label-text text-xs">ALL</span>
                             </label>
                         </li>
                         <li v-for="city in municipalities" :key="city">
@@ -313,16 +313,18 @@ onMounted(() => {
                                 class="cursor-pointer block w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
                             >
                                 <input
-                                    :type="
-                                        model.report_level == 'municipality'
-                                            ? 'checkbox'
-                                            : 'radio'
-                                    "
-                                    :class="
-                                        model.report_level == 'municipality'
-                                            ? 'checkbox checkbox-sm'
-                                            : 'radio radio-xs'
-                                    "
+                                    v-if="model.report_level == 'municipality'"
+                                    type="checkbox"
+                                    class="checkbox checkbox-sm"
+                                    :id="city"
+                                    :value="city"
+                                    @change="toggleMunicipality"
+                                    v-model="model.municipalities"
+                                />
+                                <input
+                                    v-if="model.report_level == 'barangay'"
+                                    type="radio"
+                                    class="radio radio-xs"
                                     :id="city"
                                     :value="city"
                                     @change="toggleMunicipality"
@@ -375,7 +377,7 @@ onMounted(() => {
                     <label
                         ref="dropDown"
                         tabindex="0"
-                        class="btn bg-white btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
+                        class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
                         >Click to select</label
                     >
                     <ul
@@ -429,7 +431,7 @@ onMounted(() => {
                         <label
                             ref="dropDown"
                             tabindex="0"
-                            class="btn bg-white btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
+                            class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
                             >Click to select</label
                         >
                         <ul

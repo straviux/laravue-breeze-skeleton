@@ -118,61 +118,205 @@ const tableContainer = ref([]);
                 ref="tableContainer"
                 class="print-content"
             >
-                <h3 class="font-semibold text-xl">{{ cp.municipality }}</h3>
-                <div
-                    class="text-sm"
-                    v-if="clusteredPrecinct.report_level == 'barangay'"
-                >
-                    Barangay:
-                    <span class="font-semibold">{{ cp.barangay }}</span>
-                </div>
-                <div
-                    class="text-sm"
-                    v-if="clusteredPrecinct.report_level == 'district'"
-                >
-                    District:
-                    <span class="font-semibold">{{
-                        clusteredPrecinct.district
-                    }}</span>
-                </div>
-                <div class="text-sm">
-                    Registered Voters:
-                    <span class="font-semibold" v-if="cp.result.stats">{{
-                        numberWithCommas(cp.result.stats[0].reg_voters)
-                    }}</span>
-                </div>
-                <div class="text-sm">
-                    Total Turnout:
-                    <span class="font-semibold" v-if="cp.result">{{
-                        numberWithCommas(cp.result.stats[0].total_turnout)
-                    }}</span>
-                </div>
-                <div class="text-sm">
-                    Turnout Percentage:
-                    <span class="font-semibold" v-if="cp.result"
-                        >{{
-                            percentage(
-                                cp.result.stats[0].total_turnout,
-                                cp.result.stats[0].reg_voters
-                            )
-                        }}%</span
-                    >
-                </div>
-                <div class="text-sm">
-                    JPM Members:
-                    <span class="font-semibold" v-if="cp.jpm_members">{{
-                        numberWithCommas(cp.jpm_members.total_members)
-                    }}</span>
+                <div>
+                    <table class="table table-compact table-zebra">
+                        <tbody>
+                            <template
+                                v-if="
+                                    clusteredPrecinct.report_level == 'province'
+                                "
+                            >
+                                <tr class="">
+                                    <td
+                                        class="py-0 px-2 w-[140px] text-lg text-gray-600 font-semibold"
+                                        colspan="2"
+                                    >
+                                        Province of Palawan
+                                    </td>
+                                </tr>
+                            </template>
+                            <template
+                                v-if="
+                                    clusteredPrecinct.report_level ==
+                                    'municipality'
+                                "
+                            >
+                                <tr
+                                    v-if="
+                                        cp.municipality !=
+                                        'PUERTO PRINCESA CITY'
+                                    "
+                                >
+                                    <td
+                                        class="py-0 px-2 font-semibold text-gray-600 text-lg"
+                                        colspan="2"
+                                    >
+                                        Municipality of {{ cp.municipality }}
+                                    </td>
+                                </tr>
+                                <tr
+                                    v-if="
+                                        cp.municipality ==
+                                        'PUERTO PRINCESA CITY'
+                                    "
+                                >
+                                    <td
+                                        class="py-0 px-2 font-semibold text-gray-600 text-lg"
+                                        colspan="2"
+                                    >
+                                        {{ cp.municipality }}
+                                    </td>
+                                </tr>
+                            </template>
+                            <template
+                                v-if="
+                                    clusteredPrecinct.report_level == 'barangay'
+                                "
+                            >
+                                <tr>
+                                    <td
+                                        class="py-0 px-2 w-[140px] text-gray-600 text-xs font-semibold"
+                                    >
+                                        Municipality:
+                                    </td>
+                                    <td
+                                        class="py-0 px-2 font-semibold text-gray-600 text-lg"
+                                    >
+                                        {{ cp.municipality }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td
+                                        class="py-0 px-2 w-[140px] text-gray-600 text-xs font-semibold"
+                                    >
+                                        Barangay:
+                                    </td>
+                                    <td
+                                        class="py-0 px-2 font-semibold text-gray-600"
+                                    >
+                                        {{ cp.barangay }}
+                                    </td>
+                                </tr>
+                            </template>
+                            <template
+                                v-if="
+                                    clusteredPrecinct.report_level == 'district'
+                                "
+                            >
+                                <tr>
+                                    <td
+                                        class="py-0 px-2 w-[140px] text-lg text-gray-600 font-semibold"
+                                        colspan="2"
+                                    >
+                                        <span
+                                            v-if="
+                                                clusteredPrecinct.district == 1
+                                            "
+                                            >1st Congressional district of
+                                            Palawan</span
+                                        >
+                                        <span
+                                            v-if="
+                                                clusteredPrecinct.district == 2
+                                            "
+                                            >2nd Congressional district of
+                                            Palawan</span
+                                        >
+                                        <span
+                                            v-if="
+                                                clusteredPrecinct.district == 3
+                                            "
+                                            >3rd Congressional district of
+                                            Palawan</span
+                                        >
+                                    </td>
+                                </tr>
+                            </template>
+                            <tr>
+                                <td
+                                    class="py-0 px-2 w-[140px] text-gray-600 text-xs font-semibold"
+                                >
+                                    Registered Voters:
+                                </td>
+                                <td
+                                    class="py-0 px-2 font-semibold text-gray-600"
+                                >
+                                    {{
+                                        numberWithCommas(
+                                            cp.result.stats[0].reg_voters
+                                        )
+                                    }}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td
+                                    class="py-0 px-2 w-[140px] text-gray-600 text-xs font-semibold"
+                                >
+                                    Total Turnout:
+                                </td>
+                                <td
+                                    class="py-0 px-2 font-semibold text-gray-600"
+                                >
+                                    {{
+                                        numberWithCommas(
+                                            cp.result.stats[0].total_turnout
+                                        )
+                                    }}
+                                    <span class="font-normal text-xs"
+                                        >&nbsp;({{
+                                            percentage(
+                                                cp.result.stats[0]
+                                                    .total_turnout,
+                                                cp.result.stats[0].reg_voters
+                                            )
+                                        }}%)</span
+                                    >
+                                </td>
+                            </tr>
+                            <tr>
+                                <td
+                                    class="py-0 px-2 w-[140px] text-gray-600 text-xs font-semibold"
+                                >
+                                    JPM Members:
+                                </td>
+                                <td
+                                    class="py-0 px-2 font-semibold text-gray-600"
+                                >
+                                    {{
+                                        numberWithCommas(
+                                            cp.jpm_members.total_members
+                                        )
+                                    }}
+                                    <span class="font-normal text-xs"
+                                        >&nbsp;({{
+                                            percentage(
+                                                cp.jpm_members.total_members,
+                                                cp.result.stats[0].reg_voters
+                                            )
+                                        }}%)</span
+                                    >
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
                 <div
                     v-for="(b, index) in cp.result.turnouts"
-                    class="mt-4 lg:ml-8"
+                    class="mt-2 lg:ml-4"
                 >
-                    <p class="text-lg font-semibold">{{ b.position }}</p>
-
-                    <table
-                        class="table w-full table-compact mb-4 page-break-after-always contentTable"
-                    >
+                    <table class="table w-full table-compact mb-2 contentTable">
+                        <thead>
+                            <tr>
+                                <th
+                                    colspan="4"
+                                    class="bg-gray-100 text-gray-600"
+                                >
+                                    <p class="text-lg font-semibold">
+                                        {{ b.position }}
+                                    </p>
+                                </th>
+                            </tr>
+                        </thead>
                         <template
                             v-if="
                                 clusteredPrecinct.report_level == 'province' &&
@@ -183,36 +327,117 @@ const tableContainer = ref([]);
                             <template v-for="(d, i) in b.district">
                                 <thead>
                                     <tr>
-                                        <th colspan="4">District {{ d.id }}</th>
+                                        <th
+                                            colspan="4"
+                                            class="bg-gray-50 text-gray-600 pl-2"
+                                        >
+                                            District {{ d.id }}
+                                        </th>
                                     </tr>
 
                                     <tr>
-                                        <th colspan="4" class="py-0">
-                                            <p class="text-xs font-normal">
-                                                Registered Voters:
-                                                {{
-                                                    numberWithCommas(
-                                                        d.reg_voters
-                                                    )
-                                                }}
-                                            </p>
-                                            <p class="text-xs font-normal">
-                                                Total Turnout:
-                                                {{
-                                                    numberWithCommas(
-                                                        d.total_turnout
-                                                    )
-                                                }}
-                                            </p>
+                                        <th
+                                            colspan="4"
+                                            class="py-0 bg-slate-50 text-gray-600 pl-4"
+                                        >
+                                            <div class="flex align-bottom">
+                                                <p class="w-[120px]">
+                                                    <span
+                                                        class="font-semibold text-[11px]"
+                                                        >Registered
+                                                        Voters:</span
+                                                    >
+                                                </p>
+                                                <p
+                                                    class="font-semibold text-[14px]"
+                                                >
+                                                    {{
+                                                        numberWithCommas(
+                                                            d.reg_voters
+                                                        )
+                                                    }}
+                                                </p>
+                                            </div>
+                                            <div class="flex align-bottom">
+                                                <p class="w-[120px]">
+                                                    <span
+                                                        class="font-semibold text-[11px]"
+                                                    >
+                                                        Total Turnout:</span
+                                                    >
+                                                </p>
+                                                <p
+                                                    class="font-semibold text-[14px]"
+                                                >
+                                                    {{
+                                                        numberWithCommas(
+                                                            d.total_turnout
+                                                        )
+                                                    }}
+                                                    <span
+                                                        class="font-normal text-[12px]"
+                                                        >({{
+                                                            percentage(
+                                                                d.total_turnout,
+                                                                d.reg_voters
+                                                            )
+                                                        }}%)</span
+                                                    >
+                                                </p>
+                                            </div>
+                                            <div class="flex align-bottom">
+                                                <p class="w-[120px]">
+                                                    <span
+                                                        class="font-semibold text-[11px]"
+                                                    >
+                                                        JPM Members:</span
+                                                    >
+                                                </p>
+                                                <p
+                                                    class="font-semibold text-[14px]"
+                                                    v-if="d.jpm_members"
+                                                >
+                                                    {{
+                                                        numberWithCommas(
+                                                            d.jpm_members
+                                                                .total_members
+                                                        )
+                                                    }}
+                                                    <span
+                                                        class="font-normal text-[12px]"
+                                                        >({{
+                                                            percentage(
+                                                                d.jpm_members
+                                                                    .total_members,
+                                                                d.reg_voters
+                                                            )
+                                                        }}%)</span
+                                                    >
+                                                </p>
+                                            </div>
                                         </th>
                                     </tr>
                                     <tr>
-                                        <th class="w-2 text-left">#</th>
-                                        <th class="w-1/4 text-left">
+                                        <th
+                                            class="w-2 text-left text-xs bg-transparent text-gray-600"
+                                        >
+                                            #
+                                        </th>
+                                        <th
+                                            class="w-1/4 text-left text-xs bg-transparent text-gray-600"
+                                        >
                                             Candidate
                                         </th>
-                                        <th class="text-right">Votes</th>
-                                        <th class="text-right">Percentage</th>
+                                        <th
+                                            class="text-right text-xs bg-transparent text-gray-600"
+                                        >
+                                            Votes
+                                        </th>
+                                        <th
+                                            class="text-right text-xs bg-transparent text-gray-600"
+                                        >
+                                            Percentage
+                                        </th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -222,15 +447,22 @@ const tableContainer = ref([]);
                                         ) in sortTotalVotesDescending(
                                             d.candidates
                                         )"
+                                        class=""
                                     >
-                                        <td>{{ i + 1 }}.</td>
-                                        <td>{{ c.candidate_name }}</td>
-                                        <td class="text-right">
+                                        <td
+                                            class="p-2 text-xs text-gray-500 mb-4"
+                                        >
+                                            {{ i + 1 }}.
+                                        </td>
+                                        <td class="font-mono p-2">
+                                            {{ c.candidate_name }}
+                                        </td>
+                                        <td class="text-right p-2">
                                             {{
                                                 numberWithCommas(c.total_votes)
                                             }}
                                         </td>
-                                        <td class="text-right">
+                                        <td class="text-right p-2">
                                             {{
                                                 percentage(
                                                     c.total_votes,
@@ -239,16 +471,35 @@ const tableContainer = ref([]);
                                             }}%
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td colspan="4" class="py-2"></td>
+                                    </tr>
                                 </tbody>
                             </template>
                         </template>
                         <template v-else>
                             <thead>
                                 <tr>
-                                    <th class="w-2 text-left">#</th>
-                                    <th class="w-1/4 text-left">Candidate</th>
-                                    <th class="text-right">Votes</th>
-                                    <th class="text-right">Percentage</th>
+                                    <th
+                                        class="w-2 text-left text-xs bg-transparent text-gray-600"
+                                    >
+                                        #
+                                    </th>
+                                    <th
+                                        class="w-1/4 text-left text-xs bg-transparent text-gray-600"
+                                    >
+                                        Candidate
+                                    </th>
+                                    <th
+                                        class="text-right text-xs bg-transparent text-gray-600"
+                                    >
+                                        Votes
+                                    </th>
+                                    <th
+                                        class="text-right text-xs bg-transparent text-gray-600"
+                                    >
+                                        Percentage
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -257,14 +508,17 @@ const tableContainer = ref([]);
                                         b.candidates
                                     )"
                                     :key="i"
-                                    class="border-b"
                                 >
-                                    <td>{{ i + 1 }}.</td>
-                                    <td>{{ c.candidate_name }}</td>
-                                    <td class="text-right">
+                                    <td class="p-2 text-xs text-gray-500">
+                                        {{ i + 1 }}.
+                                    </td>
+                                    <td class="font-mono p-2">
+                                        {{ c.candidate_name }}
+                                    </td>
+                                    <td class="text-right p-2">
                                         {{ numberWithCommas(c.total_votes) }}
                                     </td>
-                                    <td class="text-right">
+                                    <td class="text-right p-2">
                                         {{
                                             percentage(
                                                 c.total_votes,
@@ -275,7 +529,7 @@ const tableContainer = ref([]);
                                 </tr>
                             </tbody>
 
-                            <tfoot>
+                            <tbody>
                                 <tr
                                     v-if="
                                         b.position != 'SENATOR' &&
@@ -285,13 +539,13 @@ const tableContainer = ref([]);
                                     "
                                 >
                                     <td
-                                        class="font-semibold text-right pr-20 text-lg"
+                                        class="font-semibold text-right bg-gray-100 text-gray-600"
                                         colspan="2"
                                     >
                                         Total
                                     </td>
                                     <td
-                                        class="font-semibold text-lg text-right"
+                                        class="font-semibold text-right bg-gray-100 text-gray-600"
                                     >
                                         {{
                                             numberWithCommas(
@@ -300,12 +554,12 @@ const tableContainer = ref([]);
                                         }}
                                     </td>
                                     <td
-                                        class="font-semibold text-lg text-right"
+                                        class="font-semibold text-right bg-gray-100 text-gray-600"
                                     >
                                         100%
                                     </td>
                                 </tr>
-                            </tfoot>
+                            </tbody>
                         </template>
                     </table>
                     <div class="divider"></div>
@@ -317,7 +571,7 @@ const tableContainer = ref([]);
     <button
         title="Print"
         @click="printReport"
-        class="no-print fixed z-90 bottom-10 right-8 bg-red-400 w-20 h-20 rounded-full drop-shadow-lg flex justify-center items-center text-white text-4xl hover:bg-green-400 hover:drop-shadow-2xl hover:animate-bounce duration-300"
+        class="no-print fixed z-90 bottom-10 right-8 bg-red-400 w-16 h-16 rounded-full drop-shadow-lg flex justify-center items-center text-white text-4xl hover:bg-green-400 hover:drop-shadow-2xl hover:animate-bounce duration-300"
     >
         <mdicon name="printer" size="40" />
     </button>
