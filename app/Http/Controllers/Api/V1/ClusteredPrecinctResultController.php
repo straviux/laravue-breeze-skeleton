@@ -173,13 +173,42 @@ class ClusteredPrecinctResultController extends Controller
             return $election_result;
         } else if ($request['report_level'] == 'district') {
             $district = [];
+            $final_arr = [];
+            $x = 0;
             if ($request['district'] == 1) {
                 $district = $district1;
+                $jpm_members = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_district?district=1ST');
             } else if ($request['district'] == 2) {
                 $district = $district2;
+                $jpm_members = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_district?district=2ND');
             } else if ($request['district'] == 3) {
+
+                $jpm_members = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_district?district=3RD');
                 $district = $district3;
+                $positions = array_diff($positions, array('CONGRESSMAN', 'BOARD MEMBER', 'GOVERNOR', 'VICE-GOVERNOR'));
+                $cong = $this->getAllResultByPosition('CONGRESSMAN', $district);
+                $bm = $this->getAllResultByPosition('BOARD MEMBER', $district);
+                $gov = $this->getAllResultByPosition('GOVERNOR', $district);
+                $vgov = $this->getAllResultByPosition('VICE-GOVERNOR', $district);
+                $final_arr['turnouts'][] = [
+                    'position' => 'CONGRESSMAN', 'position_total_votes' => $cong['position_total_votes'], "total_turnout" => $cong['total_turnout'],
+                    "candidates" => $cong['candidates']
+                ];
+                $final_arr['turnouts'][] = [
+                    'position' => 'BOARD MEMBER', 'position_total_votes' => $bm['position_total_votes'], "total_turnout" => $bm['total_turnout'],
+                    "candidates" => $bm['candidates']
+                ];
+                $final_arr['turnouts'][] = [
+                    'position' => 'GOVERNOR', 'position_total_votes' => $gov['position_total_votes'], "total_turnout" => $gov['total_turnout'],
+                    "candidates" => $gov['candidates']
+                ];
+                $final_arr['turnouts'][] = [
+                    'position' => 'VICE-GOVERNOR', 'position_total_votes' => $vgov['position_total_votes'], "total_turnout" => $vgov['total_turnout'],
+                    "candidates" => $vgov['candidates']
+                ];
+                $x = 4; // set next array index to 4 as 4 items is already added
             }
+
             $result = ClusteredPrecinctResult::select('candidate_position', 'candidate_name',  'total_invalid', 'reg_voters')
                 ->selectRaw("SUM(total_votes) as total_votes")
                 ->selectRaw("SUM(total_turnout) as total_turnout")
@@ -190,7 +219,8 @@ class ClusteredPrecinctResultController extends Controller
                 ->groupBy('candidate_position', 'candidate_name')
                 ->get();
 
-            $final_arr = [];
+
+
             $final_arr['stats'][] =
                 [
                     'total_turnout' => $result[0]['total_turnout'],
@@ -198,7 +228,7 @@ class ClusteredPrecinctResultController extends Controller
                     'reg_voters' => $result[0]['reg_voters'],
                     // 'barangay_name' => $temp_arr[0]['barangay_name']
                 ];
-            $x = 0;
+            // start array at position 2, as 2 items is already
             foreach ($positions as $position) {
                 $final_arr['turnouts'][$x]['position'] = $position;
                 $final_arr['turnouts'][$x]['position_total_votes'] = 0;
@@ -213,15 +243,18 @@ class ClusteredPrecinctResultController extends Controller
                 $x++;
             }
 
-            $query_params = '';
-            foreach ($district as $d) {
-                $query_params .= 'municipalities[]=' . $d . '&';
-            }
+            // return $final_arr;
             // $query_params = str_replace("'", "", $query_params);
-            $jpm_members = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_municipality?' . $query_params);
+
             // $election_result[0]['district'] = str_replace("'", "", $query_params);
             $election_result[0]['jpm_members'] = $jpm_members->json();
             $election_result[0]['result'] = $final_arr;
+            $order = ['PRESIDENT', 'V-PRESIDENT', 'CONGRESSMAN', 'GOVERNOR', 'VICE-GOVERNOR', 'BOARD MEMBER', 'SENATOR', 'PARTY LIST'];
+            usort($election_result[0]['result']['turnouts'], function ($a, $b) use ($order) {
+                $pos_a = array_search($a['position'], $order);
+                $pos_b = array_search($b['position'], $order);
+                return $pos_a - $pos_b;
+            });
             return $election_result;
         } else if ($request['report_level'] == 'municipality') {
             $result = ClusteredPrecinctResult::select('municipality_name', 'candidate_position', 'candidate_name', 'barangay_name', 'total_invalid', 'reg_voters')
