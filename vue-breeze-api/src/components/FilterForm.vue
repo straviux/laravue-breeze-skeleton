@@ -70,6 +70,7 @@ const positions = [
 
 const filteredPositions = computed(() => {
     // let newPositions = positions;
+
     let valuesToRemove = [];
     if (
         model.value.report_level === "district" ||
@@ -78,7 +79,16 @@ const filteredPositions = computed(() => {
         valuesToRemove = ["MAYOR", "VICE-MAYOR", "COUNCILOR"];
         return positions.filter((pos) => !valuesToRemove.includes(pos));
     } else {
-        return positions;
+        valuesToRemove = ["GOVERNOR", "VICE-GOVERNOR", "BOARD MEMBER"];
+        if (
+            model.value.municipalities == "PUERTO PRINCESA CITY" ||
+            model.value.municipalities.includes("PUERTO PRINCESA CITY")
+        ) {
+            console.log(model.value.municipalities);
+            return positions.filter((pos) => !valuesToRemove.includes(pos));
+        } else {
+            return positions;
+        }
     }
 });
 
@@ -118,6 +128,7 @@ function toggleAllPosition() {
 function toggleMunicipality() {
     allCitySelected.value = false;
     model.value.barangays = [];
+    model.value.positions = filteredPositions.value.flatMap((p) => p);
     if (model.value.report_level == "barangay") {
         clusteredPrecinct.getBarangay(model.value.municipalities);
     }

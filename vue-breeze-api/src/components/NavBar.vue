@@ -1,6 +1,6 @@
 <template>
     <div
-        class="relative lg:block lg:space-y-10 p-2 grid grid-cols-12 lg:h-full"
+        class="relative lg:block lg:space-y-10 p-2 md:grid md:grid-cols-12 lg:h-full"
     >
         <FilterForm />
     </div>

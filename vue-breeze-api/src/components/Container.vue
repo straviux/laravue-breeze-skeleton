@@ -26,7 +26,7 @@ onMounted(async () => {
             class="col-span-12 bg-stone-50 flex flex-col lg:flex-row md:divide-x-2"
         >
             <div
-                class="lg:max-w-[350px] w-full lg:h-full h-screen relative lg:fixed lg:z-40 no-print"
+                class="lg:max-w-[350px] w-full lg:h-full relative lg:fixed lg:z-40 no-print"
             >
                 <nav-bar />
             </div>

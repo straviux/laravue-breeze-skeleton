@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
 const clusteredPrecinct = clusteredPrecinctStore();
 const today = new Date().toLocaleDateString("en-PH");
+const toggleJPM = ref(false);
 function groupBy(list, keyGetter) {
     const map = new Map();
     list.forEach((item) => {
@@ -68,6 +69,11 @@ function printReport() {
     return false;
 }
 const tableContainer = ref([]);
+document.addEventListener("keydown", function (event) {
+    if (event.key === "j") {
+        toggleJPM.value = !toggleJPM.value;
+    }
+});
 </script>
 <template>
     <div id="printContent">
@@ -173,14 +179,28 @@ const tableContainer = ref([]);
                                     clusteredPrecinct.report_level == 'barangay'
                                 "
                             >
-                                <tr>
-                                    <td
-                                        class="py-0 px-2 w-[140px] text-gray-600 text-xs font-semibold"
-                                    >
-                                        Municipality:
-                                    </td>
+                                <tr
+                                    v-if="
+                                        cp.municipality !=
+                                        'PUERTO PRINCESA CITY'
+                                    "
+                                >
                                     <td
                                         class="py-0 px-2 font-semibold text-gray-600 text-lg"
+                                        colspan="2"
+                                    >
+                                        Municipality of {{ cp.municipality }}
+                                    </td>
+                                </tr>
+                                <tr
+                                    v-if="
+                                        cp.municipality ==
+                                        'PUERTO PRINCESA CITY'
+                                    "
+                                >
+                                    <td
+                                        class="py-0 px-2 font-semibold text-gray-600 text-lg"
+                                        colspan="2"
                                     >
                                         {{ cp.municipality }}
                                     </td>
@@ -273,7 +293,7 @@ const tableContainer = ref([]);
                                     >
                                 </td>
                             </tr>
-                            <tr>
+                            <tr v-if="toggleJPM">
                                 <td
                                     class="py-0 px-2 w-[140px] text-gray-600 text-xs font-semibold"
                                 >
@@ -385,7 +405,10 @@ const tableContainer = ref([]);
                                                     >
                                                 </p>
                                             </div>
-                                            <div class="flex align-bottom">
+                                            <div
+                                                class="flex align-bottom"
+                                                v-if="toggleJPM"
+                                            >
                                                 <p class="w-[120px]">
                                                     <span
                                                         class="font-semibold text-[11px]"
@@ -571,7 +594,7 @@ const tableContainer = ref([]);
     <button
         title="Print"
         @click="printReport"
-        class="no-print fixed z-90 bottom-10 right-8 bg-red-400 w-16 h-16 rounded-full drop-shadow-lg flex justify-center items-center text-white text-4xl hover:bg-green-400 hover:drop-shadow-2xl hover:animate-bounce duration-300"
+        class="no-print fixed z-[1000] bottom-10 right-8 bg-red-400 w-16 h-16 rounded-full drop-shadow-lg md:flex justify-center items-center text-white text-4xl hover:bg-green-400 hover:drop-shadow-2xl hover:animate-bounce duration-300 hidden"
     >
         <mdicon name="printer" size="40" />
     </button>

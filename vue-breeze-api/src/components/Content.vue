@@ -2,7 +2,7 @@
 import HelloBar from "./HelloBar.vue";
 </script>
 <template>
-    <div class="flex flex-col gap-6 p-7 relative">
+    <div class="flex flex-col gap-6 p-2 md:p-7 relative">
         <div
             class="absolute bg-gradient-to-b from-gray-200 to-stone-100 opacity-75 inset-0 z-0 no-print"
         ></div>
