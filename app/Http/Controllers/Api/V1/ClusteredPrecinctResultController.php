@@ -185,27 +185,45 @@ class ClusteredPrecinctResultController extends Controller
 
                 $jpm_members = Http::get('http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_district?district=3RD');
                 $district = $district3;
-                $positions = array_diff($positions, array('CONGRESSMAN', 'BOARD MEMBER', 'GOVERNOR', 'VICE-GOVERNOR'));
-                $cong = $this->getAllResultByPosition('CONGRESSMAN', $district);
-                $bm = $this->getAllResultByPosition('BOARD MEMBER', $district);
-                $gov = $this->getAllResultByPosition('GOVERNOR', $district);
-                $vgov = $this->getAllResultByPosition('VICE-GOVERNOR', $district);
-                $final_arr['turnouts'][] = [
-                    'position' => 'CONGRESSMAN', 'position_total_votes' => $cong['position_total_votes'], "total_turnout" => $cong['total_turnout'],
-                    "candidates" => $cong['candidates']
-                ];
-                $final_arr['turnouts'][] = [
-                    'position' => 'BOARD MEMBER', 'position_total_votes' => $bm['position_total_votes'], "total_turnout" => $bm['total_turnout'],
-                    "candidates" => $bm['candidates']
-                ];
-                $final_arr['turnouts'][] = [
-                    'position' => 'GOVERNOR', 'position_total_votes' => $gov['position_total_votes'], "total_turnout" => $gov['total_turnout'],
-                    "candidates" => $gov['candidates']
-                ];
-                $final_arr['turnouts'][] = [
-                    'position' => 'VICE-GOVERNOR', 'position_total_votes' => $vgov['position_total_votes'], "total_turnout" => $vgov['total_turnout'],
-                    "candidates" => $vgov['candidates']
-                ];
+
+                if (in_array('CONGRESSMAN', $positions)) {
+                    $cong = $this->getAllResultByPosition('CONGRESSMAN', $district);
+                    $final_arr['turnouts'][] = [
+                        'position' => 'CONGRESSMAN', 'position_total_votes' => $cong['position_total_votes'], "total_turnout" => $cong['total_turnout'],
+                        "candidates" => $cong['candidates']
+                    ];
+                    $positions = array_diff($positions, array('CONGRESSMAN'));
+                }
+
+                if (in_array('BOARD MEMBER', $positions)) {
+                    $bm = $this->getAllResultByPosition('BOARD MEMBER', $district);
+                    $final_arr['turnouts'][] = [
+                        'position' => 'BOARD MEMBER', 'position_total_votes' => $bm['position_total_votes'], "total_turnout" => $bm['total_turnout'],
+                        "candidates" => $bm['candidates']
+                    ];
+                    $positions = array_diff($positions, array('BOARD MEMBER'));
+                }
+
+                if (in_array('GOVERNOR', $positions)) {
+                    $gov = $this->getAllResultByPosition('GOVERNOR', $district);
+                    $final_arr['turnouts'][] = [
+                        'position' => 'GOVERNOR', 'position_total_votes' => $gov['position_total_votes'], "total_turnout" => $gov['total_turnout'],
+                        "candidates" => $gov['candidates']
+                    ];
+                    $positions = array_diff($positions, array('GOVERNOR'));
+                }
+
+                if (in_array('VICE-GOVERNOR', $positions)) {
+                    $vgov = $this->getAllResultByPosition('VICE-GOVERNOR', $district);
+                    $final_arr['turnouts'][] = [
+                        'position' => 'VICE-GOVERNOR', 'position_total_votes' => $vgov['position_total_votes'], "total_turnout" => $vgov['total_turnout'],
+                        "candidates" => $vgov['candidates']
+                    ];
+                    $positions = array_diff($positions, array('VICE-GOVERNOR'));
+                }
+
+
+
                 $x = 4; // set next array index to 4 as 4 items is already added
             }
 

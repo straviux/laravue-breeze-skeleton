@@ -9,15 +9,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@mdi/js": "^7.0.96",
     "axios": "^1.3.3",
     "daisyui": "^2.50.0",
+    "mdi-vue": "^3.0.13",
     "pinia": "^2.0.30",
     "pinia-plugin-persistedstate": "^3.1.0",
     "qs": "^6.11.0",
     "vue": "^3.2.45",
-    "vue-router": "^4.1.6",
-    "@mdi/js": "^7.0.96",
-    "mdi-vue": "^3.0.13"
+    "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.0.0",

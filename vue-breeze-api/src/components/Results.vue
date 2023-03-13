@@ -77,19 +77,19 @@ document.addEventListener("keydown", function (event) {
 </script>
 <template>
     <div id="printContent">
-        <div class="printHeader hidden -mt-6">
+        <div class="printHeader hidden -mt-2">
             <div class="text-center">
-                <span class="font-semibold text-xl"
-                    >2022 National Election Results</span
+                <span class="font-semibold text-2xl uppercase"
+                    >2022 National and Local Election Results</span
                 >
                 <!-- <span class="float-right text-xs"
                     >Date Printed: {{ today }}</span
                 > -->
             </div>
-            <div class="mb-2">
+            <div class="px-4 py-2 mx-auto">
                 <table class="headerTable">
                     <tr>
-                        <td class="w-[100px] font-semibold">DATE PRINTED:</td>
+                        <td class="w-[100px] font-semibold">DATE GENERATED:</td>
                         <td class="uppercase indent-0.5">
                             {{ today }}
                         </td>
@@ -116,8 +116,8 @@ document.addEventListener("keydown", function (event) {
             </div>
             <hr />
         </div>
-
-        <div class="bg-white px-6 lg:px-20 py-10 mx-auto relative uppercase">
+        <div class="no-print py-4"></div>
+        <div class="bg-white px-6 lg:px-20 py-2 mx-auto relative uppercase">
             <div
                 v-for="(cp, index) in clusteredPrecinct.result"
                 :key="index"
@@ -134,7 +134,7 @@ document.addEventListener("keydown", function (event) {
                             >
                                 <tr class="">
                                     <td
-                                        class="py-0 px-2 w-[140px] text-lg text-gray-600 font-semibold"
+                                        class="py-0 w-[140px] text-xl text-gray-600 font-semibold"
                                         colspan="2"
                                     >
                                         Province of Palawan
@@ -154,7 +154,7 @@ document.addEventListener("keydown", function (event) {
                                     "
                                 >
                                     <td
-                                        class="py-0 px-2 font-semibold text-gray-600 text-lg"
+                                        class="py-0 font-semibold text-gray-600 text-xl"
                                         colspan="2"
                                     >
                                         Municipality of {{ cp.municipality }}
@@ -167,7 +167,7 @@ document.addEventListener("keydown", function (event) {
                                     "
                                 >
                                     <td
-                                        class="py-0 px-2 font-semibold text-gray-600 text-lg"
+                                        class="py-0 font-semibold text-gray-600 text-xl"
                                         colspan="2"
                                     >
                                         {{ cp.municipality }}
@@ -186,7 +186,7 @@ document.addEventListener("keydown", function (event) {
                                     "
                                 >
                                     <td
-                                        class="py-0 px-2 font-semibold text-gray-600 text-lg"
+                                        class="py-0 font-semibold text-gray-600 text-xl"
                                         colspan="2"
                                     >
                                         Municipality of {{ cp.municipality }}
@@ -199,7 +199,7 @@ document.addEventListener("keydown", function (event) {
                                     "
                                 >
                                     <td
-                                        class="py-0 px-2 font-semibold text-gray-600 text-lg"
+                                        class="py-0 font-semibold text-gray-600 text-xl"
                                         colspan="2"
                                     >
                                         {{ cp.municipality }}
@@ -207,7 +207,7 @@ document.addEventListener("keydown", function (event) {
                                 </tr>
                                 <tr>
                                     <td
-                                        class="py-0 px-2 w-[140px] text-gray-600 text-xs font-semibold"
+                                        class="py-0 w-[140px] text-gray-600 text-xs font-semibold"
                                     >
                                         Barangay:
                                     </td>
@@ -225,7 +225,7 @@ document.addEventListener("keydown", function (event) {
                             >
                                 <tr>
                                     <td
-                                        class="py-0 px-2 w-[140px] text-lg text-gray-600 font-semibold"
+                                        class="py-0 w-[140px] text-xl text-gray-600 font-semibold"
                                         colspan="2"
                                     >
                                         <span
@@ -254,7 +254,7 @@ document.addEventListener("keydown", function (event) {
                             </template>
                             <tr>
                                 <td
-                                    class="py-0 px-2 w-[140px] text-gray-600 text-xs font-semibold"
+                                    class="py-0 w-[140px] text-gray-600 text-xs font-semibold"
                                 >
                                     Registered Voters:
                                 </td>
@@ -270,7 +270,7 @@ document.addEventListener("keydown", function (event) {
                             </tr>
                             <tr>
                                 <td
-                                    class="py-0 px-2 w-[140px] text-gray-600 text-xs font-semibold"
+                                    class="py-0 w-[140px] text-gray-600 text-xs font-semibold"
                                 >
                                     Total Turnout:
                                 </td>
@@ -295,7 +295,7 @@ document.addEventListener("keydown", function (event) {
                             </tr>
                             <tr v-if="toggleJPM">
                                 <td
-                                    class="py-0 px-2 w-[140px] text-gray-600 text-xs font-semibold"
+                                    class="py-0 w-[140px] text-gray-600 text-xs font-semibold"
                                 >
                                     JPM Members:
                                 </td>
@@ -322,9 +322,9 @@ document.addEventListener("keydown", function (event) {
                 </div>
                 <div
                     v-for="(b, index) in cp.result.turnouts"
-                    class="mt-2 lg:ml-4"
+                    class="mt-2 lg:ml-4 contentTable"
                 >
-                    <table class="table w-full table-compact mb-2 contentTable">
+                    <table class="table w-full table-compact mb-2">
                         <thead>
                             <tr>
                                 <th
@@ -552,7 +552,7 @@ document.addEventListener("keydown", function (event) {
                                 </tr>
                             </tbody>
 
-                            <tbody>
+                            <tbody class="tfooter">
                                 <tr
                                     v-if="
                                         b.position != 'SENATOR' &&
@@ -612,6 +612,9 @@ document.addEventListener("keydown", function (event) {
         padding: 0;
         font-size: 12px;
     }
+    .print-content * {
+        color: #333 !important;
+    }
     .headerTable {
         border-collapse: collapse;
     }
@@ -619,7 +622,10 @@ document.addEventListener("keydown", function (event) {
         vertical-align: top;
         padding: 0;
         margin: 0;
-        font-size: 14px;
+        font-size: 11px;
+    }
+    .contentTable {
+        padding: 0 12px;
     }
     .contentTable tr {
         page-break-inside: always;
@@ -632,6 +638,9 @@ document.addEventListener("keydown", function (event) {
         vertical-align: top;
         font-size: 12px;
         padding: 1px 2px;
+    }
+    .contentTable .tfooter td {
+        border-top: 1px solid #eee;
     }
     .printHeader {
         display: block;

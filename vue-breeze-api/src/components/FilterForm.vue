@@ -84,7 +84,7 @@ const filteredPositions = computed(() => {
             model.value.municipalities == "PUERTO PRINCESA CITY" ||
             model.value.municipalities.includes("PUERTO PRINCESA CITY")
         ) {
-            console.log(model.value.municipalities);
+            // console.log(model.value.municipalities);
             return positions.filter((pos) => !valuesToRemove.includes(pos));
         } else {
             return positions;
@@ -134,10 +134,39 @@ function toggleMunicipality() {
     }
 }
 
-// function resetDistrict() {
-//     allCitySelected.value = false;
-//     model.value.municipalities = [];
-// }
+function removePosition(pos) {
+    model.value.positions = model.value.positions.filter((p) => {
+        return p != pos;
+    });
+}
+
+function removeMunicipality(municipality) {
+    if (model.value.report_level == "barangay") {
+        model.value.municipalities = [];
+    } else {
+        model.value.municipalities = model.value.municipalities.filter((m) => {
+            return m != municipality;
+        });
+    }
+}
+
+function removeBarangay(bgy) {
+    model.value.barangays = model.value.barangays.filter((b) => {
+        return b != bgy;
+    });
+}
+
+function closeDropdownOnClick(e) {
+    let targetEl = e.currentTarget;
+    // console.log(targetEl);
+    if (targetEl && targetEl.matches(":focus")) {
+        setTimeout(function () {
+            targetEl.blur();
+        }, 0);
+    }
+    // e.target.parentElement.classList.toggle("dropdown-open");
+    // document.activeElement.blur();
+}
 
 function resetPosition() {
     allPositionSelected.value = false;
@@ -147,12 +176,12 @@ function resetPosition() {
 onMounted(() => {
     model.value.positions = filteredPositions.value.flatMap((p) => p);
 
-    const dropdownContent = document.querySelectorAll(".oneclick-dropdown>li");
-    dropdownContent.forEach((element) => {
-        element.addEventListener("click", () => {
-            document.activeElement.blur();
-        });
-    });
+    // const dropdownContent = document.querySelectorAll(".oneclick-dropdown>li");
+    // dropdownContent.forEach((element) => {
+    //     element.addEventListener("click", () => {
+    //         document.activeElement.blur();
+    //     });
+    // });
 });
 </script>
 <template>
@@ -238,29 +267,7 @@ onMounted(() => {
                     District
                 </div>
 
-                <!-- <label
-                        ref="dropDown"
-                        tabindex="0"
-                        class="btn bg-white btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
-                        >Click to select</label
-                    > -->
                 <ul tabindex="0" class="flex p-2 gap-1 w-full max-h-[300px]">
-                    <!-- <li>
-                            <label class="flex p-2 cursor-pointer ml-3">
-                                <input
-                                    class="my-auto radio radio-xs"
-                                    type="radio"
-                                    name="district"
-                                    value="all"
-                                    v-model="model.district"
-                                    @change="resetForm"
-                                    checked
-                                />
-                                <span class="label-text uppercase text-xs"
-                                    >ALL</span
-                                >
-                            </label>
-                        </li> -->
                     <li v-for="d in congressionalDistricts">
                         <label class="flex p-2 cursor-pointer ml-3 gap-1">
                             <input
@@ -296,10 +303,11 @@ onMounted(() => {
 
                 <div class="w-full dropdown dropdown-bottom">
                     <label
-                        ref="dropDown"
                         tabindex="0"
-                        class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
-                        >Click to select</label
+                        class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-transparent border-0 text-[10px]"
+                        @mousedown="closeDropdownOnClick"
+                    >
+                        Click to select</label
                     >
                     <ul
                         tabindex="0"
@@ -339,6 +347,7 @@ onMounted(() => {
                                     :id="city"
                                     :value="city"
                                     @change="toggleMunicipality"
+                                    @click="closeDropdownOnClick"
                                     v-model="model.municipalities"
                                 />
                                 <span class="label-text text-xs"
@@ -355,8 +364,9 @@ onMounted(() => {
                     v-if="model.report_level == 'municipality'"
                 >
                     <div
-                        class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 text-center align-middle py-1"
+                        class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 text-center align-middle py-1 cursor-pointer"
                         v-for="city in model.municipalities"
+                        @click="removeMunicipality(city)"
                     >
                         <p class="uppercase text-[10px]">{{ city }}</p>
                     </div>
@@ -366,7 +376,8 @@ onMounted(() => {
                         model.report_level == 'barangay' &&
                         model.municipalities.length
                     "
-                    class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 text-center whitespace-nowrap align-middle py-1 text-[10px]"
+                    class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 text-center whitespace-nowrap align-middle py-1 text-[10px] cursor-pointer"
+                    @click="removeMunicipality(city)"
                 >
                     <span>{{ model.municipalities }}</span>
                 </div>
@@ -386,9 +397,9 @@ onMounted(() => {
 
                 <div class="w-full dropdown dropdown-bottom">
                     <label
-                        ref="dropDown"
                         tabindex="0"
-                        class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
+                        class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-transparent border-0 text-[10px]"
+                        @mousedown="closeDropdownOnClick"
                         >Click to select</label
                     >
                     <ul
@@ -420,8 +431,9 @@ onMounted(() => {
             <div class="px-4 flex items-center justify-center">
                 <div class="grid gap-1 grid-cols-3">
                     <div
-                        class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 text-center whitespace-nowrap align-middle py-1"
+                        class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 text-center whitespace-nowrap align-middle py-1 cursor-pointer"
                         v-for="barangay in model.barangays"
+                        @click="removeBarangay(barangay)"
                     >
                         <p class="uppercase text-[10px]">{{ barangay }}</p>
                     </div>
@@ -440,9 +452,9 @@ onMounted(() => {
 
                     <div class="w-full dropdown dropdown-bottom">
                         <label
-                            ref="dropDown"
                             tabindex="0"
-                            class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-base-100 border-0 text-[10px]"
+                            class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-transparent border-0 text-[10px]"
+                            @mousedown="closeDropdownOnClick"
                             >Click to select</label
                         >
                         <ul
@@ -489,9 +501,10 @@ onMounted(() => {
                 <div class="px-4 flex items-center justify-center">
                     <div class="grid gap-1 grid-cols-3">
                         <div
-                            class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 py-1 text-center align-middle"
+                            class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 py-1 text-center align-middle cursor-pointer"
                             v-for="(position, index) in model.positions"
                             :key="position + index"
+                            @click="removePosition(position)"
                         >
                             <p class="text-[10px]">{{ position }}</p>
                         </div>

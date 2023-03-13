@@ -44,7 +44,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
             try {
                 await axios.get("/sanctum/csrf-cookie");
             } catch (error) {
-                console.log(error);
+                // console.log(error);
             }
         },
         async getResult(formData) {
@@ -72,13 +72,13 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                             return response.json();
                         })
                         .then((res) => {
-                            console.log(res);
+                            // console.log(res);
                             this.formJpmSummary = res;
                         })
                     }
 
                     // console.log(jpm_members);
-                    console.log(data)
+                    // console.log(data)
                     if(data.status===200) {
                         this.loading = false;
                     }
@@ -96,7 +96,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
 
                 } catch (error) {
                     this.loading = false;
-                    console.log(error);
+                    // console.log(error);
                 }
             }
         },
@@ -115,7 +115,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     this.formBarangay = data.data;
 
                 } catch (error) {
-                    console.log(error);
+                    // console.log(error);
                 }
             }
         },

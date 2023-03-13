@@ -10,7 +10,7 @@ let localStorageSize = function () {
     }
     return (_lsTotal / 1024).toFixed(2);
 };
-console.log(`localstorage size: ${localStorageSize()}kb`);
+// console.log(`localstorage size: ${localStorageSize()}kb`);
 </script>
 
 <template>
