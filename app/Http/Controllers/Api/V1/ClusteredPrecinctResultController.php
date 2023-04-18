@@ -188,11 +188,14 @@ class ClusteredPrecinctResultController extends Controller
 
                 if (in_array('CONGRESSMAN', $positions)) {
                     $cong = $this->getAllResultByPosition('CONGRESSMAN', $district);
+
                     $final_arr['turnouts'][] = [
                         'position' => 'CONGRESSMAN', 'position_total_votes' => $cong['position_total_votes'], "total_turnout" => $cong['total_turnout'],
                         "candidates" => $cong['candidates']
                     ];
+                    // return $final_arr;
                     $positions = array_diff($positions, array('CONGRESSMAN'));
+                    $x++;
                 }
 
                 if (in_array('BOARD MEMBER', $positions)) {
@@ -202,6 +205,7 @@ class ClusteredPrecinctResultController extends Controller
                         "candidates" => $bm['candidates']
                     ];
                     $positions = array_diff($positions, array('BOARD MEMBER'));
+                    $x++;
                 }
 
                 if (in_array('GOVERNOR', $positions)) {
@@ -211,6 +215,7 @@ class ClusteredPrecinctResultController extends Controller
                         "candidates" => $gov['candidates']
                     ];
                     $positions = array_diff($positions, array('GOVERNOR'));
+                    $x++;
                 }
 
                 if (in_array('VICE-GOVERNOR', $positions)) {
@@ -220,48 +225,62 @@ class ClusteredPrecinctResultController extends Controller
                         "candidates" => $vgov['candidates']
                     ];
                     $positions = array_diff($positions, array('VICE-GOVERNOR'));
+                    $x++;
                 }
 
-
-
-                $x = 4; // set next array index to 4 as 4 items is already added
+                // return $positions;
+                // return $positions;
+                // $x = 4; // set next array index to 4 as 4 items is already added
             }
+            // return $final_arr['turnouts'][];
 
-            $result = ClusteredPrecinctResult::select('candidate_position', 'candidate_name',  'total_invalid', 'reg_voters')
-                ->selectRaw("SUM(total_votes) as total_votes")
-                ->selectRaw("SUM(total_turnout) as total_turnout")
-                ->selectRaw("SUM(total_invalid) as total_invalid")
-                ->selectRaw("SUM(reg_voters) as reg_voters")
-                ->whereIn('municipality_name', $district)
-                ->whereIn('candidate_position', $positions)
-                ->groupBy('candidate_position', 'candidate_name')
-                ->get();
+            if ($positions) {
+                $result = ClusteredPrecinctResult::select('candidate_position', 'candidate_name',  'total_invalid', 'reg_voters')
+                    ->selectRaw("SUM(total_votes) as total_votes")
+                    ->selectRaw("SUM(total_turnout) as total_turnout")
+                    ->selectRaw("SUM(total_invalid) as total_invalid")
+                    ->selectRaw("SUM(reg_voters) as reg_voters")
+                    ->whereIn('municipality_name', $district)
+                    ->whereIn('candidate_position', $positions)
+                    ->groupBy('candidate_position', 'candidate_name')
+                    ->get();
 
 
 
-            $final_arr['stats'][] =
-                [
-                    'total_turnout' => $result[0]['total_turnout'],
-                    'total_invalid' => $result[0]['total_invalid'],
-                    'reg_voters' => $result[0]['reg_voters'],
-                    // 'barangay_name' => $temp_arr[0]['barangay_name']
-                ];
-            // start array at position 2, as 2 items is already
-            foreach ($positions as $position) {
-                $final_arr['turnouts'][$x]['position'] = $position;
-                $final_arr['turnouts'][$x]['position_total_votes'] = 0;
-                foreach ($result as $arr) {
+                $final_arr['stats'][] =
+                    [
+                        'total_turnout' => $result[0]['total_turnout'],
+                        'total_invalid' => $result[0]['total_invalid'],
+                        'reg_voters' => $result[0]['reg_voters'],
+                        // 'barangay_name' => $temp_arr[0]['barangay_name']
+                    ];
+                // start array at position 2, as 2 items is already
 
-                    if ($arr['candidate_position'] == $position) {
-                        // $final_arr['turnouts'][$x]['barangay_name'] = $temp_arr['barangay_name'];
-                        $final_arr['turnouts'][$x]['candidates'][] = ['candidate_name' => $arr['candidate_name'], 'total_votes' => $arr['total_votes']];
-                        $final_arr['turnouts'][$x]['position_total_votes'] += $arr['total_votes'];
+
+                foreach ($positions as $position) {
+                    $final_arr['turnouts'][$x]['position'] = $position;
+                    $final_arr['turnouts'][$x]['position_total_votes'] = 0;
+                    foreach ($result as $arr) {
+
+                        if ($arr['candidate_position'] == $position) {
+                            // $final_arr['turnouts'][$x]['barangay_name'] = $temp_arr['barangay_name'];
+                            $final_arr['turnouts'][$x]['candidates'][] = ['candidate_name' => $arr['candidate_name'], 'total_votes' => $arr['total_votes']];
+                            $final_arr['turnouts'][$x]['position_total_votes'] += $arr['total_votes'];
+                        }
                     }
+                    $x++;
                 }
-                $x++;
+            } else {
+                $final_arr['stats'][] =
+                    [
+                        'total_turnout' => $final_arr['turnouts'][0]['total_turnout'],
+                        'total_invalid' => $final_arr['turnouts'][0]['candidates'][0]['total_invalid'],
+                        'reg_voters' => $final_arr['turnouts'][0]['candidates'][0]['reg_voters'],
+                        // 'barangay_name' => $temp_arr[0]['barangay_name']
+                    ];
             }
 
-            // return $final_arr;
+
             // $query_params = str_replace("'", "", $query_params);
 
             // $election_result[0]['district'] = str_replace("'", "", $query_params);

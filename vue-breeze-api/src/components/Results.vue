@@ -76,6 +76,20 @@ document.addEventListener("keydown", function (event) {
 });
 </script>
 <template>
+    <label class="swap swap-rotate">
+        <!-- this hidden checkbox controls the state -->
+        <input
+            type="checkbox"
+            v-model="toggleJPM"
+            @click="toggleJPM = !toggleJPM"
+        />
+
+        <!-- sun icon -->
+        <mdicon name="eye-outline" class="swap-on text-gray-50" />
+
+        <!-- moon icon -->
+        <mdicon name="eye-off-outline" class="swap-off text-gray-50" />
+    </label>
     <div id="printContent">
         <div class="printHeader hidden -mt-2">
             <div class="text-center">
@@ -134,7 +148,7 @@ document.addEventListener("keydown", function (event) {
                             >
                                 <tr class="">
                                     <td
-                                        class="py-0 w-[140px] text-xl text-gray-600 font-semibold"
+                                        class="py-0 w-[140px] text-xl text-gray-600 font-semibold whitespace-normal md:whitespace-nowrap"
                                         colspan="2"
                                     >
                                         Province of Palawan
@@ -154,7 +168,7 @@ document.addEventListener("keydown", function (event) {
                                     "
                                 >
                                     <td
-                                        class="py-0 font-semibold text-gray-600 text-xl"
+                                        class="py-0 font-semibold text-gray-600 text-xl whitespace-normal md:whitespace-nowrap"
                                         colspan="2"
                                     >
                                         Municipality of {{ cp.municipality }}
@@ -186,7 +200,7 @@ document.addEventListener("keydown", function (event) {
                                     "
                                 >
                                     <td
-                                        class="py-0 font-semibold text-gray-600 text-xl"
+                                        class="py-0 font-semibold text-gray-600 text-xl whitespace-normal md:whitespace-nowrap"
                                         colspan="2"
                                     >
                                         Municipality of {{ cp.municipality }}
@@ -199,7 +213,7 @@ document.addEventListener("keydown", function (event) {
                                     "
                                 >
                                     <td
-                                        class="py-0 font-semibold text-gray-600 text-xl"
+                                        class="py-0 font-semibold text-gray-600 text-xl whitespace-normal md:whitespace-nowrap"
                                         colspan="2"
                                     >
                                         {{ cp.municipality }}
@@ -225,7 +239,7 @@ document.addEventListener("keydown", function (event) {
                             >
                                 <tr>
                                     <td
-                                        class="py-0 w-[140px] text-xl text-gray-600 font-semibold"
+                                        class="py-0 w-[140px] text-xl text-gray-600 font-semibold whitespace-normal md:whitespace-nowrap"
                                         colspan="2"
                                     >
                                         <span
@@ -395,7 +409,7 @@ document.addEventListener("keydown", function (event) {
                                                         )
                                                     }}
                                                     <span
-                                                        class="font-normal text-[12px]"
+                                                        class="font-normal text-[12px] hidden md:inline-block"
                                                         >({{
                                                             percentage(
                                                                 d.total_turnout,
@@ -457,7 +471,7 @@ document.addEventListener("keydown", function (event) {
                                             Votes
                                         </th>
                                         <th
-                                            class="text-right text-xs bg-transparent text-gray-600"
+                                            class="text-right text-xs bg-transparent text-gray-600 hidden md:block"
                                         >
                                             Percentage
                                         </th>
@@ -473,19 +487,34 @@ document.addEventListener("keydown", function (event) {
                                         class=""
                                     >
                                         <td
-                                            class="p-2 text-xs text-gray-500 mb-4"
+                                            class="p-1 md:p-2 text-[10px] md:text-xs text-gray-500 mb-4"
                                         >
                                             {{ i + 1 }}.
                                         </td>
-                                        <td class="font-mono p-2">
+                                        <td
+                                            class="font-mono text-[11px] md:text-sm md:p-2"
+                                        >
                                             {{ c.candidate_name }}
                                         </td>
-                                        <td class="text-right p-2">
+                                        <td
+                                            class="text-right text-[11px] md:text-sm md:p-2"
+                                        >
                                             {{
                                                 numberWithCommas(c.total_votes)
                                             }}
+                                            <span
+                                                class="font-normal text-[10px] md:hidden text-gray-500"
+                                                >({{
+                                                    percentage(
+                                                        c.total_votes,
+                                                        d.position_total_votes
+                                                    )
+                                                }}%)</span
+                                            >
                                         </td>
-                                        <td class="text-right p-2">
+                                        <td
+                                            class="text-right text-[11px] md:text-sm md:p-2 hidden md:block"
+                                        >
                                             {{
                                                 percentage(
                                                     c.total_votes,
@@ -519,7 +548,7 @@ document.addEventListener("keydown", function (event) {
                                         Votes
                                     </th>
                                     <th
-                                        class="text-right text-xs bg-transparent text-gray-600"
+                                        class="text-right text-xs bg-transparent text-gray-600 hidden md:block"
                                     >
                                         Percentage
                                     </th>
@@ -532,16 +561,33 @@ document.addEventListener("keydown", function (event) {
                                     )"
                                     :key="i"
                                 >
-                                    <td class="p-2 text-xs text-gray-500">
+                                    <td
+                                        class="p-1 md:p-2 text-[10px] md:text-xs text-gray-500 mb-4"
+                                    >
                                         {{ i + 1 }}.
                                     </td>
-                                    <td class="font-mono p-2">
+                                    <td
+                                        class="font-mono text-[11px] md:text-sm md:p-2"
+                                    >
                                         {{ c.candidate_name }}
                                     </td>
-                                    <td class="text-right p-2">
+                                    <td
+                                        class="text-right text-[11px] md:text-sm md:p-2"
+                                    >
                                         {{ numberWithCommas(c.total_votes) }}
+                                        <span
+                                            class="font-normal text-[10px] md:hidden text-gray-500"
+                                            >({{
+                                                percentage(
+                                                    c.total_votes,
+                                                    b.position_total_votes
+                                                )
+                                            }}%)</span
+                                        >
                                     </td>
-                                    <td class="text-right p-2">
+                                    <td
+                                        class="text-right text-[11px] md:text-sm md:p-2 hidden md:block"
+                                    >
                                         {{
                                             percentage(
                                                 c.total_votes,
@@ -562,13 +608,13 @@ document.addEventListener("keydown", function (event) {
                                     "
                                 >
                                     <td
-                                        class="font-semibold text-right bg-gray-100 text-gray-600"
+                                        class="font-semibold text-right bg-gray-100 text-gray-600 text-xs md:text-sm"
                                         colspan="2"
                                     >
                                         Total
                                     </td>
                                     <td
-                                        class="font-semibold text-right bg-gray-100 text-gray-600"
+                                        class="font-semibold text-right bg-gray-100 text-gray-600 text-xs md:text-sm"
                                     >
                                         {{
                                             numberWithCommas(
@@ -577,7 +623,7 @@ document.addEventListener("keydown", function (event) {
                                         }}
                                     </td>
                                     <td
-                                        class="font-semibold text-right bg-gray-100 text-gray-600"
+                                        class="font-semibold text-right bg-gray-100 text-gray-600 text-xs md:text-sm hidden md:block"
                                     >
                                         100%
                                     </td>
@@ -594,7 +640,7 @@ document.addEventListener("keydown", function (event) {
     <button
         title="Print"
         @click="printReport"
-        class="no-print fixed z-[1000] bottom-10 right-8 bg-red-400 w-16 h-16 rounded-full drop-shadow-lg md:flex justify-center items-center text-white text-4xl hover:bg-green-400 hover:drop-shadow-2xl hover:animate-bounce duration-300 hidden"
+        class="no-print fixed z-[1000] bottom-10 right-8 bg-red-400 w-16 h-16 rounded-full drop-shadow-lg flex justify-center items-center text-white text-4xl hover:bg-green-400 hover:drop-shadow-2xl hover:animate-bounce duration-300"
     >
         <mdicon name="printer" size="40" />
     </button>
