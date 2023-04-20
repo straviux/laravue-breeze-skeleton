@@ -120,7 +120,7 @@ document.addEventListener("keydown", function (event) {
                             {{ clusteredPrecinct.municipality.join(", ") }}
                         </td>
                     </tr>
-                    <tr>
+                    <tr v-if="clusteredPrecinct.report_level != 'province'">
                         <td class="w-[100px] font-semibold">POSITION:</td>
                         <td class="indent-0.5">
                             {{ clusteredPrecinct.position.join(", ") }}
@@ -200,7 +200,7 @@ document.addEventListener("keydown", function (event) {
                                     "
                                 >
                                     <td
-                                        class="py-0 font-semibold text-gray-600 text-xl whitespace-normal md:whitespace-nowrap"
+                                        class="py-0 font-semibold text-gray-600 text-[20px] whitespace-nowrap"
                                         colspan="2"
                                     >
                                         Municipality of {{ cp.municipality }}
@@ -213,7 +213,7 @@ document.addEventListener("keydown", function (event) {
                                     "
                                 >
                                     <td
-                                        class="py-0 font-semibold text-gray-600 text-xl whitespace-normal md:whitespace-nowrap"
+                                        class="py-0 font-semibold text-gray-600 text-[20px] whitespace-nowrap"
                                         colspan="2"
                                     >
                                         {{ cp.municipality }}
@@ -239,7 +239,7 @@ document.addEventListener("keydown", function (event) {
                             >
                                 <tr>
                                     <td
-                                        class="py-0 w-[140px] text-xl text-gray-600 font-semibold whitespace-normal md:whitespace-nowrap"
+                                        class="py-0 w-[140px] text-[20px] text-gray-600 font-semibold whitespace-nowrap"
                                         colspan="2"
                                     >
                                         <span
@@ -648,7 +648,6 @@ document.addEventListener("keydown", function (event) {
 <style>
 @media print {
     @page {
-        size: A4;
         margin: 16px 0;
     }
     .break-page {

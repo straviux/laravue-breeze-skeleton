@@ -103,6 +103,13 @@ function resetForm() {
     model.value.municipalities = [];
     model.value.barangays = [];
     // model.value.district = null;
+    // model.value.positions = filteredPositions.value;
+    allCitySelected.value = false;
+}
+function resetButton() {
+    model.value.municipalities = [];
+    model.value.barangays = [];
+    // model.value.district = null;
     model.value.positions = filteredPositions.value;
     allCitySelected.value = false;
 }
@@ -128,7 +135,7 @@ function toggleAllPosition() {
 function toggleMunicipality() {
     allCitySelected.value = false;
     model.value.barangays = [];
-    model.value.positions = filteredPositions.value.flatMap((p) => p);
+    // model.value.positions = filteredPositions.value.flatMap((p) => p);
     if (model.value.report_level == "barangay") {
         clusteredPrecinct.getBarangay(model.value.municipalities);
     }
@@ -194,7 +201,9 @@ onMounted(() => {
             <!-- Report Options -->
             <div class="grid grid-cols-2 border rounded m-4 px-1">
                 <div class="py-2">
-                    <label class="flex p-2 cursor-pointer gap-1">
+                    <label
+                        class="flex p-2 cursor-pointer gap-1 whitespace-nowrap"
+                    >
                         <input
                             class="my-auto radio radio-xs"
                             type="radio"
@@ -204,7 +213,7 @@ onMounted(() => {
                             @change="resetForm"
                         />
                         <span class="label-text uppercase text-xs"
-                            >Provice (Overall)</span
+                            >Province (Overall)</span
                         >
                     </label>
                 </div>
@@ -516,12 +525,21 @@ onMounted(() => {
             <div class="flex py-6">
                 <button
                     class="btn mx-auto rounded w-[130px] shadow-lg"
-                    @click="resetForm"
+                    @click="resetButton"
                 >
                     Reset
                 </button>
                 <button
                     class="btn mx-auto btn-success text-white w-[130px] rounded shadow-lg"
+                    :class="
+                        (model.report_level == 'municipality' &&
+                            !model.municipalities.length) ||
+                        (model.report_level == 'barangay' &&
+                            !model.barangays.length) ||
+                        !model.positions.length
+                            ? 'btn-disabled'
+                            : ''
+                    "
                     @click="clusteredPrecinct.getResult(model)"
                 >
                     Generate
