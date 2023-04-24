@@ -90,7 +90,7 @@ document.addEventListener("keydown", function (event) {
         <!-- moon icon -->
         <mdicon name="eye-off-outline" class="swap-off text-gray-50" />
     </label>
-    <div id="printContent">
+    <div id="printContent" v-if="clusteredPrecinct">
         <div class="printHeader hidden -mt-2">
             <div class="text-center">
                 <span class="font-semibold text-2xl uppercase"
@@ -161,12 +161,7 @@ document.addEventListener("keydown", function (event) {
                                     'municipality'
                                 "
                             >
-                                <tr
-                                    v-if="
-                                        cp.municipality !=
-                                        'PUERTO PRINCESA CITY'
-                                    "
-                                >
+                                <tr v-if="!/CITY/i.test(cp.municipality)">
                                     <td
                                         class="py-0 font-semibold text-gray-600 text-xl whitespace-normal md:whitespace-nowrap"
                                         colspan="2"
@@ -174,12 +169,7 @@ document.addEventListener("keydown", function (event) {
                                         Municipality of {{ cp.municipality }}
                                     </td>
                                 </tr>
-                                <tr
-                                    v-if="
-                                        cp.municipality ==
-                                        'PUERTO PRINCESA CITY'
-                                    "
-                                >
+                                <tr v-else>
                                     <td
                                         class="py-0 font-semibold text-gray-600 text-xl"
                                         colspan="2"
@@ -193,12 +183,7 @@ document.addEventListener("keydown", function (event) {
                                     clusteredPrecinct.report_level == 'barangay'
                                 "
                             >
-                                <tr
-                                    v-if="
-                                        cp.municipality !=
-                                        'PUERTO PRINCESA CITY'
-                                    "
-                                >
+                                <tr v-if="!/CITY/i.test(cp.municipality)">
                                     <td
                                         class="py-0 font-semibold text-gray-600 text-[20px] whitespace-nowrap"
                                         colspan="2"
@@ -206,12 +191,7 @@ document.addEventListener("keydown", function (event) {
                                         Municipality of {{ cp.municipality }}
                                     </td>
                                 </tr>
-                                <tr
-                                    v-if="
-                                        cp.municipality ==
-                                        'PUERTO PRINCESA CITY'
-                                    "
-                                >
+                                <tr v-else>
                                     <td
                                         class="py-0 font-semibold text-gray-600 text-[20px] whitespace-nowrap"
                                         colspan="2"

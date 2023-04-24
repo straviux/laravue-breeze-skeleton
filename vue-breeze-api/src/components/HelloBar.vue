@@ -1,11 +1,14 @@
 <template>
     <div class="flex flex-col md:flex-row gap-10 justify-between items-center">
         <div>
-            <h1
-                class="font-extrabold text-4xl text-blueGray-700 drop-shadow-lg"
-            >
+            <h1 class="font-extrabold text-4xl text-gray-700 drop-shadow-lg">
                 2022 National and Local Elections Results
             </h1>
+            <h2
+                class="font-bold text-3xl uppercase text-gray-700 drop-shadow-lg"
+            >
+                Province of {{ clusteredPrecinct.province }}
+            </h2>
             <p>
                 <iframe
                     src="https://free.timeanddate.com/clock/i8sjc6kt/n4159/tlph/fc555/tct/pct/ahl/tt0/tw0/td2/ta1/tb2"
@@ -22,40 +25,45 @@
       >
         Add Post
       </button> -->
-            <!-- <div class="flex justify-center items-center" v-if="authStore.user">
+            <div class="flex justify-center items-center">
                 <button
-                    @click="authStore.handleLogout"
+                    @click="clusteredPrecinct.logout"
                     class="text-sm px-2 text-red-500 underline rounded-full flex gap-1 drop-shadow-lg"
                 >
                     <mdicon name="logout-variant" width="15px" />
                     <span class="font-bold drop-shadow-lg">Log out</span>
                 </button>
-            </div> -->
+            </div>
         </div>
     </div>
 </template>
 <script setup>
+import { clusteredPrecinctStore } from "../store/clustered_precinct_result";
+const clusteredPrecinct = clusteredPrecinctStore();
 // import store from "../store";
 // import { useRouter } from "vue-router";
-import { useAuthStore } from "../store/auth";
-const authStore = useAuthStore();
+// import { useAuthStore } from "../store/auth";
+// const authStore = useAuthStore();
 
-const getDateTime = () => {
-    const current = new Date();
-    const date =
-        current.getFullYear() +
-        "-" +
-        (current.getMonth() + 1) +
-        "-" +
-        current.getDate();
-    const time =
-        current.getHours() +
-        ":" +
-        current.getMinutes() +
-        ":" +
-        current.getSeconds();
-    const dateTime = date + " " + time;
+// const getDateTime = () => {
+//     const current = new Date();
+//     const date =
+//         current.getFullYear() +
+//         "-" +
+//         (current.getMonth() + 1) +
+//         "-" +
+//         current.getDate();
+//     const time =
+//         current.getHours() +
+//         ":" +
+//         current.getMinutes() +
+//         ":" +
+//         current.getSeconds();
+//     const dateTime = date + " " + time;
 
-    return dateTime;
-};
+//     return dateTime;
+// };
+// function logout() {
+//     clusteredPrecinct.$reset();
+// }
 </script>

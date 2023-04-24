@@ -12,7 +12,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
             formJpmSummary:null,
             formVerifyAccess:false,
             formAccessCode:null,
-            // formDistrict:null,
+            formProvince:null,
             formPosition:null,
             formMunicipality:null,
             formReportLevel:null,
@@ -29,6 +29,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
         // district: (state)=> state.district,\
         jpm_summary:(state)=>state.formJpmSummary,
         is_loading:(state)=>state.loading,
+        province:(state)=>state.formProvince,
         access_code: (state)=>state.formAccessCode,
         verify_access: (state)=>state.formVerifyAccess,
         barangay: (state) => state.formBarangay,
@@ -68,13 +69,13 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                         for(let i=0;i<formData.municipalities.length;i++) {
                             queryParam +=`municipalities[]=${formData.municipalities[i]}&`;
                         }
-                        fetch("http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_municipality?"+ queryParam).then((response) => {
-                            return response.json();
-                        })
-                        .then((res) => {
-                            // console.log(res);
-                            this.formJpmSummary = res;
-                        })
+                        // fetch("http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_municipality?"+ queryParam).then((response) => {
+                        //     return response.json();
+                        // })
+                        // .then((res) => {
+                        //     // console.log(res);
+                        //     this.formJpmSummary = res;
+                        // })
                     }
 
                     // console.log(jpm_members);
@@ -120,6 +121,24 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
             }
         },
 
+        async getMunicipality(province) {
+            if(province)
+            {
+                try {
+                    // this.getToken();
+
+                    const data = await axios.get("/api/v1/municipality-by-province", {params: {
+                        province: province
+                    }});
+                    // console.log(data)
+                    this.formMunicipality = data.data;
+
+                } catch (error) {
+                    // console.log(error);
+                }
+            }
+        },
+
         async verifyAccess (data) {
             this.resultErrors = [];
             this.loading = true;
@@ -128,13 +147,15 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                 const res = await axios.post("/api/v1/verify-access-code", {
                     access_code: data.access_code
                 });
-                // console.log(res.data);
+                // console.log(res.data.data);
 
                 // this.router.push("/");
                 if(res.data.success) {
+                    this.getMunicipality(res.data.data.province);
                     this.loading = false;
                     this.formVerifyAccess=res.data.success;
-                    this.formAccessCode=data.access_code;
+                    this.formProvince=res.data.data.province;
+                    this.formAccessCode=res.data.data.access_code;
                     if(this.router.currentRoute.value.name!=='Home'&&this.router.currentRoute.value.name!=='Results') {
                         this.router.push("/");
                     }
@@ -142,6 +163,28 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                 } else {
                     this.router.push("/verify-access");
                 }
+
+            } catch (error) {
+
+                // if(error.response.status===422) {
+                //     console.log(error.response.data)
+                //     this.resultErrors = error.response.data.errors;
+                // } else {
+                //     console.log(error)
+                // }
+            }
+
+        },
+
+        logout () {
+            // this.resultErrors = [];
+            this.loading = true;
+            try {
+                // this.getToken();
+
+                // console.log(res.data.data);
+                this.$reset();
+                this.router.push("/verify-access");
 
             } catch (error) {
 

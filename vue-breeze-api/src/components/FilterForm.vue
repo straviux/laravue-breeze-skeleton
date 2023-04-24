@@ -76,7 +76,10 @@ const filteredPositions = computed(() => {
         model.value.report_level === "district" ||
         model.value.report_level === "province"
     ) {
-        valuesToRemove = ["MAYOR", "VICE-MAYOR", "COUNCILOR"];
+        valuesToRemove =
+            clusteredPrecinct.province == "PALAWAN"
+                ? ["MAYOR", "VICE-MAYOR", "COUNCILOR"]
+                : [];
         return positions.filter((pos) => !valuesToRemove.includes(pos));
     } else {
         valuesToRemove = ["GOVERNOR", "VICE-GOVERNOR", "BOARD MEMBER"];
@@ -93,10 +96,23 @@ const filteredPositions = computed(() => {
 });
 
 const municipalities = computed(() => {
-    const district = congressionalDistricts.find(
-        (d) => d.id == model.value.district
-    );
-    return district ? district.municipalities : [];
+    if (clusteredPrecinct.province == "PALAWAN") {
+        const district = congressionalDistricts.find(
+            (d) => d.id == model.value.district
+        );
+        return district ? district.municipalities : [];
+    } else {
+        // let m = clusteredPrecinct.municipality;
+        if (Array.isArray(clusteredPrecinct.municipality)) {
+            let m = clusteredPrecinct.municipality.map((m) => {
+                return m.municipality_name ?? m;
+            });
+            return m;
+        } else {
+            let m = [clusteredPrecinct.municipality];
+            return m;
+        }
+    }
 });
 
 function resetForm() {
@@ -189,6 +205,8 @@ onMounted(() => {
     //         document.activeElement.blur();
     //     });
     // });
+    // console.log(clusteredPrecinct.province);
+    // clusteredPrecinct.getMunicipality(clusteredPrecinct.province);
 });
 </script>
 <template>
@@ -200,7 +218,10 @@ onMounted(() => {
 
             <!-- Report Options -->
             <div class="grid grid-cols-2 border rounded m-4 px-1">
-                <div class="py-2">
+                <div
+                    class="py-2"
+                    v-if="clusteredPrecinct.province == 'PALAWAN'"
+                >
                     <label
                         class="flex p-2 cursor-pointer gap-1 whitespace-nowrap"
                     >
@@ -217,7 +238,10 @@ onMounted(() => {
                         >
                     </label>
                 </div>
-                <div class="py-2">
+                <div
+                    class="py-2"
+                    v-if="clusteredPrecinct.province == 'PALAWAN'"
+                >
                     <label class="flex p-2 cursor-pointer gap-1">
                         <input
                             class="my-auto radio radio-xs"
@@ -268,7 +292,10 @@ onMounted(() => {
             <!-- District -->
             <div
                 class="flex border rounded m-4 px-1"
-                v-if="model.report_level !== 'province'"
+                v-if="
+                    model.report_level !== 'province' &&
+                    clusteredPrecinct.province == 'PALAWAN'
+                "
             >
                 <div
                     class="py-3 my-auto px-2 w-[120px] border-gray-300 text-gray-600 text-xs font-semibold"

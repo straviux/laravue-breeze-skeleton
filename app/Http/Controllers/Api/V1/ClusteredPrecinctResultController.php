@@ -379,6 +379,12 @@ class ClusteredPrecinctResultController extends Controller
         return $result;
     }
 
+    public function getMunicipalityByProvince(Request $request)
+    {
+        $result = ClusteredPrecinctResult::select('municipality_name')->distinct()->where('province_name', $request['province'])->get();
+        return $result;
+    }
+
     private function getAllResultByPosition($position = null, $municipalities = [])
     {
 
