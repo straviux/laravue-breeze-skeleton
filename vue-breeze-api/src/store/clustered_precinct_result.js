@@ -151,7 +151,11 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
 
                 // this.router.push("/");
                 if(res.data.success) {
-                    this.getMunicipality(res.data.data.province);
+                    if(res.data.data.municipality && res.data.data.municipality!='') {
+                        this.getMunicipality(res.data.data.province);
+                    } else {
+                        this.formMunicipality = res.data.data.municipality;
+                    }
                     this.loading = false;
                     this.formVerifyAccess=res.data.success;
                     this.formProvince=res.data.data.province;

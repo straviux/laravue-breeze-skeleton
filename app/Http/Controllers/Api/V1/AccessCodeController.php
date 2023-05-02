@@ -11,7 +11,7 @@ class AccessCodeController extends Controller
     //
     public function verifyAccessCode(Request $request)
     {
-        $result = AccessCode::select('access_code', 'province')->where('access_code', $request['access_code'])->get();
+        $result = AccessCode::select('access_code', 'province', 'municipality')->where('access_code', $request['access_code'])->get();
         if (count($result)) {
             return ['success' => true, 'message' => 'access verified', 'data' => $result[0]];
         } else {
