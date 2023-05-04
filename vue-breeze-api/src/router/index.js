@@ -27,10 +27,10 @@ const routes = [
     //     component: ()=>import('../components/Register.vue')
     // },
 
-    // {
-    //     path:'/results',
-    //     component: ()=>import('../components/Results.vue')
-    // }
+    {
+        path:'/controlpanel',
+        component: ()=>import('../components/ControlPanel/Index.vue')
+    }
 
 ];
 

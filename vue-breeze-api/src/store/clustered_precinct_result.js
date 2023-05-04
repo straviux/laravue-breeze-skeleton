@@ -82,13 +82,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                         for(let i=0;i<formData.municipalities.length;i++) {
                             queryParam +=`municipalities[]=${formData.municipalities[i]}&`;
                         }
-                        // fetch("http://assistance.jpmpalawan.org/mobi/jpm/ajax_get_member_summary_by_municipality?"+ queryParam).then((response) => {
-                        //     return response.json();
-                        // })
-                        // .then((res) => {
-                        //     // console.log(res);
-                        //     this.formJpmSummary = res;
-                        // })
+
                     }
 
                     // console.log(jpm_members);
@@ -96,7 +90,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     if(data.status===200) {
                         this.loading = false;
                     }
-                    this.formVisitCount+=1;
+                    this.formVisitCount++;
                     this.precinctResult = data.data;
                     this.formReportLevel = formData.report_level;
                     this.formDistrict = formData.district
