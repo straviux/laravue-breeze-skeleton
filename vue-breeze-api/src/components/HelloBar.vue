@@ -1,15 +1,17 @@
 <template>
     <div class="flex flex-col md:flex-row gap-10 justify-between items-center">
         <div>
-            <h1 class="font-extrabold text-4xl text-gray-700 drop-shadow-lg">
+            <h1
+                class="font-bold md:font-extrabold text-xl md:text-3xl text-gray-700 drop-shadow-lg"
+            >
                 2022 National and Local Elections Results
             </h1>
             <h2
-                class="font-bold text-3xl uppercase text-gray-700 drop-shadow-lg"
+                class="font-bold text-center md:text-left text-xl md:text-3xl uppercase text-gray-700 drop-shadow-lg"
             >
                 Province of {{ clusteredPrecinct.province }}
             </h2>
-            <p>
+            <p class="mx-auto w-48 px-1 md:mx-0 mt-1">
                 <iframe
                     src="https://free.timeanddate.com/clock/i8sjc6kt/n4159/tlph/fc555/tct/pct/ahl/tt0/tw0/td2/ta1/tb2"
                     frameborder="0"

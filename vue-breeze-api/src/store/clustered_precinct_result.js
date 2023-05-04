@@ -9,9 +9,10 @@ axios.create({
 export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
     state: () => (
         {
-            formJpmSummary:null,
+            // formJpmSummary:null,
             formVerifyAccess:false,
             formAccessCode:null,
+            formVisitCount:0,
             formProvince:null,
             formPosition:null,
             formMunicipality:null,
@@ -19,18 +20,29 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
             formBarangay:null,
             precinctResult: null,
             formDistrict: null,
+            limited_access:false,
             loading:false,
             resultErrors:[]
         }
     ),
-    persist: true,
+    persist: {
+        // storage: sessionStorage,
+        paths: [
+            'formAccessCode','formVerifyAccess',
+            'formProvince','formPosition',
+            'formMunicipality','formReportLevel',
+            'formBarangay','precinctResult',
+            'formDistrict','limited_access'],
+    },
 
     getters: {
         // district: (state)=> state.district,\
-        jpm_summary:(state)=>state.formJpmSummary,
+        has_limited_access:(state)=>state.limited_access,
+        // jpm_summary:(state)=>state.formJpmSummary,
         is_loading:(state)=>state.loading,
         province:(state)=>state.formProvince,
         access_code: (state)=>state.formAccessCode,
+        visit_count: (state)=>state.formVisitCount,
         verify_access: (state)=>state.formVerifyAccess,
         barangay: (state) => state.formBarangay,
         report_level: (state)=>state.formReportLevel,
@@ -58,6 +70,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     // this.getToken();
 
                     const data = await axios.get("/api/v1/clustered-precinct-results", {params: {
+                        access_code:this.formAccessCode,
                         municipality: formData.municipalities,
                         position: formData.positions,
                         barangay: formData.barangays,
@@ -83,6 +96,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     if(data.status===200) {
                         this.loading = false;
                     }
+                    this.formVisitCount+=1;
                     this.precinctResult = data.data;
                     this.formReportLevel = formData.report_level;
                     this.formDistrict = formData.district
@@ -151,21 +165,28 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
 
                 // this.router.push("/");
                 if(res.data.success) {
-                    if(res.data.data.municipality && res.data.data.municipality!='') {
+                    if(!res.data.data.municipality) {
                         this.getMunicipality(res.data.data.province);
                     } else {
                         this.formMunicipality = res.data.data.municipality;
+                        this.limited_access = true;
                     }
                     this.loading = false;
                     this.formVerifyAccess=res.data.success;
                     this.formProvince=res.data.data.province;
                     this.formAccessCode=res.data.data.access_code;
+                    this.formVisitCount=res.data.data.visit_count;
                     if(this.router.currentRoute.value.name!=='Home'&&this.router.currentRoute.value.name!=='Results') {
                         this.router.push("/");
                     }
 
                 } else {
-                    this.router.push("/verify-access");
+                    if(this.router.currentRoute.value.name==='verify-access') {
+                        this.resultErrors.push(res.data.message);
+                    } else {
+                        this.router.push("/verify-access");
+                    }
+
                 }
 
             } catch (error) {

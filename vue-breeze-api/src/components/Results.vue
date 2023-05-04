@@ -620,9 +620,9 @@ document.addEventListener("keydown", function (event) {
     <button
         title="Print"
         @click="printReport"
-        class="no-print fixed z-[1000] bottom-10 right-8 bg-red-400 w-16 h-16 rounded-full drop-shadow-lg flex justify-center items-center text-white text-4xl hover:bg-green-400 hover:drop-shadow-2xl hover:animate-bounce duration-300"
+        class="no-print fixed z-[1000] bottom-6 md:bottom-10 right-8 bg-red-400 md:w-16 md:h-16 rounded-full drop-shadow-lg flex justify-center items-center text-white text-4xl hover:bg-green-400 hover:drop-shadow-2xl hover:animate-bounce duration-300 w-12 h-12"
     >
-        <mdicon name="printer" size="40" />
+        <mdicon name="printer" size="36" />
     </button>
 </template>
 <style>

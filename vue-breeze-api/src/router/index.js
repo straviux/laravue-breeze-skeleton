@@ -19,6 +19,7 @@ const routes = [
     },
     {
         path:'/verify-access',
+        name:'verify-access',
         component: ()=>import('../components/VerifyAccess.vue')
     },
     // {

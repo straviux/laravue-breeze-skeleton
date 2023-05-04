@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ClusteredPrecinctResult;
 // use App\Http\Resources\V1\ClusteredPrecinctResultResource;
+use App\Models\AccessCode;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 
 class ClusteredPrecinctResultController extends Controller
@@ -13,6 +15,7 @@ class ClusteredPrecinctResultController extends Controller
     //
     public function index(Request $request)
     {
+        AccessCode::where('access_code', $request['access_code'])->increment('visit_count', 1, ['updated_at' => Carbon::now()]);
 
         // $municipality = implode(',', $request['municipality']);
         // $municipality = strtoupper($municipality);

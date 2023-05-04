@@ -18,7 +18,10 @@ class AccessCodeResource extends JsonResource
         return [
             // 'res_id' => $this->res_id,
             'access_code' => $this->access_code,
-
+            'province' => $this->province,
+            'municipality' => $this->municipality,
+            'is_accessible' => $this->is_accessible,
+            'visit_count' => $this->visit_count
         ];
     }
 }

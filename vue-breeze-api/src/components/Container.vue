@@ -20,7 +20,11 @@ onMounted(async () => {
 </script>
 
 <template>
-    <Loader v-if="clusteredPrecinct.is_loading" :isFullScreen="true" />
+    <Loader
+        v-if="clusteredPrecinct.is_loading"
+        :isFullScreen="true"
+        key="loader"
+    />
     <div class="grid grid-cols-12 h-screen">
         <div
             class="col-span-12 bg-stone-50 flex flex-col lg:flex-row md:divide-x-2"

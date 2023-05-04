@@ -121,6 +121,7 @@ function resetForm() {
     // model.value.district = null;
     // model.value.positions = filteredPositions.value;
     allCitySelected.value = false;
+    setLimitedAccessDefault();
 }
 function resetButton() {
     model.value.municipalities = [];
@@ -128,6 +129,7 @@ function resetButton() {
     // model.value.district = null;
     model.value.positions = filteredPositions.value;
     allCitySelected.value = false;
+    setLimitedAccessDefault();
 }
 
 function toggleAllCity() {
@@ -152,6 +154,7 @@ function toggleMunicipality() {
     allCitySelected.value = false;
     model.value.barangays = [];
     // model.value.positions = filteredPositions.value.flatMap((p) => p);
+
     if (model.value.report_level == "barangay") {
         clusteredPrecinct.getBarangay(model.value.municipalities);
     }
@@ -196,8 +199,23 @@ function resetPosition() {
     // model.value.municipalities = [];
 }
 
+function setLimitedAccessDefault() {
+    if (clusteredPrecinct.has_limited_access) {
+        if (model.value.report_level !== "barangay") {
+            allCitySelected.value = true;
+            toggleAllCity();
+        } else {
+            model.value.municipalities = clusteredPrecinct.municipality;
+            clusteredPrecinct.getBarangay(model.value.municipalities);
+        }
+    }
+}
 onMounted(() => {
     model.value.positions = filteredPositions.value.flatMap((p) => p);
+    if (clusteredPrecinct.has_limited_access) {
+        model.value.report_level = "municipality";
+        setLimitedAccessDefault();
+    }
 
     // const dropdownContent = document.querySelectorAll(".oneclick-dropdown>li");
     // dropdownContent.forEach((element) => {
@@ -211,13 +229,21 @@ onMounted(() => {
 </script>
 <template>
     <div class="relative">
+        <button
+            class="text-sm px-2 text-gray-500 rounded-full flex gap-1 drop-shadow-lg"
+        >
+            <mdicon name="chart-box-outline" width="15px" />
+            <span class="font-bold"
+                >Generated {{ clusteredPrecinct.visit_count }}x</span
+            >
+        </button>
         <form @submit.prevent="">
-            <p class="m-4 px-1 mb-4 text-sm font-semibold">
-                Select geographical level and voting jurisdiction:
+            <p class="mx-4 mt-4 px-1 text-[14px] font-semibold text-gray-600">
+                Report level:
             </p>
 
             <!-- Report Options -->
-            <div class="grid grid-cols-2 border rounded m-4 px-1">
+            <div class="grid grid-cols-2 border rounded mx-4 my-2 px-1">
                 <div
                     class="py-2"
                     v-if="clusteredPrecinct.province == 'PALAWAN'"
@@ -263,6 +289,7 @@ onMounted(() => {
                             type="radio"
                             name="report_level"
                             value="municipality"
+                            ref="municipalityRadioBtn"
                             v-model="model.report_level"
                             @change="resetForm"
                         />
@@ -336,8 +363,20 @@ onMounted(() => {
                 >
                     Municipality
                 </div>
-
-                <div class="w-full dropdown dropdown-bottom">
+                <div
+                    v-if="
+                        clusteredPrecinct.has_limited_access &&
+                        clusteredPrecinct.municipality
+                    "
+                    class="w-auto mx-auto btn bg-transparent btn-sm btn-block text-gray-800 m-1 hover:bg-transparent border-0 text-[10px]"
+                >
+                    {{
+                        Array.isArray(clusteredPrecinct.municipality)
+                            ? clusteredPrecinct.municipality[0]
+                            : clusteredPrecinct.municipality
+                    }}
+                </div>
+                <div v-else class="w-full dropdown dropdown-bottom">
                     <label
                         tabindex="0"
                         class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-transparent border-0 text-[10px]"
@@ -394,7 +433,10 @@ onMounted(() => {
                     </ul>
                 </div>
             </div>
-            <div class="px-4 flex items-center justify-center">
+            <div
+                class="px-4 flex items-center justify-center"
+                v-if="!clusteredPrecinct.has_limited_access"
+            >
                 <div
                     class="grid gap-1 grid-cols-3"
                     v-if="model.report_level == 'municipality'"
@@ -442,6 +484,20 @@ onMounted(() => {
                         tabindex="0"
                         class="dropdown-content p-1 shadow bg-base-100 rounded-box w-full absolute z-[1000] min-w-max list-none overflow-y-auto h-[350px]"
                     >
+                        <li>
+                            <label
+                                class="cursor-pointer block w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
+                            >
+                                <input
+                                    type="checkbox"
+                                    class="checkbox checkbox-sm"
+                                    id="all"
+                                    v-model="allPositionSelected"
+                                    @change="toggleAllPosition"
+                                />
+                                <span class="label-text text-xs">ALL</span>
+                            </label>
+                        </li>
                         <li
                             v-for="(b, i) in clusteredPrecinct.barangay"
                             :key="i"

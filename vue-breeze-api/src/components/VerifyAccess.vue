@@ -36,7 +36,8 @@ const form = ref({
                                     autocomplete="off"
                                     id="access_code"
                                     name="access_code"
-                                    type="text"
+                                    type="password"
+                                    required
                                     v-model="form.access_code"
                                     class="peer placeholder-transparent h-10 w-full border-b-2 border-gray-300 text-gray-900 focus:outline-none focus:borer-rose-600"
                                     placeholder="access_code"
@@ -47,17 +48,24 @@ const form = ref({
                                     >Access Code</label
                                 >
 
-                                <!-- <div v-if="authStore.errors.username">
-                                    <span class="text-red-400 text-xs"
-                                        >Something went wrong, please try
-                                        again</span
+                                <div
+                                    v-if="clusteredPrecinct.resultErrors.length"
+                                >
+                                    <p
+                                        class="text-red-400 text-[14px] mt-2 text-center"
+                                        v-for="(
+                                            err, i
+                                        ) in clusteredPrecinct.resultErrors"
+                                        :key="i"
                                     >
-                                </div> -->
+                                        *{{ err }}
+                                    </p>
+                                </div>
                             </div>
 
                             <div class="relative">
                                 <button
-                                    class="hover:shadow hover:bg-blue-400 bg-blue-500 btn-block text-white rounded-md px-4 py-1 mt-4"
+                                    class="hover:shadow-lg hover:bg-blue-500 bg-blue-400 btn-block text-white rounded px-4 py-1 mt-4"
                                 >
                                     Verify
                                 </button>
