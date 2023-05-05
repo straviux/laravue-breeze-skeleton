@@ -10,6 +10,7 @@ const model = ref({
     report_level: "province",
 });
 const allCitySelected = ref(false);
+const allBarangaySelected = ref(false);
 const allPositionSelected = ref(true);
 const congressionalDistricts = [
     {
@@ -139,6 +140,16 @@ function toggleAllCity() {
         );
     } else {
         model.value.municipalities = [];
+    }
+}
+
+function toggleAllBarangay() {
+    if (allBarangaySelected.value) {
+        model.value.barangays = clusteredPrecinct.barangay.flatMap(
+            (b) => b.barangay_name
+        );
+    } else {
+        model.value.barangays = [];
     }
 }
 
@@ -492,8 +503,8 @@ onMounted(() => {
                                     type="checkbox"
                                     class="checkbox checkbox-sm"
                                     id="all"
-                                    v-model="allPositionSelected"
-                                    @change="toggleAllPosition"
+                                    v-model="allBarangaySelected"
+                                    @change="toggleAllBarangay"
                                 />
                                 <span class="label-text text-xs">ALL</span>
                             </label>

@@ -158,7 +158,8 @@ document.addEventListener("keydown", function (event) {
                             <template
                                 v-if="
                                     clusteredPrecinct.report_level ==
-                                    'municipality'
+                                        'municipality' ||
+                                    clusteredPrecinct.report_level == 'barangay'
                                 "
                             >
                                 <tr v-if="!/CITY/i.test(cp.municipality)">
@@ -183,7 +184,7 @@ document.addEventListener("keydown", function (event) {
                                     clusteredPrecinct.report_level == 'barangay'
                                 "
                             >
-                                <tr v-if="!/CITY/i.test(cp.municipality)">
+                                <!-- <tr v-if="!/CITY/i.test(cp.municipality)">
                                     <td
                                         class="py-0 font-semibold text-gray-600 text-[20px] whitespace-nowrap"
                                         colspan="2"
@@ -198,7 +199,7 @@ document.addEventListener("keydown", function (event) {
                                     >
                                         {{ cp.municipality }}
                                     </td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <td
                                         class="py-0 w-[140px] text-gray-600 text-xs font-semibold"
