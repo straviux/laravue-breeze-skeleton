@@ -103,25 +103,25 @@ document.addEventListener("keydown", function (event) {
             <div class="px-4 py-2 mx-auto">
                 <table class="headerTable">
                     <tr>
-                        <td class="w-[100px] font-semibold">DATE GENERATED:</td>
+                        <td class="w-[120px] font-semibold">DATE GENERATED:</td>
                         <td class="uppercase indent-0.5">
                             {{ today }}
                         </td>
                     </tr>
                     <tr>
-                        <td class="w-[100px] font-semibold">REPORT LEVEL:</td>
+                        <td class="w-[120px] font-semibold">REPORT LEVEL:</td>
                         <td class="uppercase indent-0.5">
                             {{ clusteredPrecinct.report_level }}
                         </td>
                     </tr>
                     <tr v-if="clusteredPrecinct.report_level == 'municipality'">
-                        <td class="w-[100px] font-semibold">MUNICIPALITY:</td>
+                        <td class="w-[120px] font-semibold">MUNICIPALITY:</td>
                         <td class="indent-0.5">
                             {{ clusteredPrecinct.municipality.join(", ") }}
                         </td>
                     </tr>
                     <tr v-if="clusteredPrecinct.report_level != 'province'">
-                        <td class="w-[100px] font-semibold">POSITION:</td>
+                        <td class="w-[120px] font-semibold">POSITION:</td>
                         <td class="indent-0.5">
                             {{ clusteredPrecinct.position.join(", ") }}
                         </td>
@@ -132,6 +132,27 @@ document.addEventListener("keydown", function (event) {
         </div>
         <div class="no-print py-4"></div>
         <div class="bg-white px-6 lg:px-20 py-2 mx-auto relative uppercase">
+            <div
+                v-if="clusteredPrecinct.report_level == 'barangay'"
+                class="mb-2"
+            >
+                <div v-if="!/CITY/i.test(clusteredPrecinct.municipality)">
+                    <div
+                        class="py-0 font-semibold text-gray-600 text-xl md:text-2xl lg:text-3xl whitespace-normal md:whitespace-nowrap"
+                        colspan="2"
+                    >
+                        Municipality of {{ clusteredPrecinct.municipality }}
+                    </div>
+                </div>
+                <div v-else>
+                    <div
+                        class="py-0 font-semibold text-gray-600 text-xl md:text-2xl lg:text-3xl"
+                        colspan="2"
+                    >
+                        {{ clusteredPrecinct.municipality }}
+                    </div>
+                </div>
+            </div>
             <div
                 v-for="(cp, index) in clusteredPrecinct.result"
                 :key="index"
@@ -148,7 +169,7 @@ document.addEventListener("keydown", function (event) {
                             >
                                 <tr class="">
                                     <td
-                                        class="py-0 w-[140px] text-xl text-gray-600 font-semibold whitespace-normal md:whitespace-nowrap"
+                                        class="py-0 w-[140px] text-xl md:text-2xl lg:text-3xl text-gray-600 font-semibold whitespace-normal md:whitespace-nowrap"
                                         colspan="2"
                                     >
                                         Province of Palawan
@@ -158,13 +179,12 @@ document.addEventListener("keydown", function (event) {
                             <template
                                 v-if="
                                     clusteredPrecinct.report_level ==
-                                        'municipality' ||
-                                    clusteredPrecinct.report_level == 'barangay'
+                                    'municipality'
                                 "
                             >
                                 <tr v-if="!/CITY/i.test(cp.municipality)">
                                     <td
-                                        class="py-0 font-semibold text-gray-600 text-xl whitespace-normal md:whitespace-nowrap"
+                                        class="py-0 font-semibold text-gray-600 text-xl md:text-2xl lg:text-3xl whitespace-normal md:whitespace-nowrap"
                                         colspan="2"
                                     >
                                         Municipality of {{ cp.municipality }}
@@ -172,7 +192,7 @@ document.addEventListener("keydown", function (event) {
                                 </tr>
                                 <tr v-else>
                                     <td
-                                        class="py-0 font-semibold text-gray-600 text-xl"
+                                        class="py-0 font-semibold text-gray-600 text-xl md:text-2xl lg:text-3xl"
                                         colspan="2"
                                     >
                                         {{ cp.municipality }}
@@ -202,12 +222,12 @@ document.addEventListener("keydown", function (event) {
                                 </tr> -->
                                 <tr>
                                     <td
-                                        class="py-0 w-[140px] text-gray-600 text-xs font-semibold"
+                                        class="py-0 w-[140px] text-gray-600 text-sm md:text-base font-semibold"
                                     >
                                         Barangay:
                                     </td>
                                     <td
-                                        class="py-0 px-2 font-semibold text-gray-600"
+                                        class="py-0 px-2 font-semibold text-sm md:text-base text-gray-600"
                                     >
                                         {{ cp.barangay }}
                                     </td>
@@ -249,7 +269,7 @@ document.addEventListener("keydown", function (event) {
                             </template>
                             <tr>
                                 <td
-                                    class="py-0 w-[140px] text-gray-600 text-xs font-semibold"
+                                    class="py-0 w-[140px] text-gray-600 text-sm md:text-base font-semibold"
                                 >
                                     Registered Voters:
                                 </td>
@@ -265,7 +285,7 @@ document.addEventListener("keydown", function (event) {
                             </tr>
                             <tr>
                                 <td
-                                    class="py-0 w-[140px] text-gray-600 text-xs font-semibold"
+                                    class="py-0 w-[140px] text-gray-600 text-sm md:text-base font-semibold"
                                 >
                                     Total Turnout:
                                 </td>
@@ -277,7 +297,8 @@ document.addEventListener("keydown", function (event) {
                                             cp.result.stats[0].total_turnout
                                         )
                                     }}
-                                    <span class="font-normal text-xs"
+                                    <span
+                                        class="font-normal text-sm md:text-base"
                                         >&nbsp;({{
                                             percentage(
                                                 cp.result.stats[0]
@@ -290,7 +311,7 @@ document.addEventListener("keydown", function (event) {
                             </tr>
                             <tr v-if="toggleJPM">
                                 <td
-                                    class="py-0 w-[140px] text-gray-600 text-xs font-semibold"
+                                    class="py-0 w-[140px] text-gray-600 text-sm md:text-base font-semibold"
                                 >
                                     JPM Members:
                                 </td>
@@ -302,7 +323,8 @@ document.addEventListener("keydown", function (event) {
                                             cp.jpm_members.total_members
                                         )
                                     }}
-                                    <span class="font-normal text-xs"
+                                    <span
+                                        class="font-normal text-sm md:text-base"
                                         >&nbsp;({{
                                             percentage(
                                                 cp.jpm_members.total_members,
@@ -326,7 +348,7 @@ document.addEventListener("keydown", function (event) {
                                     colspan="4"
                                     class="bg-gray-100 text-gray-600"
                                 >
-                                    <p class="text-lg font-semibold">
+                                    <p class="text-lg md:text-xl font-semibold">
                                         {{ b.position }}
                                     </p>
                                 </th>
@@ -519,17 +541,17 @@ document.addEventListener("keydown", function (event) {
                                         #
                                     </th>
                                     <th
-                                        class="w-1/4 text-left text-xs bg-transparent text-gray-600"
+                                        class="w-1/4 text-left text-xs md:text-lg bg-transparent text-gray-600"
                                     >
                                         Candidate
                                     </th>
                                     <th
-                                        class="text-right text-xs bg-transparent text-gray-600"
+                                        class="text-right text-xs md:text-lg bg-transparent text-gray-600"
                                     >
                                         Votes
                                     </th>
                                     <th
-                                        class="text-right text-xs bg-transparent text-gray-600 hidden md:block"
+                                        class="text-right text-xs md:text-lg bg-transparent text-gray-600 hidden md:block"
                                     >
                                         Percentage
                                     </th>
@@ -543,21 +565,21 @@ document.addEventListener("keydown", function (event) {
                                     :key="i"
                                 >
                                     <td
-                                        class="p-1 md:p-2 text-[10px] md:text-xs text-gray-500 mb-4"
+                                        class="p-1 md:p-2 text-[10px] md:text-sm lg:text-base text-gray-500 mb-4"
                                     >
                                         {{ i + 1 }}.
                                     </td>
                                     <td
-                                        class="font-mono text-[11px] md:text-sm md:p-2"
+                                        class="font-mono text-[11px] md:text-sm lg:text-xl md:p-2 text-gray-600"
                                     >
                                         {{ c.candidate_name }}
                                     </td>
                                     <td
-                                        class="text-right text-[11px] md:text-sm md:p-2"
+                                        class="text-right text-[11px] md:text-base lg:text-lg md:p-2"
                                     >
                                         {{ numberWithCommas(c.total_votes) }}
                                         <span
-                                            class="font-normal text-[10px] md:hidden text-gray-500"
+                                            class="font-normal text-[10px] md:hidden no-print text-gray-500"
                                             >({{
                                                 percentage(
                                                     c.total_votes,
@@ -567,7 +589,7 @@ document.addEventListener("keydown", function (event) {
                                         >
                                     </td>
                                     <td
-                                        class="text-right text-[11px] md:text-sm md:p-2 hidden md:block"
+                                        class="text-right text-[11px] md:text-base lg:text-lg md:p-2 hidden md:block"
                                     >
                                         {{
                                             percentage(
@@ -589,13 +611,13 @@ document.addEventListener("keydown", function (event) {
                                     "
                                 >
                                     <td
-                                        class="font-semibold text-right bg-gray-100 text-gray-600 text-xs md:text-sm"
+                                        class="font-semibold text-right bg-gray-100 text-gray-600 text-xs md:text-base lg:text-lg"
                                         colspan="2"
                                     >
                                         Total
                                     </td>
                                     <td
-                                        class="font-semibold text-right bg-gray-100 text-gray-600 text-xs md:text-sm"
+                                        class="font-semibold text-right bg-gray-100 text-gray-600 text-xs md:text-base lg:text-lg"
                                     >
                                         {{
                                             numberWithCommas(
@@ -604,7 +626,7 @@ document.addEventListener("keydown", function (event) {
                                         }}
                                     </td>
                                     <td
-                                        class="font-semibold text-right bg-gray-100 text-gray-600 text-xs md:text-sm hidden md:block"
+                                        class="font-semibold text-right bg-gray-100 text-gray-600 text-xs md:text-base lg:text-lg hidden md:block"
                                     >
                                         100%
                                     </td>
@@ -641,6 +663,10 @@ document.addEventListener("keydown", function (event) {
     .print-content * {
         color: #333 !important;
     }
+
+    .print-content .hidden {
+        display: block;
+    }
     .headerTable {
         border-collapse: collapse;
     }
@@ -648,7 +674,7 @@ document.addEventListener("keydown", function (event) {
         vertical-align: top;
         padding: 0;
         margin: 0;
-        font-size: 11px;
+        font-size: 12px;
     }
     .contentTable {
         padding: 0 12px;
@@ -662,7 +688,7 @@ document.addEventListener("keydown", function (event) {
     }
     .contentTable td {
         vertical-align: top;
-        font-size: 12px;
+        font-size: 14px;
         padding: 1px 2px;
     }
     .contentTable .tfooter td {

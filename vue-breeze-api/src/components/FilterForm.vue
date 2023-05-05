@@ -240,14 +240,14 @@ onMounted(() => {
 </script>
 <template>
     <div class="relative">
-        <button
+        <!-- <button
             class="text-sm px-2 text-gray-500 rounded-full flex gap-1 drop-shadow-lg"
         >
             <mdicon name="chart-box-outline" width="15px" />
             <span class="font-bold"
                 >Generated {{ clusteredPrecinct.visit_count }}x</span
             >
-        </button>
+        </button> -->
         <form @submit.prevent="">
             <p class="mx-4 mt-4 px-1 text-[14px] font-semibold text-gray-600">
                 Report level:
