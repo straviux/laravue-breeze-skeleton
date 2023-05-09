@@ -29,7 +29,12 @@ const routes = [
 
     {
         path:'/controlpanel',
-        component: ()=>import('../components/ControlPanel/Index.vue')
+        component: ()=>import('../components/ControlPanel/Container.vue'),
+        redirect: 'control-panel-home',
+        children:[
+            {path:'login',name:'control-panel-login',component:()=>import('../components/ControlPanel/Login.vue')},
+            {path:'',name:'control-panel-home',component:()=>import('../components/ControlPanel/Index.vue')}
+        ]
     }
 
 ];
@@ -41,7 +46,7 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
     // redirect to login page if not logged in and trying to access a restricted page
-    const publicPages = ['/verify-access'];
+    const publicPages = ['/verify-access','/controlpanel/login'];
     const authRequired = !publicPages.includes(to.path);
     const clusteredPrecinct = clusteredPrecinctStore();
 //verify_access
@@ -49,7 +54,12 @@ router.beforeEach(async (to) => {
     // console.log(clusteredPrecinct.verify_access);
     if (authRequired && !clusteredPrecinct.verify_access) {
         // auth.returnUrl = to.fullPath;
-        return '/verify-access';
+        if(to.name=='control-panel-home') {
+            return '/controlpanel/login'
+        } else {
+           return '/verify-access';
+        }
+
     }
 });
 

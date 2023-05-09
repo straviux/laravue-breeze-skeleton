@@ -28,4 +28,14 @@ class AccessCodeController extends Controller
             return ['success' => false, 'message' => 'Invalid access code'];
         }
     }
+
+    public function updateAccessCode(Request $request)
+    {
+        $result = AccessCode::where('access_code', $request['access_code'])->update(['is_accessible' => $request['is_accessible']]);
+        if ($result) {
+            return ['success' => true, 'message' => 'record updated'];
+        } else {
+            return ['success' => false, 'message' => 'Invalid request', 'data' => $request['access_code']];
+        }
+    }
 }

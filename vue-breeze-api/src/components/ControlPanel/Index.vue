@@ -1,13 +1,55 @@
+<script setup>
+import moment from "moment";
+import { ref, computed, onMounted } from "vue";
+import { clusteredPrecinctStore } from "../../store/clustered_precinct_result";
+const clusteredPrecinct = clusteredPrecinctStore();
+const model = ref({
+    access_code: null,
+    province: null,
+    municipality: null,
+    has_access: null,
+});
+
+function selectRow(row) {
+    // console.log(row.is_accessible);
+    model.value.access_code = row.access_code;
+    model.value.province = row.province;
+    model.value.municipality = row.municipality;
+    model.value.has_access = row.is_accessible;
+}
+
+function update() {
+    console.log(model.value);
+    clusteredPrecinct.updateAccessCode(model.value);
+}
+
+function getCodes() {
+    clusteredPrecinct.getAccessCodes();
+}
+onMounted(() => {
+    getCodes();
+});
+</script>
 <template>
     <div class="flex h-screen bg-slate-700">
         <div
             class="card w-[95%] md:w-[50%] h-20 mx-auto mt-12 bg-gray-200 rounded-md shadow-lg"
         >
+            <div class="flex justify-center items-center py-4">
+                <button
+                    @click="clusteredPrecinct.logout"
+                    class="text-sm px-2 text-red-500 underline rounded-full flex gap-1 drop-shadow-lg"
+                >
+                    <mdicon name="logout-variant" width="15px" />
+                    <span class="font-bold drop-shadow-lg">Log out</span>
+                </button>
+            </div>
             <table class="table w-full">
                 <!-- head -->
                 <thead>
                     <tr>
-                        <th></th>
+                        <th>#</th>
+                        <th>Access Code</th>
                         <th>Province</th>
                         <th>City</th>
                         <th>Has Access?</th>
@@ -18,51 +60,39 @@
                 </thead>
                 <tbody>
                     <!-- row 1 -->
-                    <tr>
-                        <td>1</td>
-                        <td>Negros Oriental</td>
-                        <td>City of Canlaon</td>
-                        <td>Yes</td>
-                        <td>2</td>
-                        <td>2023/05/04</td>
-                        <td>
-                            <label class="cursor-pointer" for="my-modal">
-                                <mdicon
-                                    name="square-edit-outline"
-                                    size="24"
-                                    class="text-orange-500"
-                                />
-                            </label>
+                    <tr
+                        v-for="(ac, i) in clusteredPrecinct.access_codes"
+                        :key="i"
+                    >
+                        <td class="text-gray-500">{{ i + 1 }}</td>
+                        <td class="font-semibold text-gray-600">
+                            {{ ac.access_code }}
                         </td>
-                    </tr>
-                    <!-- row 2 -->
-                    <tr>
-                        <td>2</td>
-                        <td>Cebu</td>
-                        <td>Talisay</td>
-                        <td>Yes</td>
-                        <td>2</td>
-                        <td>2023/05/04</td>
-                        <td>
-                            <label class="cursor-pointer" for="my-modal">
-                                <mdicon
-                                    name="square-edit-outline"
-                                    size="24"
-                                    class="text-orange-500"
-                                />
-                            </label>
+                        <td>{{ ac.province }}</td>
+                        <td>{{ ac.municipality }}</td>
+                        <td
+                            :class="
+                                ac.is_accessible
+                                    ? 'text-green-500'
+                                    : 'text-red-500'
+                            "
+                        >
+                            {{ ac.is_accessible ? "Yes" : "No" }}
                         </td>
-                    </tr>
-                    <!-- row 3 -->
-                    <tr>
-                        <td>3</td>
-                        <td>Cebu</td>
-                        <td>Argao</td>
-                        <td>Yes</td>
-                        <td>2</td>
-                        <td>2023/05/04</td>
+                        <td>{{ ac.visit_count }}</td>
                         <td>
-                            <label class="cursor-pointer" for="my-modal">
+                            {{
+                                ac.last_generated
+                                    ? moment(ac.last_generated).format("L LT")
+                                    : ""
+                            }}
+                        </td>
+                        <td>
+                            <label
+                                class="cursor-pointer"
+                                for="my-modal"
+                                @click="selectRow(ac)"
+                            >
                                 <mdicon
                                     name="square-edit-outline"
                                     size="24"
@@ -98,7 +128,7 @@
                             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                             id="province"
                             type="text"
-                            value="Palawan"
+                            v-model="model.province"
                         />
                     </div>
                 </div>
@@ -114,7 +144,7 @@
                             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                             id="province"
                             type="text"
-                            value="Puerto Princesa City"
+                            v-model="model.municipality"
                         />
                     </div>
                 </div>
@@ -124,14 +154,18 @@
                             class="block uppercase tracking-wide text-gray-700 text-xs font-semibold mb-2"
                             >Has Access</span
                         >
-                        <input type="checkbox" checked class="checkbox -mt-2" />
+                        <input
+                            type="checkbox"
+                            :checked="model.has_access"
+                            class="checkbox -mt-2"
+                            v-model="model.has_access"
+                        />
                     </label>
                 </div>
             </form>
             <div class="modal-action">
-                <label for="my-modal" class="btn">Update</label>
+                <label for="my-modal" class="btn" @click="update">Update</label>
             </div>
         </div>
     </div>
 </template>
-<script setup></script>

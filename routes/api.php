@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\ClusteredPrecinctResultController;
 use App\Http\Controllers\Api\V1\AccessCodeController;
+use App\Http\Controllers\Api\V1\ControlPanelCodeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,4 +28,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('/municipality-by-province', [ClusteredPrecinctResultController::class, 'getMunicipalityByProvince']);
     Route::get('/barangay-by-municipality', [ClusteredPrecinctResultController::class, 'getBarangayByMunicipality']);
     Route::post('/verify-access-code', [AccessCodeController::class, 'verifyAccessCode']);
+    Route::post('/verify-control-code', [ControlPanelCodeController::class, 'verifyControlCode']);
+    Route::get('/show-access-code', [ControlPanelCodeController::class, 'showAccessCode']);
+    Route::post('/update-access-code', [AccessCodeController::class, 'updateAccessCode']);
 });

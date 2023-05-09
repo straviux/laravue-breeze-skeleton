@@ -12,6 +12,8 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
             // formJpmSummary:null,
             formVerifyAccess:false,
             formAccessCode:null,
+            formControlCode:null,
+            accessCodes:null,
             formVisitCount:0,
             formProvince:null,
             formPosition:null,
@@ -28,7 +30,8 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
     persist: {
         // storage: sessionStorage,
         paths: [
-            'formAccessCode','formVerifyAccess',
+            'formAccessCode',
+            'formControlCode','formVerifyAccess',
             'formProvince','formPosition',
             'formMunicipality','formReportLevel',
             'formBarangay','precinctResult',
@@ -38,10 +41,12 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
     getters: {
         // district: (state)=> state.district,\
         has_limited_access:(state)=>state.limited_access,
+        access_codes:(state)=>state.accessCodes,
         // jpm_summary:(state)=>state.formJpmSummary,
         is_loading:(state)=>state.loading,
         province:(state)=>state.formProvince,
         access_code: (state)=>state.formAccessCode,
+        control_code: (state)=>state.formControlCode,
         visit_count: (state)=>state.formVisitCount,
         verify_access: (state)=>state.formVerifyAccess,
         barangay: (state) => state.formBarangay,
@@ -193,6 +198,88 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                 // }
             }
 
+        },
+
+        async verifyControlAccess(data) {
+            this.resultErrors = [];
+            this.loading = true;
+            try {
+                // this.getToken();
+                const res = await axios.post("/api/v1/verify-control-code", {
+                    control_code: data.control_code
+                });
+                // console.log(res.data.data);
+
+                // this.router.push("/");
+                if(res.data.success) {
+                    this.loading = false;
+                    this.formVerifyAccess=res.data.success;
+                    this.formControlCode=data.control_code;
+
+                    if(this.router.currentRoute.value.name!=='control-panel-home') {
+                        this.router.push("/controlpanel");
+                    }
+
+                } else {
+                    if(this.router.currentRoute.value.name==='control-panel-login') {
+                        this.resultErrors.push(res.data.message);
+                    } else {
+                        this.router.push("/controlpanel/login");
+                    }
+
+                }
+
+            } catch (error) {
+
+                // if(error.response.status===422) {
+                //     console.log(error.response.data)
+                //     this.resultErrors = error.response.data.errors;
+                // } else {
+                //     console.log(error)
+                // }
+            }
+        },
+
+        async getAccessCodes() {
+            try {
+                // this.getToken();
+
+                const data = await axios.get("/api/v1/show-access-code", {params: {
+                    control_code: this.formControlCode
+                }});
+                // console.log()
+                this.accessCodes = data.data.data;
+                // this.formBarangay = data.data;
+
+            } catch (error) {
+                // console.log(error);
+            }
+        },
+
+        async updateAccessCode(formData) {
+            try {
+                // this.getToken();
+
+
+                    const res = await axios.post("/api/v1/update-access-code", {
+                        access_code: formData.access_code,
+                        is_accessible: formData.has_access?1:0
+                    });
+
+                    if(res.data.success) {
+                        console.log(res.data)
+                        this.getAccessCodes();
+                    } else {
+                        console.log(res.data)
+                    }
+
+                // console.log()
+                // this.accessCodes = data.data.data;
+                // this.formBarangay = data.data;
+
+            } catch (error) {
+                console.log(error);
+            }
         },
 
         logout () {

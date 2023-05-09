@@ -15,7 +15,7 @@ class ClusteredPrecinctResultController extends Controller
     //
     public function index(Request $request)
     {
-        AccessCode::where('access_code', $request['access_code'])->increment('visit_count', 1, ['updated_at' => Carbon::now()]);
+        AccessCode::where('access_code', $request['access_code'])->increment('visit_count', 1, ['last_generated' => Carbon::now()]);
 
         // $municipality = implode(',', $request['municipality']);
         // $municipality = strtoupper($municipality);
