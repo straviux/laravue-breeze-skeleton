@@ -14,6 +14,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
             formAccessCode:null,
             formControlCode:null,
             accessCodes:null,
+            accessHistory:[],
             formVisitCount:0,
             formProvince:null,
             formPosition:null,
@@ -46,6 +47,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
         is_loading:(state)=>state.loading,
         province:(state)=>state.formProvince,
         access_code: (state)=>state.formAccessCode,
+        access_history: (state)=>state.accessHistory,
         control_code: (state)=>state.formControlCode,
         visit_count: (state)=>state.formVisitCount,
         verify_access: (state)=>state.formVerifyAccess,
@@ -217,14 +219,14 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     this.formControlCode=data.control_code;
 
                     if(this.router.currentRoute.value.name!=='control-panel-home') {
-                        this.router.push("/controlpanel");
+                        this.router.push("/control001");
                     }
 
                 } else {
                     if(this.router.currentRoute.value.name==='control-panel-login') {
                         this.resultErrors.push(res.data.message);
                     } else {
-                        this.router.push("/controlpanel/login");
+                        this.router.push("/control001/login");
                     }
 
                 }
@@ -257,6 +259,8 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
         },
 
         async updateAccessCode(formData) {
+            this.resultErrors = [];
+            this.loading = true;
             try {
                 // this.getToken();
 
@@ -267,18 +271,35 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     });
 
                     if(res.data.success) {
-                        console.log(res.data)
+                        // console.log(res.data)
                         this.getAccessCodes();
                     } else {
-                        console.log(res.data)
+                        // console.log(res.data)
                     }
-
+                    this.loading = false;
                 // console.log()
                 // this.accessCodes = data.data.data;
                 // this.formBarangay = data.data;
 
             } catch (error) {
-                console.log(error);
+                // console.log(error);
+                this.loading = false;
+            }
+        },
+
+        async showAccessHistory(access_code_id) {
+            try {
+                // this.getToken();
+
+                const data = await axios.get("/api/v1/show-access-history", {params: {
+                    access_code_id: access_code_id
+                }});
+                // console.log(data.data.data);
+                this.accessHistory = data.data.data;
+                // this.formBarangay = data.data;
+
+            } catch (error) {
+                // console.log(error);
             }
         },
 

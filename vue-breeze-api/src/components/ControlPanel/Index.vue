@@ -9,18 +9,41 @@ const model = ref({
     municipality: null,
     has_access: null,
 });
+const accessHistory = ref([]);
+const updateBtnLabel = ref("Update");
+const isLoadingBtn = ref(false);
 
 function selectRow(row) {
-    // console.log(row.is_accessible);
+    // console.log(row);
     model.value.access_code = row.access_code;
     model.value.province = row.province;
     model.value.municipality = row.municipality;
     model.value.has_access = row.is_accessible;
+    clusteredPrecinct.showAccessHistory(row.id); //row.id = access_code_id
+
+    accessHistory.value = clusteredPrecinct.accessHistory;
 }
 
 function update() {
-    console.log(model.value);
+    // console.log(model.value);
     clusteredPrecinct.updateAccessCode(model.value);
+
+    if (clusteredPrecinct.loading) {
+        updateBtnLabel.value = "Updating";
+        isLoadingBtn.value = true;
+    }
+    // if (!clusteredPrecinct.loading) {
+    setTimeout(() => {
+        if (!clusteredPrecinct.loading) {
+            updateBtnLabel.value = "Updated";
+        }
+    }, 1000);
+
+    setTimeout(() => {
+        isLoadingBtn.value = false;
+        updateBtnLabel.value = "Update";
+    }, 2500);
+    // }
 }
 
 function getCodes() {
@@ -32,29 +55,33 @@ onMounted(() => {
 </script>
 <template>
     <div class="flex h-screen bg-slate-700">
-        <div
-            class="card w-[95%] md:w-[50%] h-20 mx-auto mt-12 bg-gray-200 rounded-md shadow-lg"
-        >
-            <div class="flex justify-center items-center py-4">
-                <button
-                    @click="clusteredPrecinct.logout"
-                    class="text-sm px-2 text-red-500 underline rounded-full flex gap-1 drop-shadow-lg"
-                >
-                    <mdicon name="logout-variant" width="15px" />
-                    <span class="font-bold drop-shadow-lg">Log out</span>
-                </button>
-            </div>
-            <table class="table w-full">
+        <div class="mx-auto mt-12">
+            <table class="table text-[0.8rem]">
                 <!-- head -->
+
                 <thead>
                     <tr>
+                        <th colspan="9">
+                            <button
+                                @click="clusteredPrecinct.logout"
+                                class="text-sm text-red-500 underline rounded-full flex gap-1 drop-shadow-lg mx-auto"
+                            >
+                                <mdicon name="logout-variant" width="15px" />
+                                <span class="font-bold drop-shadow-lg"
+                                    >Log out</span
+                                >
+                            </button>
+                        </th>
+                    </tr>
+                    <tr class="rounded-t">
                         <th>#</th>
-                        <th>Access Code</th>
+                        <!-- <th>Access Code</th> -->
                         <th>Province</th>
-                        <th>City</th>
+                        <th>City/Municipality</th>
                         <th>Has Access?</th>
                         <th>Usage</th>
-                        <th>Last Generated</th>
+                        <th>Last Update</th>
+                        <th>Last Generate</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -65,9 +92,9 @@ onMounted(() => {
                         :key="i"
                     >
                         <td class="text-gray-500">{{ i + 1 }}</td>
-                        <td class="font-semibold text-gray-600">
+                        <!-- <td class="font-semibold text-gray-600">
                             {{ ac.access_code }}
-                        </td>
+                        </td> -->
                         <td>{{ ac.province }}</td>
                         <td>{{ ac.municipality }}</td>
                         <td
@@ -82,23 +109,43 @@ onMounted(() => {
                         <td>{{ ac.visit_count }}</td>
                         <td>
                             {{
-                                ac.last_generated
+                                moment(ac.updated_at).isValid()
+                                    ? moment(ac.updated_at).format("L LT")
+                                    : ""
+                            }}
+                        </td>
+                        <td>
+                            {{
+                                moment(ac.last_generated).isValid()
                                     ? moment(ac.last_generated).format("L LT")
                                     : ""
                             }}
                         </td>
                         <td>
-                            <label
-                                class="cursor-pointer"
-                                for="my-modal"
-                                @click="selectRow(ac)"
-                            >
-                                <mdicon
-                                    name="square-edit-outline"
-                                    size="24"
-                                    class="text-orange-500"
-                                />
-                            </label>
+                            <div class="flex gap-2">
+                                <label
+                                    class="cursor-pointer"
+                                    for="update-modal"
+                                    @click="selectRow(ac)"
+                                >
+                                    <mdicon
+                                        name="square-edit-outline"
+                                        size="24"
+                                        class="text-orange-500"
+                                    />
+                                </label>
+                                <label
+                                    class="cursor-pointer"
+                                    for="history-modal"
+                                    @click="selectRow(ac)"
+                                >
+                                    <mdicon
+                                        name="history"
+                                        size="24"
+                                        class="text-yellow-500"
+                                    />
+                                </label>
+                            </div>
                         </td>
                     </tr>
                 </tbody>
@@ -106,11 +153,11 @@ onMounted(() => {
         </div>
     </div>
 
-    <input type="checkbox" id="my-modal" class="modal-toggle" />
+    <input type="checkbox" id="update-modal" class="modal-toggle" />
     <div class="modal">
         <div class="modal-box relative w-[350px]">
             <label
-                for="my-modal"
+                for="update-modal"
                 class="btn btn-sm btn-circle absolute right-3 top-2"
                 >✕</label
             >
@@ -128,6 +175,7 @@ onMounted(() => {
                             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                             id="province"
                             type="text"
+                            disabled
                             v-model="model.province"
                         />
                     </div>
@@ -144,6 +192,7 @@ onMounted(() => {
                             class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                             id="province"
                             type="text"
+                            disabled
                             v-model="model.municipality"
                         />
                     </div>
@@ -164,8 +213,70 @@ onMounted(() => {
                 </div>
             </form>
             <div class="modal-action">
-                <label for="my-modal" class="btn" @click="update">Update</label>
+                <button
+                    class="btn transition-all"
+                    :class="{
+                        'loading btn-disable btn-success text-white':
+                            isLoadingBtn,
+                    }"
+                    @click="update"
+                >
+                    {{ updateBtnLabel }}
+                </button>
             </div>
+        </div>
+    </div>
+
+    <input type="checkbox" id="history-modal" class="modal-toggle" />
+    <div class="modal">
+        <div class="modal-box relative w-[350px]">
+            <label
+                for="history-modal"
+                class="btn btn-sm btn-circle absolute right-3 top-2"
+                >✕</label
+            >
+            <!-- <h3 class="font-bold text-lg">UPDATE FORM</h3> -->
+            <form class="w-full max-w-lg mt-4">
+                <div class="flex flex-wrap -mx-3">
+                    <div class="w-full px-3">
+                        <label
+                            class="block uppercase tracking-wide text-gray-700 text-sm font-semibold mb-2"
+                            for="province"
+                        >
+                            {{ model.province }}
+                            <span v-if="model.municipality">
+                                / {{ model.municipality }}</span
+                            >
+                        </label>
+                    </div>
+                </div>
+                <div class="flex flex-wrap -mx-3 mb-2">
+                    <div class="w-full px-3">
+                        <!-- {{ clusteredPrecinct.accessHistory }} -->
+                        <table class="table text-[0.7rem] table-compact">
+                            <thead>
+                                <th class="text-gray-600">#</th>
+                                <th class="text-gray-600">Access Date</th>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(history, i) in accessHistory"
+                                    :key="i"
+                                >
+                                    <td class="text-gray-500">{{ i + 1 }}.</td>
+                                    <td class="py-2">
+                                        {{
+                                            moment(history.access_at).format(
+                                                "L LT"
+                                            )
+                                        }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </template>

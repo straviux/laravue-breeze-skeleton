@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\ClusteredPrecinctResult;
 // use App\Http\Resources\V1\ClusteredPrecinctResultResource;
 use App\Models\AccessCode;
+use App\Models\AccessHistory;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 
@@ -16,7 +17,13 @@ class ClusteredPrecinctResultController extends Controller
     public function index(Request $request)
     {
         AccessCode::where('access_code', $request['access_code'])->increment('visit_count', 1, ['last_generated' => Carbon::now()]);
+        $ac = AccessCode::select('id')->where('access_code', $request['access_code'])->get();
 
+        AccessHistory::insert([
+            'access_code_id' => $ac[0]['id'],
+            'visitor' => '',
+            'access_at' => Carbon::now()
+        ]);
         // $municipality = implode(',', $request['municipality']);
         // $municipality = strtoupper($municipality);
         $municipalities = is_array($request['municipality']) ? $request['municipality'] : [$request['municipality']];

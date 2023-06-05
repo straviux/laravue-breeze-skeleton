@@ -30,5 +30,6 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('/verify-access-code', [AccessCodeController::class, 'verifyAccessCode']);
     Route::post('/verify-control-code', [ControlPanelCodeController::class, 'verifyControlCode']);
     Route::get('/show-access-code', [ControlPanelCodeController::class, 'showAccessCode']);
+    Route::get('/show-access-history', [AccessCodeController::class, 'showAccessHistory']);
     Route::post('/update-access-code', [AccessCodeController::class, 'updateAccessCode']);
 });
