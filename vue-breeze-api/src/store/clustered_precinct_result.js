@@ -296,7 +296,8 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     access_code_id: access_code_id
                 }});
                 // console.log(data.data.data);
-                this.accessHistory = data.data.data;
+                this.accessHistory = data.data.result;
+                this.formVisitCount = data.data.visit_count;
                 // this.formBarangay = data.data;
                 this.loading = false;
             } catch (error) {

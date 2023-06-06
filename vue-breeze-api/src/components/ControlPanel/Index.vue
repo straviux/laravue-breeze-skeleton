@@ -259,9 +259,9 @@ onMounted(() => {
                         >
                             <div class="flex gap-2">
                                 <div class="flex gap-2">
-                                    <p class="font-light">Accessed:</p>
+                                    <p class="font-light">Visited:</p>
                                     <span class="text-gray-500">{{
-                                        clusteredPrecinct.accessHistory.length
+                                        clusteredPrecinct.visit_count
                                     }}</span>
                                 </div>
                                 <div>-</div>

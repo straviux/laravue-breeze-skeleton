@@ -51,8 +51,9 @@ class AccessCodeController extends Controller
     public function showAccessHistory(Request $request)
     {
         $result = AccessHistory::select('access_at')->where('access_code_id', $request['access_code_id'])->orderBy('access_at', 'DESC')->get();
+        $ac = AccessCode::select('visit_count')->where('id', $request['access_code_id'])->get();
         if (count($result)) {
-            return ['success' => true, 'message' => 'access verified', 'data' => $result];
+            return ['success' => true, 'message' => 'access verified', 'result' => $result, 'visit_count' => $ac[0]['visit_count']];
         } else {
             return ['success' => false, 'message' => 'Invalid request'];
         }
