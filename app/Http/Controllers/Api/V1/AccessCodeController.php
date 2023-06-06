@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AccessCode;
 use App\Models\AccessHistory;
+use Carbon\Carbon;
 
 class AccessCodeController extends Controller
 {
@@ -17,10 +18,16 @@ class AccessCodeController extends Controller
         // }
 
 
-        $result = AccessCode::select('access_code', 'province', 'municipality', 'is_accessible', 'visit_count')
+        $result = AccessCode::select('access_code', 'province', 'municipality', 'is_accessible', 'visit_count', 'last_visited')
             ->where('access_code', $request['access_code'])->get();
         if (count($result)) {
             if ($result[0]['is_accessible']) {
+                $date_now = Carbon::now();
+                $d1 = Carbon::createFromFormat('Y-m-d H:i:s', $date_now)->format('Y-m-d');
+                $d2 = Carbon::createFromFormat('Y-m-d H:i:s', $result[0]['last_visited'])->format('Y-m-d');
+                if ($d1 != $d2) {
+                    AccessCode::where('access_code', $request['access_code'])->increment('visit_count', 1, ['last_visited' => $date_now]);
+                }
 
                 return ['success' => true, 'message' => 'access verified', 'data' => $result[0]];
             } else {

@@ -20,8 +20,6 @@ function selectRow(row) {
     model.value.municipality = row.municipality;
     model.value.has_access = row.is_accessible;
     clusteredPrecinct.showAccessHistory(row.id); //row.id = access_code_id
-
-    accessHistory.value = clusteredPrecinct.accessHistory;
 }
 
 function update() {
@@ -78,10 +76,10 @@ onMounted(() => {
                         <!-- <th>Access Code</th> -->
                         <th>Province</th>
                         <th>City/Municipality</th>
-                        <th>Has Access?</th>
-                        <th>Usage</th>
-                        <th>Last Update</th>
-                        <th>Last Generate</th>
+                        <th>Has Access</th>
+                        <th>Visit Count</th>
+                        <!-- <th>Last Update</th> -->
+                        <th>Last Visited</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -107,17 +105,17 @@ onMounted(() => {
                             {{ ac.is_accessible ? "Yes" : "No" }}
                         </td>
                         <td>{{ ac.visit_count }}</td>
-                        <td>
+                        <!-- <td>
                             {{
                                 moment(ac.updated_at).isValid()
                                     ? moment(ac.updated_at).format("L LT")
                                     : ""
                             }}
-                        </td>
+                        </td> -->
                         <td>
                             {{
-                                moment(ac.last_generated).isValid()
-                                    ? moment(ac.last_generated).format("L LT")
+                                moment(ac.last_visited).isValid()
+                                    ? moment(ac.last_visited).format("L LT")
                                     : ""
                             }}
                         </td>
@@ -253,27 +251,63 @@ onMounted(() => {
                 <div class="flex flex-wrap -mx-3 mb-2">
                     <div class="w-full px-3">
                         <!-- {{ clusteredPrecinct.accessHistory }} -->
-                        <table class="table text-[0.7rem] table-compact">
-                            <thead>
-                                <th class="text-gray-600">#</th>
-                                <th class="text-gray-600">Access Date</th>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="(history, i) in accessHistory"
-                                    :key="i"
-                                >
-                                    <td class="text-gray-500">{{ i + 1 }}.</td>
-                                    <td class="py-2">
-                                        {{
-                                            moment(history.access_at).format(
-                                                "L LT"
-                                            )
-                                        }}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div
+                            v-if="
+                                !clusteredPrecinct.loading &&
+                                clusteredPrecinct.accessHistory
+                            "
+                        >
+                            <div class="flex gap-2">
+                                <div class="flex gap-2">
+                                    <p class="font-light">Accessed:</p>
+                                    <span class="text-gray-500">{{
+                                        clusteredPrecinct.accessHistory.length
+                                    }}</span>
+                                </div>
+                                <div>-</div>
+                                <div class="flex gap-2">
+                                    <p class="font-light">Generated:</p>
+                                    <span class="text-gray-500">{{
+                                        clusteredPrecinct.accessHistory.length
+                                    }}</span>
+                                </div>
+                            </div>
+                            <table class="table text-[0.7rem] table-compact">
+                                <thead>
+                                    <th class="text-gray-500 text-[12px]">#</th>
+                                    <th
+                                        class="text-gray-500 w-full text-[12px] font-semibold"
+                                    >
+                                        Generated At
+                                    </th>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="(
+                                            history, i
+                                        ) in clusteredPrecinct.accessHistory"
+                                        :key="i"
+                                    >
+                                        <td
+                                            class="text-gray-500 font-mono font-light"
+                                        >
+                                            {{ i + 1 }}.
+                                        </td>
+                                        <td class="py-2 font-mono">
+                                            {{
+                                                moment(
+                                                    history.access_at
+                                                ).format("L LT")
+                                            }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div v-else-if="!clusteredPrecinct.loading">
+                            No data available
+                        </div>
+                        <div v-else>Loading data. Please wait..</div>
                     </div>
                 </div>
             </form>

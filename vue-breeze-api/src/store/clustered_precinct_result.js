@@ -288,6 +288,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
         },
 
         async showAccessHistory(access_code_id) {
+            this.loading = true;
             try {
                 // this.getToken();
 
@@ -297,9 +298,10 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                 // console.log(data.data.data);
                 this.accessHistory = data.data.data;
                 // this.formBarangay = data.data;
-
+                this.loading = false;
             } catch (error) {
                 // console.log(error);
+                this.loading = false;
             }
         },
 

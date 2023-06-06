@@ -16,7 +16,7 @@ class ClusteredPrecinctResultController extends Controller
     //
     public function index(Request $request)
     {
-        AccessCode::where('access_code', $request['access_code'])->increment('visit_count', 1, ['last_generated' => Carbon::now()]);
+        // AccessCode::where('access_code', $request['access_code'])->increment('visit_count', 1, ['last_generated' => Carbon::now()]);
         $ac = AccessCode::select('id')->where('access_code', $request['access_code'])->get();
 
         AccessHistory::insert([
