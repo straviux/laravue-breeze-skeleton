@@ -243,6 +243,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
         },
 
         async getAccessCodes() {
+            this.loading = true;
             try {
                 // this.getToken();
 
@@ -251,9 +252,11 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                 }});
                 // console.log()
                 this.accessCodes = data.data.data;
+                this.loading = false;
                 // this.formBarangay = data.data;
 
             } catch (error) {
+                this.loading = false;
                 // console.log(error);
             }
         },

@@ -54,7 +54,13 @@ onMounted(() => {
 <template>
     <div class="flex h-screen bg-slate-700">
         <div class="mx-auto mt-12">
-            <table class="table text-[0.8rem]">
+            <div
+                class="flex bg-white p-2 px-8 rounded"
+                v-if="!clusteredPrecinct.access_codes"
+            >
+                Loading Data. Please wait..
+            </div>
+            <table class="table text-[0.8rem]" v-else>
                 <!-- head -->
 
                 <thead>
@@ -97,12 +103,12 @@ onMounted(() => {
                         <td>{{ ac.municipality }}</td>
                         <td
                             :class="
-                                ac.is_accessible
+                                parseInt(ac.is_accessible)
                                     ? 'text-green-500'
                                     : 'text-red-500'
                             "
                         >
-                            {{ ac.is_accessible ? "Yes" : "No" }}
+                            {{ parseInt(ac.is_accessible) ? "Yes" : "No" }}
                         </td>
                         <td>{{ ac.visit_count }}</td>
                         <!-- <td>

@@ -44,7 +44,7 @@ class AccessCodeController extends Controller
         if ($result) {
             return ['success' => true, 'message' => 'record updated', 'is_accessible' => $request['is_accessible']];
         } else {
-            return ['success' => false, 'message' => 'Invalid request', 'data' => $request['access_code']];
+            return ['success' => false, 'message' => 'Invalid request'];
         }
     }
 
