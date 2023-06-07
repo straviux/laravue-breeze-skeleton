@@ -277,7 +277,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                         // console.log(res.data)
                     }
                     this.loading = false;
-                // console.log()
+                console.log(res);
                 // this.accessCodes = data.data.data;
                 // this.formBarangay = data.data;
 

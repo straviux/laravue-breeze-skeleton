@@ -42,7 +42,7 @@ class AccessCodeController extends Controller
     {
         $result = AccessCode::where('access_code', $request['access_code'])->update(['is_accessible' => $request['is_accessible']]);
         if ($result) {
-            return ['success' => true, 'message' => 'record updated'];
+            return ['success' => true, 'message' => 'record updated', 'is_accessible' => $request['is_accessible']];
         } else {
             return ['success' => false, 'message' => 'Invalid request', 'data' => $request['access_code']];
         }
