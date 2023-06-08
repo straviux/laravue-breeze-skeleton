@@ -15,6 +15,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
             formControlCode:null,
             accessCodes:null,
             accessHistory:[],
+            electionYear:0,
             formVisitCount:0,
             formProvince:null,
             formPosition:null,
@@ -31,7 +32,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
     persist: {
         // storage: sessionStorage,
         paths: [
-            'formAccessCode',
+            'formAccessCode','electionYear',
             'formControlCode','formVerifyAccess',
             'formProvince','formPosition',
             'formMunicipality','formReportLevel',
@@ -44,6 +45,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
         has_limited_access:(state)=>state.limited_access,
         access_codes:(state)=>state.accessCodes,
         // jpm_summary:(state)=>state.formJpmSummary,
+        election_year:(state)=>state.electionYear,
         is_loading:(state)=>state.loading,
         province:(state)=>state.formProvince,
         access_code: (state)=>state.formAccessCode,
@@ -174,7 +176,9 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                     }
                     this.loading = false;
                     this.formVerifyAccess=res.data.success;
+                    this.electionYear=res.data.data.election_year;
                     this.formProvince=res.data.data.province;
+                    this.formMunicipality=res.data.data.municipality;
                     this.formAccessCode=res.data.data.access_code;
                     this.formVisitCount=res.data.data.visit_count;
                     if(this.router.currentRoute.value.name!=='Home'&&this.router.currentRoute.value.name!=='Results') {
@@ -280,7 +284,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
                         // console.log(res.data)
                     }
                     this.loading = false;
-                console.log(res);
+                // console.log(res);
                 // this.accessCodes = data.data.data;
                 // this.formBarangay = data.data;
 

@@ -18,7 +18,7 @@ function selectRow(row) {
     model.value.access_code = row.access_code;
     model.value.province = row.province;
     model.value.municipality = row.municipality;
-    model.value.has_access = row.is_accessible;
+    model.value.has_access = parseInt(row.is_accessible);
     clusteredPrecinct.showAccessHistory(row.id); //row.id = access_code_id
 }
 

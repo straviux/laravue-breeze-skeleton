@@ -18,7 +18,7 @@ class AccessCodeController extends Controller
         // }
 
 
-        $result = AccessCode::select('access_code', 'province', 'municipality', 'is_accessible', 'visit_count', 'last_visited')
+        $result = AccessCode::select('access_code', 'province', 'municipality', 'is_accessible', 'visit_count', 'last_visited', 'election_year')
             ->where('access_code', $request['access_code'])->get();
         if (count($result)) {
             if ($result[0]['is_accessible']) {
