@@ -182,8 +182,10 @@ class ClusteredPrecinctResultController extends Controller
             });
 
             // GET JPM MEMBERS SUMMARY
-            $jpm_members = $ac[0]['is_jpm'] ? Http::get('http://assistance.jpmpalawan.net/mobi/jpm/ajax_get_member_summary_by_province') : 0;
-            $election_result[0]['jpm_members'] = $jpm_members != 0 ? $jpm_members : 0;
+            // $jpm_members = $ac[0]['is_jpm'] ? Http::get('http://assistance.jpmpalawan.net/mobi/jpm/ajax_get_member_summary_by_province') : 0;
+            // $election_result[0]['jpm_members'] = $jpm_members != 0 ? $jpm_members->json() : 0;
+            $jpm_members = Http::get('http://assistance.jpmpalawan.net/mobi/jpm/ajax_get_member_summary_by_province');
+            $election_result[0]['jpm_members'] = $jpm_members->json();
 
             return $election_result;
         } else if ($request['report_level'] == 'district') {
