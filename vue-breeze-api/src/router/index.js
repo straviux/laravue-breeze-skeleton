@@ -35,6 +35,16 @@ const routes = [
             {path:'login',name:'control-panel-login',component:()=>import('../components/ControlPanel/Login.vue')},
             {path:'',name:'control-panel-home',component:()=>import('../components/ControlPanel/Index.vue')}
         ]
+    },
+
+    {
+        path:'/barangay',
+        component: ()=>import('../components/ControlPanel/Container.vue'),
+        redirect: 'barangay-result-home',
+        children:[
+            {path:'login',name:'barangay-result-login',component:()=>import('../components/ControlPanel/Login.vue')},
+            {path:'',name:'barangay-result-home',component:()=>import('../components/BarangayElection/Container.vue')}
+        ]
     }
 
 ];
@@ -56,7 +66,9 @@ router.beforeEach(async (to) => {
         // auth.returnUrl = to.fullPath;
         if(to.name=='control-panel-home') {
             return '/control001/login'
-        } else {
+        } else if(to.name=='barangay-result-home') {
+            return '/barangay-result-home'
+        }else {
            return '/verify-access';
         }
 

@@ -110,6 +110,7 @@ export const clusteredPrecinctStore = defineStore("clusteredPrecinct", {
 
                     // console.log(data);
                     // return false;
+                    // console.log(data.data)
                     this.router.push({name:'ElectionResults'});
 
                 } catch (error) {

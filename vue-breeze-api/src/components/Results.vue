@@ -345,7 +345,7 @@ document.addEventListener("keydown", function (event) {
                         <thead>
                             <tr>
                                 <th
-                                    colspan="4"
+                                    colspan="5"
                                     class="bg-gray-100 text-gray-600"
                                 >
                                     <p class="text-lg md:text-xl font-semibold">
@@ -365,7 +365,7 @@ document.addEventListener("keydown", function (event) {
                                 <thead>
                                     <tr>
                                         <th
-                                            colspan="4"
+                                            colspan="5"
                                             class="bg-gray-50 text-gray-600 pl-2"
                                         >
                                             District {{ d.id }}
@@ -374,7 +374,7 @@ document.addEventListener("keydown", function (event) {
 
                                     <tr>
                                         <th
-                                            colspan="4"
+                                            colspan="5"
                                             class="py-0 bg-slate-50 text-gray-600 pl-4"
                                         >
                                             <div class="flex align-bottom">
@@ -474,6 +474,11 @@ document.addEventListener("keydown", function (event) {
                                             Votes
                                         </th>
                                         <th
+                                            class="text-right text-xs bg-transparent text-gray-600"
+                                        >
+                                            Votes Difference
+                                        </th>
+                                        <th
                                             class="text-right text-xs bg-transparent text-gray-600 hidden md:block"
                                         >
                                             Percentage
@@ -487,7 +492,12 @@ document.addEventListener("keydown", function (event) {
                                         ) in sortTotalVotesDescending(
                                             d.candidates
                                         )"
-                                        class=""
+                                        :class="
+                                            b.position == 'CONGRESSMAN' &&
+                                            i == 0
+                                                ? 'font-bold'
+                                                : ''
+                                        "
                                     >
                                         <td
                                             class="p-1 md:p-2 text-[10px] md:text-xs text-gray-500 mb-4"
@@ -514,6 +524,35 @@ document.addEventListener("keydown", function (event) {
                                                     )
                                                 }}%)</span
                                             >
+                                        </td>
+                                        <td
+                                            class="text-right text-[11px] md:text-sm md:p-2"
+                                        >
+                                            <span
+                                                v-if="
+                                                    b.position == 'CONGRESSMAN'
+                                                "
+                                            >
+                                                {{
+                                                    numberWithCommas(
+                                                        sortTotalVotesDescending(
+                                                            d.candidates
+                                                        )[0].total_votes -
+                                                            c.total_votes
+                                                    )
+                                                }}
+                                            </span>
+                                            <span v-else>
+                                                {{
+                                                    numberWithCommas(
+                                                        sortTotalVotesDescending(
+                                                            d.candidates
+                                                        )[i == 0 ? i : i - 1]
+                                                            .total_votes -
+                                                            c.total_votes
+                                                    )
+                                                }}
+                                            </span>
                                         </td>
                                         <td
                                             class="text-right text-[11px] md:text-sm md:p-2 hidden md:block"
@@ -551,6 +590,11 @@ document.addEventListener("keydown", function (event) {
                                         Votes
                                     </th>
                                     <th
+                                        class="text-right text-xs md:text-lg bg-transparent text-gray-600"
+                                    >
+                                        Votes Difference
+                                    </th>
+                                    <th
                                         class="text-right text-xs md:text-lg bg-transparent text-gray-600 hidden md:block"
                                     >
                                         Percentage
@@ -563,6 +607,16 @@ document.addEventListener("keydown", function (event) {
                                         b.candidates
                                     )"
                                     :key="i"
+                                    :class="
+                                        b.position !== 'SENATOR' &&
+                                        b.position !== 'BOARD MEMBER' &&
+                                        b.position !== 'PARTY LIST' &&
+                                        i == 0
+                                            ? 'font-bold'
+                                            : b.position == 'SENATOR' && i < 12
+                                            ? 'font-bold'
+                                            : ''
+                                    "
                                 >
                                     <td
                                         class="p-1 md:p-2 text-[10px] md:text-sm lg:text-base text-gray-500 mb-4"
@@ -587,6 +641,36 @@ document.addEventListener("keydown", function (event) {
                                                 )
                                             }}%)</span
                                         >
+                                    </td>
+                                    <td
+                                        class="text-right text-[11px] md:text-base lg:text-lg md:p-2"
+                                    >
+                                        <span
+                                            v-if="
+                                                b.position == 'PRESIDENT' ||
+                                                b.position == 'V-PRESIDENT' ||
+                                                b.position == 'CONGRESSMAN' ||
+                                                b.position == 'GOVERNOR' ||
+                                                b.position == 'VICE-GOVERNOR'
+                                            "
+                                        >
+                                            {{
+                                                numberWithCommas(
+                                                    sortTotalVotesDescending(
+                                                        b.candidates
+                                                    )[0].total_votes -
+                                                        c.total_votes
+                                                )
+                                            }}
+                                        </span>
+                                        <span v-else>{{
+                                            numberWithCommas(
+                                                sortTotalVotesDescending(
+                                                    b.candidates
+                                                )[i == 0 ? i : i - 1]
+                                                    .total_votes - c.total_votes
+                                            )
+                                        }}</span>
                                     </td>
                                     <td
                                         class="text-right text-[11px] md:text-base lg:text-lg md:p-2 hidden md:block"
@@ -625,6 +709,9 @@ document.addEventListener("keydown", function (event) {
                                             )
                                         }}
                                     </td>
+                                    <td
+                                        class="font-semibold text-right bg-gray-100 text-gray-600 text-xs md:text-base lg:text-lg"
+                                    ></td>
                                     <td
                                         class="font-semibold text-right bg-gray-100 text-gray-600 text-xs md:text-base lg:text-lg hidden md:block"
                                     >
