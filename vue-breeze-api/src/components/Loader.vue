@@ -2,7 +2,8 @@
     <div
         v-if="isFullScreen"
         wire:loading
-        class="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-[1000] overflow-hidden bg-emerald-600 opacity-95 flex flex-col items-center justify-center"
+        class="fixed top-0 left-0 right-0 bottom-0 w-full h-screen z-[1000] overflow-hidden opacity-95 flex flex-col items-center justify-center"
+        :class="bgColor ? bgColor : 'bg-emerald-600'"
     >
         <div
             class="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4"
@@ -24,6 +25,7 @@
 <script setup>
 const props = defineProps({
     isFullScreen: Boolean,
+    bgColor: String,
 });
 </script>
 

@@ -135,7 +135,7 @@ function toggleAllCity() {
 
 function toggleAllBarangay() {
     if (allBarangaySelected.value) {
-        model.value.barangays = bskResult.barangay.flatMap(
+        model.value.barangays = bskResult.select_barangay.flatMap(
             (b) => b.barangay_name
         );
     } else {
@@ -213,10 +213,10 @@ function setLimitedAccessDefault() {
 }
 onMounted(() => {
     model.value.positions = filteredPositions.value.flatMap((p) => p);
-    if (clusteredPrecinct.has_limited_access) {
-        model.value.report_level = "municipality";
-        setLimitedAccessDefault();
-    }
+    // if (clusteredPrecinct.has_limited_access) {
+    //     model.value.report_level = "municipality";
+    //     setLimitedAccessDefault();
+    // }
 
     // const dropdownContent = document.querySelectorAll(".oneclick-dropdown>li");
     // dropdownContent.forEach((element) => {
@@ -340,13 +340,13 @@ onMounted(() => {
                     }}
                 </div>
                 <div v-else class="w-full dropdown dropdown-bottom">
-                    <label
+                    <div
                         tabindex="0"
                         class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-transparent border-0 text-[10px]"
                         @mousedown="closeDropdownOnClick"
                     >
-                        Click to select</label
-                    >
+                        Click to select
+                    </div>
                     <ul
                         tabindex="0"
                         class="dropdown-content p-1 shadow bg-base-100 rounded-box w-full absolute z-[1000] min-w-max list-none overflow-y-auto h-[350px]"
@@ -358,7 +358,7 @@ onMounted(() => {
                                 <input
                                     type="checkbox"
                                     class="checkbox checkbox-sm"
-                                    id="all"
+                                    id="all-city"
                                     v-model="allCitySelected"
                                     @change="toggleAllCity"
                                 />
@@ -437,12 +437,13 @@ onMounted(() => {
                 </div>
 
                 <div class="w-full dropdown dropdown-bottom">
-                    <label
+                    <div
                         tabindex="0"
                         class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-transparent border-0 text-[10px]"
                         @mousedown="closeDropdownOnClick"
-                        >Click to select</label
                     >
+                        Click to select
+                    </div>
                     <ul
                         tabindex="0"
                         class="dropdown-content p-1 shadow bg-base-100 rounded-box w-full absolute z-[1000] min-w-max list-none overflow-y-auto h-[350px]"
@@ -454,21 +455,24 @@ onMounted(() => {
                                 <input
                                     type="checkbox"
                                     class="checkbox checkbox-sm"
-                                    id="all"
+                                    id="all-barangay"
                                     v-model="allBarangaySelected"
                                     @change="toggleAllBarangay"
                                 />
                                 <span class="label-text text-xs">ALL</span>
                             </label>
                         </li>
-                        <li v-for="(b, i) in bskResult.barangay" :key="i">
+                        <li
+                            v-for="(b, idb) in bskResult.select_barangay"
+                            :key="idb"
+                        >
                             <label
                                 class="cursor-pointer w-full whitespace-nowrap bg-transparent items-center flex py-2 gap-2 px-2 hover:bg-gray-100 rounded-lg"
                             >
                                 <input
                                     type="checkbox"
                                     class="checkbox checkbox-sm"
-                                    :id="i"
+                                    :id="'bgy' + idb"
                                     :value="b.barangay_name"
                                     v-model="model.barangays"
                                 />
@@ -484,7 +488,8 @@ onMounted(() => {
                 <div class="grid gap-1 grid-cols-3">
                     <div
                         class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 text-center whitespace-nowrap align-middle py-1 cursor-pointer"
-                        v-for="barangay in model.barangays"
+                        v-for="(barangay, ib) in model.barangays"
+                        :key="ib"
                         @click="removeBarangay(barangay)"
                     >
                         <p class="uppercase text-[10px]">{{ barangay }}</p>
@@ -503,12 +508,13 @@ onMounted(() => {
                     </div>
 
                     <div class="w-full dropdown dropdown-bottom">
-                        <label
+                        <div
                             tabindex="0"
                             class="btn bg-transparent btn-sm btn-block text-gray-500 m-1 hover:bg-transparent border-0 text-[10px]"
                             @mousedown="closeDropdownOnClick"
-                            >Click to select</label
                         >
+                            Click to select
+                        </div>
                         <ul
                             tabindex="0"
                             class="dropdown-content p-1 shadow bg-base-100 rounded-box w-full absolute z-[400] min-w-max list-none overflow-y-auto h-[250px]"
@@ -520,7 +526,7 @@ onMounted(() => {
                                     <input
                                         type="checkbox"
                                         class="checkbox checkbox-sm"
-                                        id="all"
+                                        id="all-position"
                                         v-model="allPositionSelected"
                                         @change="toggleAllPosition"
                                     />
@@ -537,7 +543,7 @@ onMounted(() => {
                                     <input
                                         type="checkbox"
                                         class="checkbox checkbox-sm"
-                                        :id="position"
+                                        :id="'pos' + index"
                                         :value="position"
                                         @change="resetPosition"
                                         v-model="model.positions"
@@ -555,7 +561,7 @@ onMounted(() => {
                         <div
                             class="bg-gray-200 shadow text-gray-600 rounded font-semibold px-2 py-1 text-center align-middle cursor-pointer"
                             v-for="(position, index) in model.positions"
-                            :key="position + index"
+                            :key="'position' + index"
                             @click="removePosition(position)"
                         >
                             <p class="text-[10px]">{{ position }}</p>

@@ -45,6 +45,16 @@ const routes = [
             {path:'login',name:'barangay-result-login',component:()=>import('../components/ControlPanel/Login.vue')},
             {path:'',name:'barangay-result-home',component:()=>import('../components/BarangayElection/Container.vue')}
         ]
+    },
+
+        {
+        path:'/barangay-test',
+        component: ()=>import('../components/ControlPanel/Container.vue'),
+        redirect: 'barangay-result-test',
+        children:[
+            {path:'login',name:'barangay-result-login',component:()=>import('../components/ControlPanel/Login.vue')},
+            {path:'',name:'barangay-result-test',component:()=>import('../components/BarangayElection/Test.vue')}
+        ]
     }
 
 ];

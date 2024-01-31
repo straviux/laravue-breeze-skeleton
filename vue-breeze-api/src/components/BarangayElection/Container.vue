@@ -24,9 +24,10 @@ onMounted(async () => {
 
 <template>
     <Loader
-        v-if="clusteredPrecinct.is_loading"
+        v-if="bskResult.is_loading"
         :isFullScreen="true"
         key="loader"
+        :bgColor="'bg-slate-500'"
     />
     <div class="grid grid-cols-12 h-screen">
         <div
